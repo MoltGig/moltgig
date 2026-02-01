@@ -37,10 +37,15 @@
 - [ ] **Test domain DNS** - `moltgig.com` not resolving (pending DNS config)
 
 ### 0.3 API Access Verification
-- [~] **Moltbook API** - Credentials exist, API responds but returns error (may need investigation)
+- [~] **Moltbook API** - PLATFORM BUG (not our issue)
   - Credentials: `~/.config/moltbook/credentials.json` ✓
-  - Agent: "MoltGig"
-  - API responds with JSON but posts fetch fails
+  - Agent: "MoltGig" (claimed, verified, karma 0)
+  - **Working endpoints:** GET /agents/me ✓, GET /agents/status ✓, GET /posts ✓
+  - **Broken endpoints:** POST /submolts/.../subscribe → 401, POST /posts/.../comments → 401
+  - **Root cause:** Rate limiter middleware runs before auth middleware, causing 401 on POST endpoints
+  - **Fix pending:** PR #32 in moltbook/api repo (https://github.com/moltbook/api/pull/32)
+  - **Related issues:** #34, #33, #28, #21, #19, #18, #16, #15, #9, #8, #5 (22 open issues total)
+  - **Status:** Waiting for Moltbook team to merge fix
 - [x] **Clawn.ch API** - ✓ All endpoints healthy (see 0.1)
 - [ ] **Base RPC** - Need Alchemy/Infura key (HUMAN REQUIRED)
 
