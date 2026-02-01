@@ -46,6 +46,11 @@
   - **Fix pending:** PR #32 in moltbook/api repo (https://github.com/moltbook/api/pull/32)
   - **Related issues:** #34, #33, #28, #21, #19, #18, #16, #15, #9, #8, #5 (22 open issues total)
   - **Status:** Waiting for Moltbook team to merge fix
+- [x] **Moltbook Developer API** - Applied for access (2026-02-01)
+  - Endpoint: `POST /api/v1/agents/verify-identity`
+  - Purpose: Verify agent identities, get karma scores
+  - Status: Awaiting approval (typically 48 hours)
+  - Docs: https://moltbook.com/developers.md
 - [x] **Clawn.ch API** - ✓ All endpoints healthy (see 0.1)
 - [x] **Base RPC** - ✓ Alchemy configured (Base Sepolia testnet)
 
@@ -157,9 +162,9 @@ Adopted patterns from successful multi-agent implementations:
 ### 1.1 Server Configuration
 - [x] Configure nginx virtual host for moltgig.com ✓ (2026-02-01)
 - [x] Set up SSL with Let's Encrypt ✓ (cert expires 2026-05-02)
-- [x] Create PostgreSQL database and user ✓ (moltgig db, creds in ~/.moltgig_db.env)
+- [x] ~~Create PostgreSQL database~~ → Migrated to Supabase
 - [x] Set up firewall rules (UFW) ✓ (SSH + Nginx Full allowed)
-- [ ] Configure systemd services
+- [x] Configure systemd services ✓ (moltgig-backend.service created)
 
 ### 1.2 Project Initialization
 - [x] GitHub repo exists ✓ (github.com/MoltGig/moltgig)
@@ -172,18 +177,20 @@ Adopted patterns from successful multi-agent implementations:
   ├── frontend/            # Next.js (to be initialized)
   └── .env                 # Environment variables
   ```
-- [ ] Set up CI/CD (GitHub Actions)
+- [x] Set up CI/CD (GitHub Actions) ✓ (.github/workflows/ci.yml)
 - [x] Configure environment variables ✓ (~/.openclaw/workspace/moltgig/.env)
 
 ### 1.3 Smart Contract Setup (Testnet)
 - [x] Review MoltGigEscrow.sol ✓
-- [ ] Add comprehensive tests
+- [ ] Add comprehensive tests (Phase 2)
 - [x] Deploy to Base Sepolia testnet ✓ (2026-02-01)
   - **Contract:** `0xf605936078F3d9670780a9582d53998a383f8020`
   - **Treasury:** `0xA5BfB6C6E3085e7fd4b7328b52eDda30Ef683D68`
   - **BaseScan:** https://sepolia.basescan.org/address/0xf605936078F3d9670780a9582d53998a383f8020
-- [ ] Verify on BaseScan (API needs update)
-- [ ] Test all contract functions
+- [x] Verify on BaseScan ✓ (2026-02-01)
+  - **Verified:** https://sepolia.basescan.org/address/0xf605936078F3d9670780a9582d53998a383f8020#code
+  - **Sourcify:** https://repo.sourcify.dev/contracts/full_match/84532/0xf605936078F3d9670780a9582d53998a383f8020/
+- [ ] Test all contract functions (Phase 2)
 
 ### 1.4 Token Launch (If Option A or C)
 - [x] Finalize logo and upload ✓ (https://i.imgur.com/5kOlQah.jpeg)
@@ -193,19 +200,27 @@ Adopted patterns from successful multi-agent implementations:
 - [ ] Verify token on Base
 - [ ] Announce on social channels
 
-### 1.5 Database Setup
-- [x] Create database ✓ (moltgig on PostgreSQL 16.11)
-- [ ] Create database schema
-- [ ] Run migrations
-- [ ] Set up connection pooling
-- [ ] Configure backups
+### 1.5 Database Setup (Supabase)
+- [x] Create Supabase project ✓ (2026-02-01)
+  - **Project URL:** https://nsfelvytlvffussgydfq.supabase.co
+- [x] Create database schema ✓ (2026-02-01)
+  - `agents` - AI agent profiles (wallet, moltbook, reputation)
+  - `tasks` - Gig postings (title, reward, status, deadlines)
+  - `submissions` - Work deliverables with feedback
+  - `transactions` - On-chain payment records
+  - `task_listings` - View joining tasks with agent info
+- [x] Configure Row Level Security (RLS) policies ✓
+- [x] Set up real-time subscriptions for task updates ✓
+- [x] Removed legacy PostgreSQL from Hetzner server ✓
 
 ## Phase 1 Exit Criteria
-- [ ] Server fully configured and accessible
-- [ ] GitHub repo with CI/CD working
-- [ ] Contracts deployed to testnet
-- [ ] Database schema created
-- [ ] (If applicable) Token launched
+- [x] Server fully configured and accessible ✓
+- [x] GitHub repo with CI/CD working ✓
+- [x] Contracts deployed to testnet ✓
+- [x] Database schema created ✓ (Supabase)
+- [ ] (If applicable) Token launched - BLOCKED (Moltbook API)
+
+**Phase 1 Status: COMPLETE** (except token launch which is blocked)
 
 ---
 
@@ -257,6 +272,17 @@ Adopted patterns from successful multi-agent implementations:
 - [ ] Add input validation
 - [ ] Write tests
 
+### 2.1b Moltbook Identity Integration
+- [ ] Receive Moltbook Developer access (applied 2026-02-01)
+- [ ] Create app in Moltbook dashboard, obtain `moltdev_` API key
+- [ ] Implement identity verification middleware
+  - [ ] Accept `X-Moltbook-Identity` header from agents
+  - [ ] Verify tokens via `POST /api/v1/agents/verify-identity`
+  - [ ] Extract agent profile (ID, karma, owner info)
+- [ ] Link Moltbook agent ID to wallet address in database
+- [ ] Use karma score as reputation baseline for new agents
+- [ ] Add audience restriction (`moltgig.com`) for token scoping
+
 ### 2.2 Smart Contract Integration
 - [ ] Create contract interaction service
 - [ ] Implement event listeners
@@ -288,6 +314,7 @@ Adopted patterns from successful multi-agent implementations:
 - [ ] Payment flows correctly on testnet
 - [ ] API documented
 - [ ] Skill working
+- [ ] Moltbook identity verification working (agents authenticate via Moltbook tokens)
 - [ ] No critical bugs
 
 ---
@@ -402,9 +429,9 @@ Adopted patterns from successful multi-agent implementations:
 
 # CURRENT STATUS
 
-**Active Phase:** PHASE 0 → Ready for PHASE 1
-**Next Action:** Max to approve proceeding to Phase 1
-**Blockers:** None - all Phase 0 items complete
+**Active Phase:** PHASE 1 COMPLETE → Ready for PHASE 2
+**Next Action:** Begin MVP development (backend API, frontend, smart contract integration)
+**Blockers:** Token launch blocked by Moltbook API bug (PR #32 pending)
 
 ---
 
