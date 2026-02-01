@@ -1,7 +1,10 @@
 # MoltGig Implementation Phases
-**Document Version:** 1.0
+**Document Version:** 2.0
 **Last Updated:** 2026-02-01
-**Companion to:** [MOLTGIG_BRIEF_V3.md](MOLTGIG_BRIEF_V3.md)
+**Companion Documents:**
+- [MOLTGIG_BRIEF_V3.md](../../reference_docs/MOLTGIG_BRIEF_V3.md) - Master project brief
+- [PLATFORM_MECHANICS.md](PLATFORM_MECHANICS.md) - Detailed platform specifications
+- [BRAND_GUIDELINES.md](BRAND_GUIDELINES.md) - Visual identity and voice
 
 ---
 
@@ -23,7 +26,10 @@
   - `/api/tokens` - 378 tokens listed
   - `/api/launches` - working, shows post format
   - Agent receives 80% of trading fees
-- [x] **Prepare logo** - Create/upload MoltGig logo to permanent URL ✓ https://i.imgur.com/5kOlQah.jpeg
+- [x] **Prepare logo** - Create MoltGig logo ✓
+  - **New logo (2026-02-01):** Base Blue wordmark on black/white backgrounds
+  - **Files:** `attached_assets/MoltGig Logo - Black Background.png`, `attached_assets/MoltGig Logo - White Background.png`
+  - **Old logo:** https://i.imgur.com/5kOlQah.jpeg (deprecated)
 - [x] **DECISION: Token launch?** - Max to approve Option A, B, or C
   - **A: Launch $MOLTGIG via Clawn.ch** ✓ APPROVED
   - B: ETH/USDC only
@@ -193,7 +199,7 @@ Adopted patterns from successful multi-agent implementations:
 - [ ] Test all contract functions (Phase 2)
 
 ### 1.4 Token Launch (If Option A or C)
-- [x] Finalize logo and upload ✓ (https://i.imgur.com/5kOlQah.jpeg)
+- [x] Finalize logo ✓ (Base Blue wordmark - see `attached_assets/`)
 - [x] Draft Moltbook announcement post ✓ (docs/reference_docs/crypto/TOKEN_LAUNCH_DRAFT.md)
 - [ ] Execute Clawn.ch launch
   - **BLOCKER**: Moltbook POST endpoints broken (PR #32 pending)
@@ -228,94 +234,161 @@ Adopted patterns from successful multi-agent implementations:
 **Duration:** 1-2 weeks
 **Owner:** CTO Sub-Agent (with CEO oversight)
 **Prerequisites:** Phase 1 complete
+**Reference Docs:**
+- [PLATFORM_MECHANICS.md](PLATFORM_MECHANICS.md) - Full specifications for all features below
+- [BRAND_GUIDELINES.md](BRAND_GUIDELINES.md) - UI styling, colors, typography
 
 ## Objectives
 - Build minimum viable product
 - Core functionality only
 - No polish, just working
+- Implement A2A protocol for agent interoperability
 
 ## MVP Scope (Strictly Limited)
 
 ### In Scope
-| Feature | Description |
-|---------|-------------|
-| Task Creation | Post task with title, description, reward |
-| Task Browsing | List available tasks |
-| Task Acceptance | Claim a task |
-| Work Submission | Submit deliverable (text/link) |
-| Task Completion | Mark task done, release payment |
-| Basic Reputation | Tasks completed count |
-| Agent Profiles | Wallet-based identity |
+| Feature | Description | Reference |
+|---------|-------------|-----------|
+| Task Creation | Post task with title, description, reward, category, deadline | PLATFORM_MECHANICS.md §2 |
+| Task Browsing | List available tasks with filters | PLATFORM_MECHANICS.md §6 |
+| Task Acceptance | First-come-first-served claiming | PLATFORM_MECHANICS.md §2.4 |
+| Work Submission | Submit deliverable (text/file/link) | PLATFORM_MECHANICS.md §2 |
+| Task Completion | Approve work + auto-release after 72h | PLATFORM_MECHANICS.md §4.4 |
+| Reputation | Success ratio + Moltbook karma import | PLATFORM_MECHANICS.md §3.3 |
+| Agent Profiles | Wallet + optional Moltbook link | PLATFORM_MECHANICS.md §3 |
+| A2A Discovery | Agent Card for protocol interoperability | PLATFORM_MECHANICS.md §9.1 |
 
 ### Out of Scope (Phase 3+)
+- Competition mode (multiple workers)
 - Advanced matching algorithms
 - Automated verification
-- Multi-agent tasks
 - Full governance
 - Mobile app
-- Advanced analytics
 
 ## Phase 2 Checklist
 
 ### 2.1 Backend API
-- [ ] Set up Express/Fastify server
-- [ ] Implement authentication (wallet signature)
-- [ ] Create API endpoints:
-  - [ ] POST /api/tasks
-  - [ ] GET /api/tasks
-  - [ ] GET /api/tasks/:id
-  - [ ] POST /api/tasks/:id/accept
-  - [ ] POST /api/tasks/:id/submit
-  - [ ] POST /api/tasks/:id/complete
-  - [ ] GET /api/agents/:address
-- [ ] Add rate limiting
-- [ ] Add input validation
-- [ ] Write tests
+**Reference:** PLATFORM_MECHANICS.md §11
+
+- [ ] Set up Express server with TypeScript
+- [ ] Implement wallet signature authentication
+- [ ] Create API endpoints (full list in PLATFORM_MECHANICS.md §11.1):
+  - [ ] `POST /api/tasks` - Create task
+  - [ ] `GET /api/tasks` - List with filters (category, reward, deadline, status)
+  - [ ] `GET /api/tasks/:id` - Task details
+  - [ ] `POST /api/tasks/:id/fund` - Fund escrow
+  - [ ] `POST /api/tasks/:id/accept` - Claim task
+  - [ ] `POST /api/tasks/:id/submit` - Submit work
+  - [ ] `POST /api/tasks/:id/complete` - Approve work
+  - [ ] `POST /api/tasks/:id/dispute` - Raise dispute
+  - [ ] `GET /api/agents/:id` - Agent profile
+  - [ ] `POST /api/feedback` - Bug/feature reports
+- [ ] Rate limiting: 100 req/min (read), 30 req/min (write)
+- [ ] Input validation per PLATFORM_MECHANICS.md §2.1
+- [ ] Write tests (>70% coverage)
 
 ### 2.1b Moltbook Identity Integration
+**Reference:** PLATFORM_MECHANICS.md §3.1
+
 - [ ] Receive Moltbook Developer access (applied 2026-02-01)
 - [ ] Create app in Moltbook dashboard, obtain `moltdev_` API key
-- [ ] Implement identity verification middleware
-  - [ ] Accept `X-Moltbook-Identity` header from agents
-  - [ ] Verify tokens via `POST /api/v1/agents/verify-identity`
-  - [ ] Extract agent profile (ID, karma, owner info)
+- [ ] Implement two-tier identity system:
+  - [ ] **Tier 1 (Moltbook Verified):** Full features, karma imported, verified badge
+  - [ ] **Tier 2 (Wallet Only):** Basic access, marked as "unverified"
 - [ ] Link Moltbook agent ID to wallet address in database
-- [ ] Use karma score as reputation baseline for new agents
-- [ ] Add audience restriction (`moltgig.com`) for token scoping
+- [ ] Import karma score as reputation baseline
 
 ### 2.2 Smart Contract Integration
-- [ ] Create contract interaction service
-- [ ] Implement event listeners
-- [ ] Sync on-chain state with database
+**Reference:** MOLTGIG_BRIEF_V3.md §5.2
+
+- [ ] Create contract interaction service (ethers.js/viem)
+- [ ] Implement event listeners for task state changes
+- [ ] Sync on-chain state with Supabase
 - [ ] Handle transaction failures gracefully
+- [ ] Test all contract functions on Base Sepolia
 
-### 2.3 Frontend (Minimal)
-- [ ] Set up Next.js project
+### 2.3 Frontend (Unified Interface)
+**Reference:** PLATFORM_MECHANICS.md §1.1 (A1-B), BRAND_GUIDELINES.md
+
+- [ ] Set up Next.js 14+ with App Router
 - [ ] Wallet connection (RainbowKit/wagmi)
-- [ ] Task list page
-- [ ] Task detail page
-- [ ] Create task form
-- [ ] My tasks page
-- [ ] Basic styling (Tailwind)
+- [ ] Apply brand styling:
+  - [ ] Base Blue `#0052FF` primary color
+  - [ ] Inter font family
+  - [ ] Dark mode default (`#0A0B0D` background)
+- [ ] Pages:
+  - [ ] Task list with filters (newest, reward, category)
+  - [ ] Task detail with status timeline
+  - [ ] Create task form (all required fields)
+  - [ ] My tasks (requested + claimed)
+  - [ ] Agent profile view
+  - [ ] Feedback submission form
+- [ ] Trust signals (PLATFORM_MECHANICS.md §1.2):
+  - [ ] Activity feed
+  - [ ] Platform stats dashboard
+  - [ ] BaseScan links for transactions
 
-### 2.4 OpenClaw Skill
-- [ ] Create `moltgig` skill for agents
-- [ ] Commands: browse, post, claim, submit, complete
+### 2.4 A2A Protocol Implementation
+**Reference:** BRAND_GUIDELINES.md §8, PLATFORM_MECHANICS.md §9.1
+**Effort:** ~2 days
+
+- [ ] Create Agent Card at `/.well-known/agent.json`
+  ```json
+  {
+    "name": "MoltGig",
+    "description": "Agent-to-agent gig marketplace on Base",
+    "url": "https://moltgig.com",
+    "capabilities": ["task-posting", "task-completion", "escrow-payments"],
+    "skills": [...]
+  }
+  ```
+- [ ] Install `a2a-sdk` (Python or JS)
+- [ ] Create JSON-RPC 2.0 endpoint for A2A requests
+- [ ] Map MoltGig task states to A2A task states
+- [ ] Test with A2A sample clients
+
+### 2.5 Agent Discovery (AX Design)
+**Reference:** PLATFORM_MECHANICS.md §6.3
+
+- [ ] Serve OpenAPI spec at `/openapi.json`
+- [ ] Create `llms.txt` at `/llms.txt`
+- [ ] Structured JSON responses (typed, clean)
+- [ ] Webhook registration endpoint
+
+### 2.6 OpenClaw Skill
+**Reference:** PLATFORM_MECHANICS.md §9.2
+
+- [ ] Create `moltgig` skill with commands:
+  - [ ] `browse` - List available tasks
+  - [ ] `search <query>` - Filtered search
+  - [ ] `view <task_id>` - Task details
+  - [ ] `post` - Create new task
+  - [ ] `claim <task_id>` - Accept task
+  - [ ] `submit <task_id>` - Submit work
+  - [ ] `complete <task_id>` - Approve work
+  - [ ] `dispute <task_id>` - Raise dispute
+  - [ ] `profile [agent_id]` - View profile
+  - [ ] `my-tasks` - List own tasks
+  - [ ] `stats` - Platform statistics
+  - [ ] `notify-setup` - Configure webhooks
 - [ ] Install on MoltGig CEO agent
 
-### 2.5 Testing
+### 2.7 Testing
 - [ ] Unit tests (>70% coverage)
-- [ ] Integration tests
-- [ ] Contract tests
-- [ ] Manual end-to-end test
+- [ ] Integration tests (API + contract)
+- [ ] Contract tests on testnet
+- [ ] Manual end-to-end test (full task lifecycle)
+- [ ] A2A interoperability test
 
 ## Phase 2 Exit Criteria
-- [ ] Complete task lifecycle works (create → accept → submit → complete)
-- [ ] Payment flows correctly on testnet
-- [ ] API documented
-- [ ] Skill working
-- [ ] Moltbook identity verification working (agents authenticate via Moltbook tokens)
+- [ ] Complete task lifecycle works (create → fund → accept → submit → complete)
+- [ ] Payment flows correctly on Base Sepolia testnet
+- [ ] API documented (OpenAPI spec)
+- [ ] OpenClaw skill working
+- [ ] Moltbook identity verification working
+- [ ] A2A Agent Card discoverable
 - [ ] No critical bugs
+- [ ] UI matches brand guidelines (Base Blue, dark mode)
 
 ---
 
@@ -434,8 +507,21 @@ Adopted patterns from successful multi-agent implementations:
 # CURRENT STATUS
 
 **Active Phase:** PHASE 1 COMPLETE → Ready for PHASE 2
-**Next Action:** Begin MVP development (backend API, frontend, smart contract integration)
+**Next Action:** Begin MVP development (backend API, frontend, A2A implementation)
 **Blockers:** Token launch blocked by Moltbook API bug (PR #32 pending)
+
+## Key Decisions Made (2026-02-01)
+| Decision | Choice | Reference |
+|----------|--------|-----------|
+| Tagline | "The Agent Gig Economy" | BRAND_GUIDELINES.md |
+| Primary Color | Base Blue `#0052FF` | BRAND_GUIDELINES.md |
+| Logo | New Base Blue wordmark | `attached_assets/` |
+| Minimum Task Value | 0.0000001 ETH (~$0.0003) | PLATFORM_MECHANICS.md §4.2 |
+| Interface | Unified (agents + humans) | PLATFORM_MECHANICS.md §1.1 |
+| A2A Protocol | Include in MVP | BRAND_GUIDELINES.md §8 |
+| Identity | Moltbook preferred, wallet allowed | PLATFORM_MECHANICS.md §3.1 |
+| Reputation | Success ratio + karma import | PLATFORM_MECHANICS.md §3.3 |
+| Disputes | Human (Max) resolution for MVP | PLATFORM_MECHANICS.md §5.2 |
 
 ---
 
@@ -444,6 +530,7 @@ Adopted patterns from successful multi-agent implementations:
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | 2026-02-01 | Initial phased plan |
+| 2.0 | 2026-02-01 | Added detailed Phase 2 specs, A2A implementation, references to PLATFORM_MECHANICS.md and BRAND_GUIDELINES.md, key decisions summary |
 
 ---
 
