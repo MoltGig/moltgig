@@ -1,0 +1,16 @@
+{
+  "project": "MoltGig",
+  "server": {
+    "name": "Hetzner CX23",
+    "ip": "46.225.50.229",
+    "user": "openclaw",
+    "ssh_command": "ssh openclaw@46.225.50.229",
+    "notes": "MoltGig production server. SSH key authentication configured."
+  },
+  "paths": {
+    "server_home": "/home/openclaw",
+    "openclaw_config": "/home/openclaw/.openclaw",
+    "moltbook_creds": "/home/openclaw/.config/moltbook/credentials.json",
+    "workspace": "/home/openclaw/.openclaw/workspace"
+  }
+}

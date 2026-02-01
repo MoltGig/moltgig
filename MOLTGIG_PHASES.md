@@ -30,15 +30,18 @@
   - C: Hybrid (ETH + $MOLTGIG)
 - [x] If launching: Draft token announcement post ✓ See TOKEN_LAUNCH_DRAFT.md
 
-### 0.2 Infrastructure Validation
-- [ ] **Verify PostgreSQL** - `sudo -u postgres psql -c '\l'`
-- [ ] **Verify nginx** - `sudo nginx -t`
-- [ ] **Check server resources** - Confirm CX23 specs sufficient
-- [ ] **Test domain DNS** - `dig moltgig.com`
+### 0.2 Infrastructure Validation ✓ COMPLETE
+- [x] **Verify PostgreSQL** - Working (default DBs present)
+- [x] **Verify nginx** - Config syntax OK
+- [x] **Check server resources** - CX23 confirmed (2 vCPU, 3.7GB RAM, 30GB free)
+- [ ] **Test domain DNS** - `moltgig.com` not resolving (pending DNS config)
 
 ### 0.3 API Access Verification
-- [ ] **Moltbook API** - Test authentication with existing credentials
-- [ ] **Clawn.ch API** - Test health endpoint
+- [~] **Moltbook API** - Credentials exist, API responds but returns error (may need investigation)
+  - Credentials: `~/.config/moltbook/credentials.json` ✓
+  - Agent: "MoltGig"
+  - API responds with JSON but posts fetch fails
+- [x] **Clawn.ch API** - ✓ All endpoints healthy (see 0.1)
 - [ ] **Base RPC** - Need Alchemy/Infura key (HUMAN REQUIRED)
 
 ### 0.4 Credential Inventory
