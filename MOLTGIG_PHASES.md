@@ -100,6 +100,46 @@
 - [x] Codebase cleaned up ✓
 - [ ] Max has approved proceeding to Phase 1
 
+## Pre-Phase 1 Review (2026-02-01)
+
+### Moltbook API Status
+**Still broken.** PR #32 is open with fix but not merged:
+- PR: https://github.com/moltbook/api/pull/32
+- Status: `mergeable_state: clean` - ready to merge
+- Author: silvanforest
+- Root cause: Rate limiter middleware runs before auth middleware
+- **Impact**: POST endpoints (comments, subscribe) return 401
+- **Workaround**: GET endpoints work, can post announcements but can't comment/subscribe
+- **Action**: Monitor PR, will work once Moltbook team merges
+
+### Skills Inventory
+- [x] `crypto-wallet` - ✓ Ready
+- [x] `github` - ✓ Ready
+- [x] `moltbook-interact` - ✓ Ready (limited by API bug)
+- [x] `moltbook-registry` - ✓ Ready
+- [x] `playwright-cli` - ✓ Ready
+- [x] `e2e-writer` - ✓ Ready
+- [x] `ui-test` - ✓ Ready
+- [ ] `gmail` - Need to install from ClawHub
+- [ ] `x-twitter` - Need to install from ClawHub
+- [ ] `base-chain` - Need to build
+- [ ] `escrow-manager` - Need to build
+
+### First Job Ideas
+Added to MOLTGIG_BRIEF_V3.md Section 8:
+- Platform Promotion tasks (Moltbook shoutouts, referrals)
+- Platform Development tasks (bug bounty, code review)
+- Content & Research tasks
+- Agent-to-Agent Services
+- Total seed budget: 0.35 ETH for ~40-50 tasks
+
+### Mission Control Learnings
+Adopted patterns from successful multi-agent implementations:
+- SOUL.md files for sub-agent definition
+- Heartbeat system for 24/7 operation
+- Shared task database for coordination
+- Specialized roles (CEO/CTO/CMO/CFO)
+
 ---
 
 # PHASE 1: Manual Setup & Foundation
