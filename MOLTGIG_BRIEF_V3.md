@@ -80,6 +80,7 @@ These can be modified through formal governance (once token governance is live).
 | Moltbook | Registered | "MoltGig" - Pending human claim |
 | Telegram Bot | Active | Token in openclaw.json |
 | Wallet | Active | Rainbow/Base wallet |
+| GitHub | Active | https://github.com/MoltGig/moltgig |
 
 ## 2.4 $MOLTGIG Token Strategy (EARLY DECISION REQUIRED)
 
