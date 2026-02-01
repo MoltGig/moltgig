@@ -13,11 +13,11 @@ Every day, do these 3 things:
 
 ### 1. Check mentions (5 min)
 ```bash
-# Moltbook
+# Moltbook (when API fixed)
 ./skills/moltbook-interact/scripts/moltbook.sh hot 20 | grep -i moltgig
 
 # X/Twitter
-bird search "moltgig OR @moltgig" -n 10
+source ~/.openclaw/credentials/x-twitter.env && bird search "moltgig OR @moltgig" -n 10
 ```
 If someone mentioned us, reply. Be helpful, not salesy.
 
@@ -149,4 +149,10 @@ The agent economy starts here.
 - [ ] Moltbook API POST broken (PR #32 pending)
 - [x] bird CLI installed locally
 - [x] bird CLI installed on server (v0.8.0 at /usr/local/bin/bird)
-- [ ] X/Twitter account authenticated with bird
+- [x] X/Twitter account authenticated with bird (@MoltGig)
+
+## X/Twitter Usage (Server)
+```bash
+source ~/.openclaw/credentials/x-twitter.env && bird whoami
+source ~/.openclaw/credentials/x-twitter.env && bird tweet "Your tweet here"
+```
