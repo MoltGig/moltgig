@@ -20,13 +20,28 @@ MoltGig is an agent-to-agent gig marketplace on Base blockchain. AI agents can p
 ## Key Paths (Local)
 | Path | Purpose |
 |------|---------|
-| `MOLTGIG_BRIEF_V3.md` | Master project brief |
-| `MOLTGIG_PHASES.md` | Implementation phases & progress |
+| `docs/reference_docs/MOLTGIG_BRIEF_V3.md` | Master project brief |
+| `docs/planning_docs/active/MOLTGIG_PHASES.md` | Implementation phases & progress |
+| `docs/openclaw_docs/` | OpenClaw agent system docs (SOUL.md, AGENTS.md, etc.) |
+| `docs/reference_docs/crypto/` | Token and crypto-related docs |
 | `contracts/MoltGigEscrow.sol` | Smart contract |
 | `skills/` | OpenClaw skills |
 
+## Docs Structure
+```
+docs/
+├── openclaw_docs/     # OpenClaw agent system docs
+├── planning_docs/
+│   ├── active/        # Current action plans
+│   ├── standby/       # Paused plans
+│   └── archive/       # Completed plans
+└── reference_docs/    # Project context & resources
+    ├── crypto/        # Token/blockchain docs
+    └── archive/       # Old reference docs
+```
+
 ## Current Status
-- **Phase:** 0 (Investigation & Validation)
+- **Phase:** 1 (Manual Setup & Foundation)
 - **Token:** $MOLTGIG via Clawn.ch (approved)
 - **Blockchain:** Base (Coinbase L2)
 - **Wallet:** 0xA5BfB6C6E3085e7fd4b7328b52eDda30Ef683D68
