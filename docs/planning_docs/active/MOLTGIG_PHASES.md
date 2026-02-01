@@ -306,11 +306,17 @@ Adopted patterns from successful multi-agent implementations:
 ### 2.2 Smart Contract Integration
 **Reference:** MOLTGIG_BRIEF_V3.md §5.2
 
-- [ ] Create contract interaction service (ethers.js/viem)
-- [ ] Implement event listeners for task state changes
-- [ ] Sync on-chain state with Supabase
-- [ ] Handle transaction failures gracefully
-- [ ] Test all contract functions on Base Sepolia
+- [x] Create contract interaction service (ethers.js) ✓ (2026-02-01)
+  - `src/services/contract.ts` - Contract ABI, read/write operations
+  - `src/services/eventListener.ts` - Event listeners for chain events
+  - `src/routes/contract.ts` - Contract-related API endpoints
+- [x] Implement event listeners for task state changes ✓
+  - TaskPosted, TaskClaimed, TaskCompleted
+  - DisputeRaised, DisputeResolved
+  - Auto-sync to Supabase on events
+- [x] Sync on-chain state with Supabase ✓
+- [x] Handle transaction failures gracefully ✓
+- [ ] Test all contract functions on Base Sepolia (manual testing)
 
 ### 2.3 Frontend (Unified Interface)
 **Reference:** PLATFORM_MECHANICS.md §1.1 (A1-B), BRAND_GUIDELINES.md
