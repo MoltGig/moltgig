@@ -155,46 +155,46 @@ Adopted patterns from successful multi-agent implementations:
 ## Phase 1 Checklist
 
 ### 1.1 Server Configuration
-- [ ] Configure nginx virtual host for moltgig.com
-- [ ] Set up SSL with Let's Encrypt
-- [ ] Create PostgreSQL database and user
-- [ ] Set up firewall rules (UFW)
+- [x] Configure nginx virtual host for moltgig.com ✓ (2026-02-01)
+- [x] Set up SSL with Let's Encrypt ✓ (cert expires 2026-05-02)
+- [x] Create PostgreSQL database and user ✓ (moltgig db, creds in ~/.moltgig_db.env)
+- [x] Set up firewall rules (UFW) ✓ (SSH + Nginx Full allowed)
 - [ ] Configure systemd services
 
 ### 1.2 Project Initialization
-- [ ] Initialize GitHub repo
-- [ ] Set up project structure:
-```
-/home/openclaw/.openclaw/workspace/moltgig/
-├── contracts/           # Solidity smart contracts
-├── backend/            # Node.js API
-│   ├── src/
-│   ├── tests/
-│   └── package.json
-├── frontend/           # Next.js frontend
-│   ├── src/
-│   └── package.json
-├── scripts/            # Deployment and utility scripts
-└── docs/               # Documentation
-```
+- [x] GitHub repo exists ✓ (github.com/MoltGig/moltgig)
+- [x] Set up project structure ✓ (~/.openclaw/workspace/moltgig/)
+  ```
+  /home/openclaw/.openclaw/workspace/moltgig/
+  ├── contracts/           # Hardhat + MoltGigEscrow.sol
+  ├── backend/             # Express API scaffold
+  │   └── src/index.js     # Health check + placeholder routes
+  ├── frontend/            # Next.js (to be initialized)
+  └── .env                 # Environment variables
+  ```
 - [ ] Set up CI/CD (GitHub Actions)
-- [ ] Configure environment variables
+- [x] Configure environment variables ✓ (~/.openclaw/workspace/moltgig/.env)
 
 ### 1.3 Smart Contract Setup (Testnet)
-- [ ] Review and update MoltGigEscrow.sol
+- [x] Review MoltGigEscrow.sol ✓ (deployed to server)
 - [ ] Add comprehensive tests
 - [ ] Deploy to Base Sepolia testnet
+  - **BLOCKER**: Need deployer private key from Max
+  - Wallet: 0xA5BfB6C6E3085e7fd4b7328b52eDda30Ef683D68
+  - Set MOLTGIG_DEPLOYER_PRIVATE_KEY in ~/.openclaw/workspace/moltgig/.env
 - [ ] Verify on BaseScan
 - [ ] Test all contract functions
 
 ### 1.4 Token Launch (If Option A or C)
-- [ ] Finalize logo and upload
-- [ ] Create Moltbook announcement post
+- [x] Finalize logo and upload ✓ (https://i.imgur.com/5kOlQah.jpeg)
+- [x] Draft Moltbook announcement post ✓ (docs/reference_docs/crypto/TOKEN_LAUNCH_DRAFT.md)
 - [ ] Execute Clawn.ch launch
+  - **BLOCKER**: Moltbook POST endpoints broken (PR #32 pending)
 - [ ] Verify token on Base
 - [ ] Announce on social channels
 
 ### 1.5 Database Setup
+- [x] Create database ✓ (moltgig on PostgreSQL 16.11)
 - [ ] Create database schema
 - [ ] Run migrations
 - [ ] Set up connection pooling
