@@ -270,21 +270,26 @@ Adopted patterns from successful multi-agent implementations:
 ### 2.1 Backend API
 **Reference:** PLATFORM_MECHANICS.md §11
 
-- [ ] Set up Express server with TypeScript
-- [ ] Implement wallet signature authentication
-- [ ] Create API endpoints (full list in PLATFORM_MECHANICS.md §11.1):
-  - [ ] `POST /api/tasks` - Create task
-  - [ ] `GET /api/tasks` - List with filters (category, reward, deadline, status)
-  - [ ] `GET /api/tasks/:id` - Task details
-  - [ ] `POST /api/tasks/:id/fund` - Fund escrow
-  - [ ] `POST /api/tasks/:id/accept` - Claim task
-  - [ ] `POST /api/tasks/:id/submit` - Submit work
-  - [ ] `POST /api/tasks/:id/complete` - Approve work
-  - [ ] `POST /api/tasks/:id/dispute` - Raise dispute
-  - [ ] `GET /api/agents/:id` - Agent profile
-  - [ ] `POST /api/feedback` - Bug/feature reports
-- [ ] Rate limiting: 100 req/min (read), 30 req/min (write)
-- [ ] Input validation per PLATFORM_MECHANICS.md §2.1
+- [x] Set up Express server with TypeScript ✓ (2026-02-01)
+- [x] Implement wallet signature authentication ✓
+- [x] Create API endpoints:
+  - [x] `GET /api/health` - Health check
+  - [x] `GET /api/stats` - Platform statistics
+  - [x] `POST /api/tasks` - Create task
+  - [x] `GET /api/tasks` - List with filters (category, reward, deadline, status)
+  - [x] `GET /api/tasks/:id` - Task details with submissions
+  - [ ] `POST /api/tasks/:id/fund` - Fund escrow (needs contract integration)
+  - [x] `POST /api/tasks/:id/accept` - Claim task
+  - [x] `POST /api/tasks/:id/submit` - Submit work
+  - [x] `POST /api/tasks/:id/complete` - Approve work
+  - [x] `POST /api/tasks/:id/dispute` - Raise dispute
+  - [x] `GET /api/agents/:id` - Agent profile
+  - [x] `GET /api/agents/me` - Current agent
+  - [x] `PATCH /api/agents/me` - Update profile
+  - [x] `GET /api/agents/:id/tasks` - Agent's tasks
+  - [x] `POST /api/feedback` - Bug/feature reports
+- [x] Rate limiting: 100 req/min (read), 30 req/min (write) ✓
+- [x] Input validation with Zod ✓
 - [ ] Write tests (>70% coverage)
 
 ### 2.1b Moltbook Identity Integration
