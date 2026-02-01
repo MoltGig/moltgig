@@ -34,7 +34,7 @@
 - [x] **Verify PostgreSQL** - Working (default DBs present)
 - [x] **Verify nginx** - Config syntax OK
 - [x] **Check server resources** - CX23 confirmed (2 vCPU, 3.7GB RAM, 30GB free)
-- [ ] **Test domain DNS** - `moltgig.com` not resolving (pending DNS config)
+- [x] **Test domain DNS** - ✓ `moltgig.com` → 46.225.50.229 (GoDaddy)
 
 ### 0.3 API Access Verification
 - [~] **Moltbook API** - PLATFORM BUG (not our issue)
@@ -47,31 +47,31 @@
   - **Related issues:** #34, #33, #28, #21, #19, #18, #16, #15, #9, #8, #5 (22 open issues total)
   - **Status:** Waiting for Moltbook team to merge fix
 - [x] **Clawn.ch API** - ✓ All endpoints healthy (see 0.1)
-- [ ] **Base RPC** - Need Alchemy/Infura key (HUMAN REQUIRED)
+- [x] **Base RPC** - ✓ Alchemy configured (Base Sepolia testnet)
 
-### 0.4 Credential Inventory
-**Credentials to preserve (DO NOT DELETE):**
+### 0.4 Credential Inventory ✓ VERIFIED
+**All credentials present on server (DO NOT DELETE):**
 ```
-~/.openclaw/credentials/telegram-allowFrom.json
-~/.openclaw/credentials/telegram-pairing.json
-~/.openclaw/identity/device.json
-~/.openclaw/identity/device-auth.json
-~/.openclaw/agents/main/agent/auth-profiles.json
-~/.openclaw/agents/main/agent/models.json
-~/.openclaw/openclaw.json (contains API keys)
-~/.openclaw/workspace/.gmail-creds
-~/.openclaw/workspace/.x-creds
-~/.config/moltbook/credentials.json
+✓ ~/.openclaw/credentials/telegram-allowFrom.json
+✓ ~/.openclaw/credentials/telegram-pairing.json
+✓ ~/.openclaw/identity/device.json
+✓ ~/.openclaw/identity/device-auth.json
+✓ ~/.openclaw/agents/main/agent/auth-profiles.json
+✓ ~/.openclaw/agents/main/agent/models.json
+✓ ~/.openclaw/openclaw.json (contains API keys)
+✓ ~/.openclaw/workspace/.gmail-creds
+✓ ~/.openclaw/workspace/.x-creds
+✓ ~/.config/moltbook/credentials.json
 ```
 
-### 0.5 Human Action Items (FOR MAX)
+### 0.5 Human Action Items (FOR MAX) ✓ COMPLETE
 | Item | Priority | Status |
 |------|----------|--------|
-| Get Alchemy/Infura API key for Base RPC | Critical | [ ] |
-| Create GitHub org (github.com/moltgig) | Critical | [ ] |
-| Fund wallet with testnet ETH | Critical | [ ] |
-| Get BaseScan API key | High | [ ] |
-| Configure DNS for moltgig.com | High | [ ] |
+| Get Alchemy/Infura API key for Base RPC | Critical | [x] ✓ Alchemy configured |
+| Create GitHub org (github.com/moltgig) | Critical | [x] ✓ MoltGig/moltgig exists |
+| Fund wallet with testnet ETH | Critical | [x] ✓ 0.0203 ETH on Base Sepolia |
+| Get BaseScan API key | High | [x] ✓ Etherscan API key |
+| Configure DNS for moltgig.com | High | [x] ✓ A records pointing to server |
 | Approve token launch decision | High | [x] Option A |
 
 ### 0.6 Codebase Cleanup Plan ✓ COMPLETE
@@ -94,9 +94,9 @@
 - None (archived for reference)
 
 ## Phase 0 Exit Criteria
-- [ ] All human action items completed
+- [x] All human action items completed ✓
 - [x] Token strategy decided ✓ Option A
-- [ ] All APIs verified working
+- [x] All APIs verified working ✓ (Clawn.ch, Alchemy; Moltbook has platform bug)
 - [x] Codebase cleaned up ✓
 - [ ] Max has approved proceeding to Phase 1
 
@@ -362,12 +362,9 @@
 
 # CURRENT STATUS
 
-**Active Phase:** PHASE 0
-**Next Action:** Complete human action items (see 0.5)
-**Blockers:** Waiting for Max to provide:
-1. Alchemy/Infura API key
-2. GitHub org access
-3. ~~Token launch decision~~ ✓ DECIDED: Option A ($MOLTGIG via Clawn.ch)
+**Active Phase:** PHASE 0 → Ready for PHASE 1
+**Next Action:** Max to approve proceeding to Phase 1
+**Blockers:** None - all Phase 0 items complete
 
 ---
 
