@@ -18,13 +18,17 @@
 ## Phase 0 Checklist
 
 ### 0.1 Token Strategy Decision (HIGH PRIORITY)
-- [ ] **Investigate Clawn.ch API** - Test token launch endpoint
-- [ ] **Prepare logo** - Create/upload MoltGig logo to permanent URL
-- [ ] **DECISION: Token launch?** - Max to approve Option A, B, or C
-  - A: Launch $MOLTGIG via Clawn.ch
+- [x] **Investigate Clawn.ch API** - Test token launch endpoint ✓ VERIFIED
+  - `/api/health` - healthy (Redis ok, Env ok)
+  - `/api/tokens` - 378 tokens listed
+  - `/api/launches` - working, shows post format
+  - Agent receives 80% of trading fees
+- [x] **Prepare logo** - Create/upload MoltGig logo to permanent URL ✓ https://i.imgur.com/5kOlQah.jpeg
+- [x] **DECISION: Token launch?** - Max to approve Option A, B, or C
+  - **A: Launch $MOLTGIG via Clawn.ch** ✓ APPROVED
   - B: ETH/USDC only
   - C: Hybrid (ETH + $MOLTGIG)
-- [ ] If launching: Draft token announcement post
+- [x] If launching: Draft token announcement post ✓ See TOKEN_LAUNCH_DRAFT.md
 
 ### 0.2 Infrastructure Validation
 - [ ] **Verify PostgreSQL** - `sudo -u postgres psql -c '\l'`
@@ -60,40 +64,32 @@
 | Fund wallet with testnet ETH | Critical | [ ] |
 | Get BaseScan API key | High | [ ] |
 | Configure DNS for moltgig.com | High | [ ] |
-| Approve token launch decision | High | [ ] |
+| Approve token launch decision | High | [x] Option A |
 
-### 0.6 Codebase Cleanup Plan
-**Files to KEEP:**
-- All credentials (see 0.4)
-- `MOLTGIG_BRIEF_V3.md`
-- `MOLTGIG_PHASES.md`
-- `contracts/MoltGigEscrow.sol` (review and update)
-- `skills/*` (all skills)
-- `SOUL.md`, `IDENTITY.md`, `USER.md`
-- `AGENTS.md`, `TOOLS.md`
+### 0.6 Codebase Cleanup Plan ✓ COMPLETE
+**Files KEPT:**
+- [x] All credentials (see 0.4)
+- [x] `MOLTGIG_BRIEF_V3.md`
+- [x] `MOLTGIG_PHASES.md`
+- [x] `contracts/MoltGigEscrow.sol`
+- [x] `skills/*` (all skills)
+- [x] `SOUL.md`, `IDENTITY.md`, `USER.md`
+- [x] `AGENTS.md`, `TOOLS.md`
+- [x] `BOOTSTRAP.md`, `HEARTBEAT.md` (agent system files)
+- [x] `TOKEN_LAUNCH_DRAFT.md` (new)
 
-**Files to ARCHIVE (move to `archive/`):**
-- `MOLTMARKET.md` (superseded by V3)
-- `FORUM_STRATEGY.md` (premature)
-- `ALTERNATIVE_FORUM_STRATEGY.md` (premature)
-- `COMMUNITY_ENGAGEMENT_DAY1.md` (premature)
-- `AGENT_ATTRACTION.md` (premature)
-- `MARKET_RESEARCH.md` (incorporated into V3)
-- `INCENTIVE_SYSTEM.md` (incorporated into V3)
-- `BRANDING_GUIDE.md` (review and merge)
-- `TECHNICAL_ARCHITECTURE.md` (superseded by V3)
-- `LOGO_IMPLEMENTATION_STATUS.md` (premature)
-- `contracts/MoltGigToken.sol` (premature, wait for Clawn.ch decision)
-- `test/*` (premature)
+**Files ARCHIVED:**
+- [x] All strategy/premature docs moved to `archive/`
+- [x] `MoltGigToken.sol`, `test/*` in archive
 
-**Files to DELETE:**
-- None (archive instead for reference)
+**Files DELETED:**
+- None (archived for reference)
 
 ## Phase 0 Exit Criteria
 - [ ] All human action items completed
-- [ ] Token strategy decided
+- [x] Token strategy decided ✓ Option A
 - [ ] All APIs verified working
-- [ ] Codebase cleaned up
+- [x] Codebase cleaned up ✓
 - [ ] Max has approved proceeding to Phase 1
 
 ---
@@ -363,7 +359,7 @@
 **Blockers:** Waiting for Max to provide:
 1. Alchemy/Infura API key
 2. GitHub org access
-3. Token launch decision
+3. ~~Token launch decision~~ ✓ DECIDED: Option A ($MOLTGIG via Clawn.ch)
 
 ---
 
