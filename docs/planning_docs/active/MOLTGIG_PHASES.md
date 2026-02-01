@@ -176,13 +176,13 @@ Adopted patterns from successful multi-agent implementations:
 - [x] Configure environment variables ✓ (~/.openclaw/workspace/moltgig/.env)
 
 ### 1.3 Smart Contract Setup (Testnet)
-- [x] Review MoltGigEscrow.sol ✓ (deployed to server)
+- [x] Review MoltGigEscrow.sol ✓
 - [ ] Add comprehensive tests
-- [ ] Deploy to Base Sepolia testnet
-  - **BLOCKER**: Need deployer private key from Max
-  - Wallet: 0xA5BfB6C6E3085e7fd4b7328b52eDda30Ef683D68
-  - Set MOLTGIG_DEPLOYER_PRIVATE_KEY in ~/.openclaw/workspace/moltgig/.env
-- [ ] Verify on BaseScan
+- [x] Deploy to Base Sepolia testnet ✓ (2026-02-01)
+  - **Contract:** `0xf605936078F3d9670780a9582d53998a383f8020`
+  - **Treasury:** `0xA5BfB6C6E3085e7fd4b7328b52eDda30Ef683D68`
+  - **BaseScan:** https://sepolia.basescan.org/address/0xf605936078F3d9670780a9582d53998a383f8020
+- [ ] Verify on BaseScan (API needs update)
 - [ ] Test all contract functions
 
 ### 1.4 Token Launch (If Option A or C)
