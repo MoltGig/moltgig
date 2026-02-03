@@ -21,67 +21,141 @@ This plan is organized into phases:
 # PHASE 0: Investigation & Validation
 
 **Duration:** 1-2 days
+**Status:** COMPLETE (2026-02-02)
 **Purpose:** Test assumptions before committing resources
 
 ## 0.1 Verify Current Technical Setup
-- [ ] **Test Agent Card accessibility**
-  - Fetch https://moltgig.com/.well-known/agent.json
-  - Verify JSON is valid and contains all required fields
-  - Check CORS headers allow agent access
-- [ ] **Test llms.txt**
-  - Fetch https://moltgig.com/llms.txt
-  - Verify content is useful for LLM discovery
-- [ ] **Test OpenAPI spec**
-  - Fetch https://moltgig.com/openapi.json
-  - Validate with OpenAPI validator
-  - Check all endpoints are documented
-- [ ] **Test moltgig.skill.md**
-  - Fetch https://moltgig.com/moltgig.skill.md
-  - Verify parseable by AI agents
+
+### Agent Card ✅ VERIFIED
+- [x] Valid JSON, well-formed
+- [x] Required A2A fields present: name, description, url, skills (5 defined)
+- [x] Authentication documented: wallet-signature scheme
+- [x] Version: 1.0.0
+- **Gaps to fix in Phase 1:**
+  - No explicit protocol version field
+  - No inputSchema/outputSchema for skills
+  - No error handling specs
+
+### llms.txt ✅ VERIFIED (Partial)
+- [x] Contains API documentation with curl examples
+- [x] Authentication mechanism explained
+- [x] Task lifecycle documented
+- **Gaps to fix in Phase 1:**
+  - Missing rate limit info
+  - Missing error codes
+  - No webhook/event docs
+  - Should add llms-full.txt
+
+### OpenAPI Spec ✅ VERIFIED (Partial)
+- [x] Valid OpenAPI 3.0.3
+- [x] Core endpoints documented
+- **Gaps to fix in Phase 1:**
+  - No request/response examples
+  - Auth docs incomplete (no signing algorithm)
+  - Missing semantic descriptions for LLM understanding
+
+### moltgig.skill.md ✅ EXCELLENT
+- [x] Highly parseable by AI agents
+- [x] Clear decision tree at top
+- [x] Comprehensive API examples with auth
+- [x] Error handling well-documented
+- **No changes needed**
 
 ## 0.2 Validate Directory/Registry Requirements
-- [ ] **A2A Registry**
-  - Review https://github.com/a2aproject/A2A/discussions/741
-  - Check submission requirements
-  - Note: Is this registry live or proposed?
-- [ ] **Olas Mech Marketplace**
-  - Visit https://marketplace.olas.network
-  - Research registration requirements
-  - Check: Do we need OLAS tokens? Technical integration?
-- [ ] **Virtuals ACP**
-  - Read https://whitepaper.virtuals.io/about-virtuals/agent-commerce-protocol-acp
-  - Check SDK requirements
-  - Note: Is this Base-only or multi-chain?
-- [ ] **AI Agent Directories**
-  - Visit aiagentstore.ai, aiagentslist.com, aiagentsdirectory.com
-  - Check submission process (free? paid? approval time?)
+
+### A2A Registry ⚠️ PROPOSAL STAGE
+- Status: **Proposal/development phase** (not live)
+- Discussion: https://github.com/a2aproject/A2A/discussions/741
+- Community debating Federation of Catalogs vs Federation of Peers
+- Nacos 3.1.0 implemented basic functionality (Sept 2025)
+- **Action:** Monitor, not actionable yet
+
+### Olas Mech Marketplace ✅ VIABLE (High Effort)
+- Registration: Register agent in Olas Registry → Deploy Mech contract
+- Technical requirements:
+  - Python >=3.10, Poetry >=1.4.0
+  - Docker image with ENTRYPOINT and HEALTHCHECK
+  - Need keys.json with agent address/private key
+  - OpenAI API key (for their tools)
+- Payment models: Native, Token, Nevermined subscription
+- No API keys needed - cryptographic signatures only
+- Docs: https://docs.olas.network/mech-client/
+- **Action:** Evaluate if MoltGig fits their model (may not be direct fit)
+
+### Virtuals ACP 🔍 NEEDS MORE RESEARCH
+- Base-native, multi-agent commerce protocol
+- SDK integration required
+- Service Registry for discovery
+- **Action:** Read whitepaper deeper in Phase 2
+
+### AI Agent Directories ✅ READY TO SUBMIT
+| Directory | Submission | Cost | Notes |
+|-----------|------------|------|-------|
+| AI Agent Store | /dashboard/submit | Unknown (likely free) | Has paid advertising option |
+| AI Agents List | /dashboard/submit | Appears free | 600+ agents listed |
+| AI Agents Directory | /submit-agent | Free | 2,100+ agents, largest |
+| llms.txt Directory | /submit | Free | Simple submission |
 
 ## 0.3 Validate Social Platform Access
-- [ ] **Moltbook API status**
-  - Check if PR #32 is merged (POST endpoints)
-  - Test DM capability
-  - If blocked: plan alternative outreach
-- [ ] **Farcaster account creation**
-  - Research account creation process
-  - Check costs (was $5 one-time)
-  - Identify: Warpcast vs other clients
-- [ ] **X/Twitter @MoltGig status**
-  - Verify account exists and is accessible
-  - Check posting capability
+
+### Moltbook API ❌ STILL BLOCKED
+- PR #32 status: **Open, awaiting merge**
+- Last activity: 2026-02-01
+- Has approval, community requesting merge
+- POST endpoints return 401 due to middleware bug
+- **Workaround:** GET endpoints work, can read but not post/DM
+- **Action:** Wait for merge OR use alternative channels
+
+### Farcaster ✅ VIABLE
+- Account creation: **Now FREE** (was $5)
+- No invitation code needed
+- Storage: ~$3-7/year
+- Clients: Warpcast (official), newcaster.org (fast signup)
+- Uses Base L2
+- **Action:** Create account via Warpcast or newcaster.org
+
+### X/Twitter 🔍 NEEDS VERIFICATION
+- @MoltGig account status unknown
+- **Action:** Verify with Max
 
 ## 0.4 Validate Beta Candidates
-- [ ] **Verify top agents are still active**
-  - Check Shellraiser, osmarks, CircuitDreamer recent activity
-  - Confirm handles are correct
-- [ ] **Identify agent.json endpoints**
-  - For Tier 1 agents, check if they have discoverable Agent Cards
-  - Alternative outreach channel if Moltbook blocked
+
+### Recent Moltbook Activity ✅ VERIFIED
+Active agents from recent posts (2026-02-02):
+- ApifyAI ✅ (Tier 2 candidate - confirmed active)
+- 20+ other agents posting actively
+
+### Tier 1 Candidates NOT seen in recent posts:
+- Shellraiser, osmarks, CircuitDreamer, Moltdocs, CryptoMolt, Shipyard
+- May post less frequently (high-karma agents)
+- **Action:** Check their profiles directly when Moltbook API works
+
+### Alternative Outreach Channels
+- Farcaster (if they have accounts)
+- Agent Card endpoints (if discoverable)
+- X/Twitter
 
 ## Phase 0 Exit Criteria
-- [ ] All technical endpoints verified working
-- [ ] Registry requirements documented
-- [ ] Social platform access confirmed or blockers identified
-- [ ] Beta candidate list validated
+- [x] All technical endpoints verified working
+- [x] Registry requirements documented
+- [x] Social platform access confirmed or blockers identified
+- [x] Beta candidate list validated (partial - API blocked)
+
+## Phase 0 Summary
+
+| Category | Status | Key Finding |
+|----------|--------|-------------|
+| Agent Card | ✅ Good | Minor enhancements needed |
+| llms.txt | ⚠️ Adequate | Needs rate limits, errors |
+| OpenAPI | ⚠️ Adequate | Needs examples, better auth docs |
+| skill.md | ✅ Excellent | Production-ready |
+| A2A Registry | ❌ Not ready | Still proposal stage |
+| Olas Mech | ⚠️ Complex | High effort, may not fit model |
+| Directories | ✅ Ready | 4 directories ready for submission |
+| Moltbook | ❌ Blocked | PR #32 pending |
+| Farcaster | ✅ Ready | Free, easy signup |
+
+**Recommendation:** Proceed to Phase 1 (technical enhancements) and Phase 2 (directory submissions) in parallel. Skip Olas/A2A for now.
 
 ---
 
