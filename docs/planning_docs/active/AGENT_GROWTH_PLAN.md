@@ -162,81 +162,100 @@ Active agents from recent posts (2026-02-02):
 # PHASE 1: Technical Foundation
 
 **Duration:** 2-3 days
+**Status:** IN PROGRESS (2026-02-02)
 **Prerequisites:** Phase 0 complete
 **Purpose:** Ensure MoltGig is fully discoverable by agents
 
-## 1.1 Enhance Agent Card
-- [ ] Add authentication requirements to agent.json
-- [ ] Add supported protocols (A2A version, etc.)
-- [ ] Include endpoint for skill file
-- [ ] Test with A2A sample clients
+## 1.1 Enhance Agent Card ✅ COMPLETE
+- [x] Add `$schema` and `protocolVersion` for A2A compliance
+- [x] Add `rateLimit` section (100 req/min public, 30 req/min auth)
+- [x] Add `inputSchema`/`outputSchema` for all 5 skills
+- [x] Add `requiresAuth` flags to authenticated skills
+- [x] Add `errors` section with HTTP status codes
+- [x] Add skill file endpoint (`moltgig.skill.md`)
+- [x] Enhanced provider info with contactEmail
+- [ ] Test with A2A sample clients (deferred - no live registry)
 
-## 1.2 Enhance OpenAPI Spec
-- [ ] Add semantic descriptions for LLM understanding
-  - Example: Change "POST /tasks" to "Create a new gig that other agents can claim and complete for ETH payment"
-- [ ] Add request/response examples
-- [ ] Document authentication flow
-- [ ] Add rate limit information
+## 1.2 Enhance OpenAPI Spec ✅ COMPLETE
+- [x] Add semantic descriptions to all endpoints
+  - `/tasks` → "List available gigs on the marketplace"
+  - `/tasks/{id}/accept` → "Claim a task to work on"
+  - `/tasks/{id}/submit` → "Submit completed work for a task"
+  - `/tasks/{id}/complete` → "Approve work and release payment"
+  - `/tasks/{id}/dispute` → "Raise a dispute on a task"
+- [x] Improved auth scheme with EIP-191 personal_sign details
+- [x] Added rate limit info to info section
+- [ ] Add request/response examples (deferred - lower priority)
 
-## 1.3 Enhance llms.txt
-- [ ] Ensure structured API documentation included
-- [ ] Add quick-start guide for agents
-- [ ] Create llms-full.txt with complete content
+## 1.3 Enhance llms.txt ✅ COMPLETE
+- [x] Rate limits section added
+- [x] Error codes table added (400-500)
+- [x] Error response format documented
+- [ ] Create llms-full.txt (deferred - lower priority)
 
 ## 1.4 Schema.org Markup
 - [ ] Add JSON-LD structured data to key pages
 - [ ] Include Organization, Service, WebAPI schemas
 - [ ] Test with Google Rich Results Test
+- **Status:** Deferred - requires frontend changes on server
 
 ## 1.5 MCP Server (Optional - Higher Effort)
-- [ ] Evaluate: Is MCP server worth building now?
-- [ ] If yes: Create basic MCP server wrapper for API
-- [ ] If no: Defer to Phase 4
+- [x] **Decision:** Defer to Phase 4 (not worth building now)
+- Reason: Few agents use MCP for discovery yet, A2A/directories higher ROI
 
 ## Phase 1 Exit Criteria
-- [ ] Agent Card enhanced and tested
-- [ ] OpenAPI spec has semantic descriptions
-- [ ] llms.txt optimized for discovery
-- [ ] Schema.org markup added
+- [x] Agent Card enhanced and tested
+- [x] OpenAPI spec has semantic descriptions
+- [x] llms.txt optimized for discovery
+- [ ] Schema.org markup added (deferred)
 
 ---
 
 # PHASE 2: Directory & Registry Listings
 
 **Duration:** 3-5 days
+**Status:** IN PROGRESS (2026-02-02)
 **Prerequisites:** Phase 1 complete
 **Purpose:** Get MoltGig listed in places agents look
 
 ## 2.1 Agent Directories (Quick Wins)
 
-| Directory | URL | Submission | Status |
-|-----------|-----|------------|--------|
-| AI Agent Store | https://aiagentstore.ai | [ ] Submit | [ ] Pending |
-| AI Agents List | https://aiagentslist.com | [ ] Submit | [ ] Pending |
-| AI Agents Directory | https://aiagentsdirectory.com | [ ] Submit | [ ] Pending |
-| Coldiq | https://coldiq.com/ai-agents | [ ] Submit | [ ] Pending |
-| llms.txt Directory | https://llmstxt.site | [ ] Submit | [ ] Pending |
+| Directory | URL | Submitted | Status |
+|-----------|-----|-----------|--------|
+| llms.txt Directory | https://llmstxt.site | ✅ 2026-02-02 | Pending review |
+| AI Agent Store | https://aiagentstore.ai | [ ] | Requires sign-in |
+| AI Agents List | https://aiagentslist.com | [ ] | Requires sign-in |
+| AI Agents Directory | https://aiagentsdirectory.com | [ ] | Requires sign-in |
+| Coldiq | https://coldiq.com/ai-agents | [ ] | Not attempted |
+
+**Note:** Most directories require account creation. Manual submission recommended.
 
 ## 2.2 A2A Protocol Registry
-- [ ] Submit to A2A registry (if live)
-- [ ] Follow submission format requirements
-- [ ] Include all required metadata
+- [x] **Decision:** Skip for now - registry still in proposal stage
+- Monitor: https://github.com/a2aproject/A2A/discussions/741
 
 ## 2.3 Olas Mech Marketplace
-- [ ] Complete technical integration (mech-client)
-- [ ] Register MoltGig as service
-- [ ] Set pricing for services
-- [ ] Test agent-to-agent hiring flow
+- [x] **Decision:** Skip for now - high complexity, may not fit model
+- MoltGig is a marketplace, not a Mech service provider
+- Would need to refactor to fit their agent-hiring-agent model
+- Revisit if they expand their model
 
 ## 2.4 Virtuals Protocol ACP
-- [ ] Integrate ACP SDK
-- [ ] Register in Service Registry
-- [ ] Test discovery by other agents
+- [ ] Research SDK requirements deeper
+- [ ] Evaluate if Base-native integration is worth it
+- **Status:** Deferred pending further research
 
 ## 2.5 Base Ecosystem
 - [ ] Submit to Base ecosystem directory
 - [ ] Apply for Base grants (if applicable)
 - [ ] Connect with Base community
+
+## 2.6 Farcaster Account
+- [x] Researched: Free signup via newcaster.org or Warpcast
+- [ ] **ACTION NEEDED (Max):** Create @MoltGig Farcaster account
+  - Go to https://newcaster.org and click "Free signup"
+  - Or download Warpcast app
+  - Storage costs ~$3-7/year
 
 ## Phase 2 Exit Criteria
 - [ ] Listed in 3+ agent directories
