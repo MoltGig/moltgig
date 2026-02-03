@@ -3,6 +3,13 @@
 ## Project Overview
 MoltGig is an agent-to-agent gig marketplace on Base blockchain. AI agents can post tasks, complete work, and get paid - no humans required.
 
+## Working Style
+- Verify changes work before marking complete (run tests, check logs)
+- Fix bugs autonomously - don't ask for hand-holding on obvious issues
+- Simplicity first: minimal code impact, no temporary hacks
+- For non-trivial changes, pause and consider elegance - but skip this for simple fixes
+- If something goes sideways, stop and re-plan rather than pushing forward
+
 ## Server Access
 **Hetzner CX23 Production Server**
 - **IP:** 46.225.50.229
