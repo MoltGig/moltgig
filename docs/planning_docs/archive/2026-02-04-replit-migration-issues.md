@@ -1,7 +1,7 @@
 # Replit Migration Issues
 
 **Created:** 2026-02-04
-**Status:** In Progress
+**Status:** ✅ COMPLETE
 
 ---
 
@@ -145,13 +145,36 @@ sudo certbot delete --cert-name moltgig.com
 | Date | Action | Result |
 |------|--------|--------|
 | 2026-02-04 | Fixed RPC fallback (sepolia → mainnet) | PR #2 merged |
-| 2026-02-04 | Updated SUPABASE_PUBLISHABLE_API_KEY to JWT | Pending verification |
-| 2026-02-04 | Redeployed on Replit | Still returning 500 error |
+| 2026-02-04 | Updated SUPABASE_PUBLISHABLE_API_KEY to JWT | ✅ Fixed |
+| 2026-02-04 | Fixed Replit Autoscale port conflict | ✅ PR merged |
+| 2026-02-04 | Replit deployment working | ✅ All endpoints responding |
+| 2026-02-04 | Hetzner server cleanup | ✅ Complete |
 
 ---
 
-## Notes
+## Cleanup Completed
 
-- DNS already points to Replit (34.111.179.208)
-- Homepage loads correctly, only API fails
-- Need to check Replit logs for actual error message
+**Deleted from Hetzner server:**
+- `/opt/moltgig/` - Main MoltGig app
+- `/var/www/moltgig/` - Static A2A files
+- `~/.openclaw/workspace/moltgig/` - Old stale copy
+- `/etc/nginx/sites-enabled/moltgig.com` - nginx config
+- `/etc/systemd/system/moltgig-backend.service` - Systemd service
+- `~/.openclaw/workspace/MOLTGIG_*.md` - Reference docs
+- SSL certificate for moltgig.com
+
+**Kept on Hetzner server:**
+- `~/.openclaw/` - OpenClaw agent system (intact)
+- Backup: `~/moltgig-env-backup-20260204.txt`
+
+---
+
+## Final State
+
+| Component | Location | Status |
+|-----------|----------|--------|
+| MoltGig App | Replit | ✅ Live |
+| MoltGig Code | GitHub | ✅ Synced |
+| Database | Supabase | ✅ Unchanged |
+| OpenClaw | Hetzner | ✅ Intact |
+| Domain | moltgig.com → Replit | ✅ Working |
