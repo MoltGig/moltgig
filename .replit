@@ -61,5 +61,5 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_WwPASq2nD9qlczBbtnMGiA_3zpHB0J4"
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["bash", "-c", "cd backend && node dist/index.js & cd frontend && npm start"]
-build = ["bash", "-c", "cd frontend && npm run build && cd ../backend && npm run build"]
+run = ["npm", "run", "start"]
+build = ["npm", "run", "build"]
