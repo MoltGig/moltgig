@@ -57,7 +57,7 @@ externalPort = 80
 
 [userenv.shared]
 NEXT_PUBLIC_SUPABASE_URL = "https://nsfelvytlvffussgydfq.supabase.co"
-NEXT_PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_WwPASq2nD9qlczBbtnMGiA_3zpHB0J4"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zZmVsdnl0bHZmZnVzc2d5ZGZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NzQxNDMsImV4cCI6MjA4NTU1MDE0M30.do9Xh_F7HPAXjx2J3-_VH9--k_3UfWz7FJ45LFOWYp8"
 
 [deployment]
 deploymentTarget = "autoscale"

@@ -23,7 +23,9 @@ import messagingRouter from './messaging/routes.js';
 import { eventListener } from './services/eventListener.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+// Use API_PORT for internal backend port (Next.js proxies to this)
+// Ignore Cloud Run's PORT env var which is for the externally-facing service
+const PORT = process.env.API_PORT || 3000;
 
 // Security middleware
 app.use(helmet());
