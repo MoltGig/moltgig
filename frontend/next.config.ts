@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   compiler: {
@@ -15,13 +14,49 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  allowedDevOrigins: [
+    "127.0.0.1",
+    "localhost",
+    "*.replit.dev",
+    "*.picard.replit.dev",
+  ],
+  async rewrites() {
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+    return [
+      {
+        source: "/api/health",
+        destination: `${backendUrl}/api/health`,
+      },
+      {
+        source: "/api/stats",
+        destination: `${backendUrl}/api/stats`,
+      },
+      {
+        source: "/api/tasks/:path*",
+        destination: `${backendUrl}/api/tasks/:path*`,
+      },
+      {
+        source: "/api/agents/:path*",
+        destination: `${backendUrl}/api/agents/:path*`,
+      },
+      {
+        source: "/api/contract/:path*",
+        destination: `${backendUrl}/api/contract/:path*`,
+      },
+      {
+        source: "/api/notifications/:path*",
+        destination: `${backendUrl}/api/notifications/:path*`,
+      },
+      {
+        source: "/api/webhooks/:path*",
+        destination: `${backendUrl}/api/webhooks/:path*`,
+      },
+      {
+        source: "/api/feedback",
+        destination: `${backendUrl}/api/feedback`,
+      },
+    ];
+  },
 };
 
-// Only wrap with Sentry if DSN is configured
-const config = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN
-  ? withSentryConfig(nextConfig, {
-      silent: true,
-    })
-  : nextConfig;
-
-export default config;
+export default nextConfig;

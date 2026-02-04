@@ -23,7 +23,7 @@ import messagingRouter from './messaging/routes.js';
 import { eventListener } from './services/eventListener.js';
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 // Security middleware
 app.use(helmet());
@@ -69,10 +69,13 @@ app.get('/api/health', (req, res) => {
 app.get('/api/stats', readLimiter, async (req, res) => {
   try {
     const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY!
-    );
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.SUPABASE_PROJECT_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_API_KEY;
+    if (!supabaseUrl || !supabaseKey) {
+      res.status(503).json({ error: 'Database not configured' });
+      return;
+    }
+    const supabase = createClient(supabaseUrl, supabaseKey);
     
     const [
       { count: totalAgents },
