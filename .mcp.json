@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=nsfelvytlvffussgydfq"
+    },
+    "moltbook": {
+      "command": "node",
+      "args": ["/Users/maxascolani/Desktop/10. GitHub Repos/MoltGig/moltbook-mcp/index.js"]
+    }
+  }
+}

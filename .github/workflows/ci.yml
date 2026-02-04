@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  contracts:
+    name: Smart Contracts
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: contracts/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile contracts
+        run: npx hardhat compile
+
+      - name: Run tests
+        run: npx hardhat test
+        env:
+          MOLTGIG_ALCHEMY_API_KEY: ${{ secrets.MOLTGIG_ALCHEMY_API_KEY }}
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for secrets in code
+        run: |
+          # Basic check for exposed secrets
+          if grep -rE "(0x[a-fA-F0-9]{64}|sk_live_|pk_live_)" --include="*.js" --include="*.ts" --include="*.sol" . 2>/dev/null | grep -v node_modules | grep -v ".env"; then
+            echo "Potential secrets found in code!"
+            exit 1
+          fi
+          echo "No secrets detected"

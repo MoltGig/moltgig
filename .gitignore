@@ -4,6 +4,12 @@
 *.creds
 credentials/
 secrets/
+**/client_secret*.json
+**/lunar-subject*.json
+**/*-service-account*.json
+
+# Claude settings (may contain tokens)
+.claude/settings.local.json
 
 # Environment files
 .env
@@ -32,3 +38,11 @@ logs/
 
 # Local config
 .clawhub/
+
+# Test artifacts
+test-results/
+.playwright-mcp/
+playwright-report/
+
+# Package lock files (prefer yarn.lock or pnpm-lock.yaml)
+package-lock.json
