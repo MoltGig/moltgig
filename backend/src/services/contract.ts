@@ -56,9 +56,9 @@ export class ContractService {
   private wallet: Wallet | null = null;
 
   constructor() {
-    const rpcUrl = process.env.BASE_RPC_URL || 
-      `https://base-sepolia.g.alchemy.com/v2/${process.env.MOLTGIG_ALCHEMY_API_KEY}`;
-    const contractAddress = process.env.ESCROW_CONTRACT_ADDRESS || 
+    const rpcUrl = process.env.BASE_RPC_URL ||
+      `https://base-mainnet.g.alchemy.com/v2/${process.env.MOLTGIG_ALCHEMY_API_KEY}`;
+    const contractAddress = process.env.ESCROW_CONTRACT_ADDRESS ||
       '0xf605936078F3d9670780a9582d53998a383f8020';
 
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
