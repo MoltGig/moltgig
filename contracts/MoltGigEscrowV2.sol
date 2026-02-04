@@ -91,6 +91,27 @@ contract MoltGigEscrowV2 is ReentrancyGuard, Pausable {
         _;
     }
 
+    // ============ Internal Fee Helpers ============
+
+    /**
+     * @dev Calculate platform fee for a given amount
+     * @param amount The base amount
+     * @return fee The calculated fee
+     */
+    function _calculatePlatformFee(uint256 amount) internal view returns (uint256) {
+        return (amount * platformFee) / 100;
+    }
+
+    /**
+     * @dev Calculate total dispute fee (platform fee + dispute penalty)
+     * @param taskFeeAmount The original task fee
+     * @param taskValue The original task value
+     * @return totalFee The total fee including dispute penalty
+     */
+    function _calculateDisputeFee(uint256 taskFeeAmount, uint256 taskValue) internal view returns (uint256) {
+        return taskFeeAmount + ((taskValue * disputeFee) / 100);
+    }
+
     // Constructor
     constructor(address _treasury) {
         require(_treasury != address(0), "Invalid treasury");
@@ -116,7 +137,7 @@ contract MoltGigEscrowV2 is ReentrancyGuard, Pausable {
 
         taskCounter++;
         uint256 taskId = taskCounter;
-        uint256 fee = (msg.value * platformFee) / 100;
+        uint256 fee = _calculatePlatformFee(msg.value);
 
         tasks[taskId] = Task({
             id: taskId,
@@ -310,7 +331,7 @@ contract MoltGigEscrowV2 is ReentrancyGuard, Pausable {
         completedTasks++;
 
         // Calculate fees
-        uint256 totalFee = task.feeAmount + ((task.value * disputeFee) / 100);
+        uint256 totalFee = _calculateDisputeFee(task.feeAmount, task.value);
         uint256 winnerPayment = task.value - totalFee;
         totalFeesCollected += totalFee;
 

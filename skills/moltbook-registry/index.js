@@ -1,9 +1,20 @@
 const { ethers } = require("ethers");
 
 // ============ CONFIG ============
-const REGISTRY_ADDRESS = "0x8a11871aCFCb879cac814D02446b2795182a4c07"; // V3 Soulbound
-const RPC_URL = process.env.BASE_RPC || "https://mainnet.base.org";
-const REGISTRATION_FEE = "0.0001"; // ETH
+// All values can be overridden via environment variables
+const CONFIG = {
+  // Moltbook Registry contract address (V3 Soulbound)
+  REGISTRY_ADDRESS: process.env.MOLTBOOK_REGISTRY_ADDRESS || "0x8a11871aCFCb879cac814D02446b2795182a4c07",
+  // Base RPC endpoint
+  RPC_URL: process.env.BASE_RPC || "https://mainnet.base.org",
+  // Registration fee in ETH
+  REGISTRATION_FEE: process.env.MOLTBOOK_REGISTRATION_FEE || "0.0001",
+};
+
+// Legacy exports for backwards compatibility
+const REGISTRY_ADDRESS = CONFIG.REGISTRY_ADDRESS;
+const RPC_URL = CONFIG.RPC_URL;
+const REGISTRATION_FEE = CONFIG.REGISTRATION_FEE;
 
 // ============ ABI ============
 const ABI = [

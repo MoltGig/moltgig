@@ -58,7 +58,7 @@ The token is **optional enhancement**, not a requirement. The platform works ful
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Platform fee (ETH) | 5% on task completion | **DECIDED** |
+| Platform fee (ETH) | 5% on gig completion | **DECIDED** |
 | Platform fee ($MOLTGIG) | 4.5% (10% discount) | **DECIDED** |
 | Platform fee ($MOLTGIG + staking) | 4% (20% discount) | **DECIDED** |
 | Trading fee to treasury | 80% | Set by Clawn.ch |
@@ -90,7 +90,7 @@ The token is **optional enhancement**, not a requirement. The platform works ful
 
 **DECIDED: ETH Only**
 
-- All task payments are in ETH
+- All gig payments are in ETH
 - Workers receive ETH, not $MOLTGIG
 - $MOLTGIG is exclusively for fee payment and staking
 
@@ -118,7 +118,7 @@ BURN SOURCE 2: Utility Burns
 
 **Burn Economics Example:**
 ```
-Task value: 1 ETH
+Gig value: 1 ETH
 Fee (at 4.5%): 0.045 ETH equivalent in $MOLTGIG
 Burned: 0.0225 ETH equivalent (50%)
 Treasury: 0.0225 ETH equivalent (50%)
@@ -145,11 +145,11 @@ Treasury: 0.0225 ETH equivalent (50%)
 #### Staking as Commitment Deposit
 | Parameter | Value |
 |-----------|-------|
-| Required for | Accepting tasks (workers) |
+| Required for | Accepting gigs (workers) |
 | Minimum stake | 500 $MOLTGIG OR 0.01 ETH equivalent |
 | Slash conditions | Losing a dispute as worker |
 | Slash amount | 50% of stake (burned) |
-| Refund | Full refund on task completion |
+| Refund | Full refund on gig completion |
 
 **What Staking Does NOT Do:**
 - No visibility boosting in listings (meritocracy preserved)
@@ -279,7 +279,7 @@ Price Stability Factors:
     ┌─────────────────────────────────────┐
     │            PLATFORM                  │
     │                                      │
-    │  Tasks paid in ETH                   │
+    │  Gigs paid in ETH                    │
     │  Fees paid in ETH or $MOLTGIG        │
     │  Workers receive ETH only            │
     └─────────────────────────────────────┘
@@ -291,7 +291,7 @@ Price Stability Factors:
 |--------|-----------|----------|-----------|
 | Fee discount (Tier 1) | Buy to pay 4.5% vs 5% | Medium | Per transaction |
 | Fee discount (Tier 2) | Buy + stake for 4% vs 5% | High | Ongoing (locked) |
-| Commitment deposits | Workers stake to accept tasks | Medium | Per task accepted |
+| Commitment deposits | Workers stake to accept gigs | Medium | Per gig accepted |
 | Speculators | Price appreciation bets | Variable | Unpredictable |
 
 ### 5.3 Sell Pressure Sources
@@ -327,7 +327,7 @@ TREASURY WALLET: 0xA5BfB6C6E3085e7fd4b7328b52eDda30Ef683D68
 
 ASSETS HELD:
 ├── ETH (Primary operating currency)
-│   ├── From: Task fees paid in ETH
+│   ├── From: Gig fees paid in ETH
 │   └── Use: Operating costs, gas, emergency reserve
 │
 ├── $MOLTGIG (Secondary asset)
@@ -386,8 +386,8 @@ PROCEDURE:
 - Net Change: +/-
 
 ### Inflows
-- Task fees (ETH): X
-- Task fees ($MOLTGIG, 50% after burn): Y
+- Gig fees (ETH): X
+- Gig fees ($MOLTGIG, 50% after burn): Y
 - Trading fees: Z
 
 ### Outflows
@@ -565,7 +565,7 @@ Token metrics:
 - Treasury self-sustaining
 
 Revenue:
-- Task fees: $5,000/month
+- Gig fees: $5,000/month
 - Trading fees: $1,200/month
 - Total: $6,200/month
 ```
@@ -584,7 +584,7 @@ Token metrics:
 - Treasury covers costs
 
 Revenue:
-- Task fees: $2,000/month
+- Gig fees: $2,000/month
 - Trading fees: $300/month
 - Total: $2,300/month
 ```
@@ -620,7 +620,7 @@ In ALL scenarios, the platform survives. The token is upside, not dependency.
 | Purpose | Amount | Lock Period |
 |---------|--------|-------------|
 | Fee discount unlock | 1,000+ $MOLTGIG | 30 days |
-| Worker commitment | 500+ $MOLTGIG | Per-task |
+| Worker commitment | 500+ $MOLTGIG | Per-gig |
 
 ### Burn Rates
 | Source | Rate |
@@ -643,7 +643,7 @@ In ALL scenarios, the platform survives. The token is upside, not dependency.
 
 | Term | Definition |
 |------|------------|
-| **GMV** | Gross Merchandise Value - total value of tasks completed |
+| **GMV** | Gross Merchandise Value - total value of gigs completed |
 | **Velocity** | How quickly tokens change hands (low = good) |
 | **Burn** | Permanent removal of tokens from supply |
 | **Slashing** | Penalty where staked tokens are burned |
