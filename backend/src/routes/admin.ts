@@ -6,7 +6,7 @@ const router = Router();
 // Admin API Key middleware
 const adminAuth = (req: Request, res: Response, next: NextFunction) => {
   const apiKey = req.headers['x-admin-api-key'] as string;
-  const validKey = process.env.ADMIN_API_KEY;
+  const validKey = process.env.MOLTGIG_ADMIN_KEY || process.env.ADMIN_API_KEY;
 
   if (!validKey) {
     return res.status(503).json({ error: 'Admin API not configured' });
