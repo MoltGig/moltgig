@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:4000';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 const ADMIN_API_KEY = process.env.MOLTGIG_ADMIN_KEY || process.env.ADMIN_API_KEY;
 
 function hasValidAdminKey(request: NextRequest): boolean {
