@@ -11,6 +11,19 @@ function hasValidAdminKey(request: NextRequest): boolean {
 
 export async function GET(request: NextRequest) {
   try {
+    // Debug: log key comparison (remove after fixing)
+    const incomingKey = request.headers.get('x-admin-api-key');
+    console.log('[ADMIN AUTH DEBUG]', {
+      envKeySet: !!ADMIN_API_KEY,
+      envKeyLength: ADMIN_API_KEY?.length,
+      envKeyPrefix: ADMIN_API_KEY?.slice(0, 15),
+      incomingKeySet: !!incomingKey,
+      incomingKeyLength: incomingKey?.length,
+      incomingKeyPrefix: incomingKey?.slice(0, 15),
+      match: incomingKey === ADMIN_API_KEY,
+      envVarSource: process.env.MOLTGIG_ADMIN_KEY ? 'MOLTGIG_ADMIN_KEY' : process.env.ADMIN_API_KEY ? 'ADMIN_API_KEY' : 'NONE',
+    });
+
     // Allow access via admin API key (for agents) or Supabase auth (for dashboard)
     if (!hasValidAdminKey(request)) {
       const authHeader = request.headers.get('authorization');
