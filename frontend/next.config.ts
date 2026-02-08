@@ -55,6 +55,10 @@ const nextConfig: NextConfig = {
         source: "/api/feedback",
         destination: `${backendUrl}/api/feedback`,
       },
+      {
+        source: "/api/admin/:path*",
+        destination: `${backendUrl}/api/admin/:path*`,
+      },
     ];
   },
 };
