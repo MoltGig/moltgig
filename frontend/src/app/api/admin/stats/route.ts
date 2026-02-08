@@ -61,7 +61,8 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Admin stats error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error('Admin stats error:', errMsg);
+    return NextResponse.json({ error: 'Internal server error', detail: errMsg }, { status: 500 });
   }
 }
