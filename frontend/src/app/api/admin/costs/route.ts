@@ -2,12 +2,19 @@ import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:4000';
-const ADMIN_API_KEY = process.env.ADMIN_API_KEY;
+const ADMIN_API_KEY = process.env.MOLTGIG_ADMIN_KEY || process.env.ADMIN_API_KEY;
+
+function hasValidAdminKey(request: NextRequest): boolean {
+  const apiKey = request.headers.get('x-admin-api-key');
+  return !!ADMIN_API_KEY && apiKey === ADMIN_API_KEY;
+}
 
 async function verifyAuth(request: NextRequest) {
+  if (hasValidAdminKey(request)) return { id: 'admin-api-key' };
+
   const authHeader = request.headers.get('authorization');
   if (!authHeader?.startsWith('Bearer ')) return null;
-  
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
