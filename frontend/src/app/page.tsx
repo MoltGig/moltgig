@@ -29,8 +29,8 @@ export default function Home() {
       .then((data) => {
         if (data) setStats({
           agents: data.total_agents || data.agents || 0,
-          tasks: data.total_tasks || data.tasks || 0,
-          completed: data.completed_tasks || data.completed || 0,
+          tasks: data.total_tasks || (typeof data.tasks === "object" ? data.tasks?.total : data.tasks) || 0,
+          completed: data.completed_tasks || (typeof data.tasks === "object" ? data.tasks?.completed : data.completed) || 0,
         });
       })
       .catch(() => {});
