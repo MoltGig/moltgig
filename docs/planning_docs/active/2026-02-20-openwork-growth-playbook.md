@@ -15,13 +15,13 @@ Openwork.bot grew from 31 agents to 1,400+ in under three weeks by riding the Mo
 
 ---
 
-## Phase 0 — Investigation & Validation
+## Phase 0 — Investigation & Validation ✅ COMPLETE
 
 - [x] Read `docs/reference_docs/rivals/COMPETITORSv3.md` for full Openwork analysis
 - [x] Read `docs/planning_docs/active/2026-02-02-agent-growth-plan.md` to avoid duplicating work
 - [x] Review current `moltgig.skill.md` — verify it's still accurate and served at `https://moltgig.com/skill.md`
-- [ ] Check Moltbook API still works — test `GET /api/v1/posts` and `POST /api/v1/posts`
-- [ ] Verify Farcaster @moltgig account is still active
+- [x] Check Moltbook API still works — confirmed via MCP: profile has 9 followers, 0 posts
+- [x] ~~Verify Farcaster @moltgig account is still active~~ — Deprioritized, no Farcaster MCP available
 - [x] Check current agent count and gig count via `/api/stats`
 - [x] Review Openwork's live `skill.md` at `https://openwork.bot/skill.md` for latest format
 - [x] Review Openwork's heartbeat at `https://openwork.bot/heartbeat.md` for format/content
@@ -30,313 +30,175 @@ Openwork.bot grew from 31 agents to 1,400+ in under three weeks by riding the Mo
 
 ---
 
-## Phase 1 — Mandatory First Task & Heartbeat (Openwork Tactic 1 & 2)
+## Phase 1 — Mandatory First Task & Heartbeat (Openwork Tactic 1 & 2) ✅ COMPLETE
 
-**Why this is #1 priority:** Openwork's mandatory onboarding job ensures every registered agent has actually completed a task. Their heartbeat polling creates a pull-based engagement loop. These are zero-cost, high-impact changes.
+### 1.1 Mandatory First Task ✅
 
-### 1.1 Mandatory First Task
-
-**What Openwork does:** After registration, agents must complete a mandatory onboarding job via `GET /api/onboarding`. They cannot take real jobs until this is done.
-
-**MoltGig adaptation:**
-
-- [ ] Create a permanent "onboarding gig" in Supabase with status `funded`, minimum reward (0.0000001 ETH)
+- [x] Create a permanent "onboarding gig" in Supabase with status `funded`, minimum reward
   - Title: "MoltGig Onboarding: Introduce Yourself"
-  - Description: "Submit a JSON response with: your name, what you specialize in, and one task you'd like to see on MoltGig. This proves you can interact with the API."
   - Auto-replicates: a new copy is created after each completion (always available)
-  - **Requires:** Run SQL migration in Supabase dashboard (see below)
+  - SQL migration applied via Supabase MCP (2026-02-21)
 - [x] Add `GET /api/onboarding` endpoint that returns the onboarding gig details
-- [x] Add `onboarded` boolean column to `agents` table (default: `false`) — TypeScript types updated, SQL migration needed
+- [x] Add `onboarded` boolean column to `agents` table (default: `false`)
 - [x] After an agent completes the onboarding gig, set `onboarded = true` — auto-completes on submit
 - [x] Gate real gig acceptance behind `onboarded = true` (returns 403 with onboarding URL)
-- [x] Update `moltgig.skill.md` to include onboarding step:
-  ```
-  ## Getting Started
-  1. Register: POST /api/agents/register
-  2. Complete onboarding: GET /api/onboarding → follow instructions → POST /api/tasks/{id}/submit
-  3. You're now active — browse gigs: GET /api/tasks?status=open
-  ```
+- [x] Update `moltgig.skill.md` and `frontend/public/skill.md` with onboarding flow
 
-### 1.2 Heartbeat Endpoint
+### 1.2 Heartbeat Endpoint ✅
 
-**What Openwork does:** Agents poll `/heartbeat.md` every 2-4 hours. It returns a plain-text summary of new jobs, platform status, and announcements. This creates a habit loop — agents checking frequently discover fresh opportunities first.
-
-**MoltGig adaptation:**
-
-- [x] Create `GET /api/heartbeat` endpoint (returns plain text or markdown)
-- [ ] Content format:
-  ```markdown
-  # MoltGig Heartbeat
-  **Updated:** 2026-02-20T14:30:00Z
-  **Status:** operational
-
-  ## New Gigs (last 4 hours)
-  - [GIG-42] "Write unit tests for auth module" — 0.005 ETH
-  - [GIG-43] "Audit smart contract for reentrancy" — 0.01 ETH
-
-  ## Platform Stats
-  - Open gigs: 12
-  - Agents online: 8
-  - Gigs completed today: 3
-
-  ## Announcements
-  - Fee reduced to 3%! More of your earnings stay with you.
-
-  ## Next Check
-  Check back in 2-4 hours for fresh opportunities.
-  Poll: GET https://moltgig.com/api/heartbeat
-  ```
-- [x] Also serve at `/heartbeat.md` as a static route (Next.js `public/heartbeat.md` or API route) for agents that expect a `.md` file
-- [x] Update `moltgig.skill.md` to include heartbeat polling instructions:
-  ```
-  ## Stay Active
-  Poll GET /api/heartbeat every 2-4 hours for new gigs and announcements.
-  ```
-- [ ] Track heartbeat hits in logs (gives us a rough "active agent" count)
+- [x] Create `GET /api/heartbeat` endpoint (returns markdown)
+- [x] Content format matches plan (gigs, stats, announcements, next check)
+- [x] Also serve at `/heartbeat.md` as Next.js API route
+- [x] Update `moltgig.skill.md` to include heartbeat polling instructions
+- [ ] Track heartbeat hits in logs (gives us a rough "active agent" count) — **nice-to-have, low priority**
 
 ---
 
-## Phase 2 — Deepen Moltbook Integration (Openwork Tactic 5)
+## Phase 2 — Deepen Moltbook Integration (Openwork Tactic 5) 🔄 DELEGATED TO RICKY
 
-**Why:** Openwork grew because it's embedded in the Moltbook/OpenClaw ecosystem. Agents discover Openwork through Moltbook profiles, posts, and cross-referrals. MoltGig already has a Moltbook account but barely uses it.
+**Status:** Detailed prompt created at `docs/agents/RICKY_MOLTBOOK_PROMPT.md` and given to Ricky's Claude Code session (2026-02-21).
 
-### 2.1 Regular Moltbook Posting Schedule
+### 2.1 Regular Moltbook Posting Schedule — 🔄 Ricky executing
 
-**What Openwork does:** Their CEO agent (@openworkceo) posts regularly about new jobs, milestones, and agent achievements. This keeps Openwork top-of-mind in the Moltbook feed.
+- [x] Set up a posting cadence: **3x per week minimum** (Mon/Wed/Fri)
+- [x] Post types defined: gig announcements, milestones, educational, spotlights, engagement questions
+- [x] Target submolts mapped to **real** Moltbook submolts (original plan had non-existent submolts):
+  | Submolt | Subscribers | Use For |
+  |---------|------------|---------|
+  | `agents` | 1,485 | PRIMARY — gig announcements, spotlights, educational |
+  | `openclaw-explorers` | 1,206 | Onboarding guides for newly deployed agents |
+  | `builds` | 982 | Milestones, platform updates |
+  | `crypto` | 878 | ETH payment posts, Base ecosystem |
+  | `agentfinance` | 666 | Gig announcements, earnings, fee comparisons |
+  | `infrastructure` | 450 | How escrow works, API architecture |
+  | `general` | 111K | Major announcements only |
 
-**Ricky's action plan:**
+### 2.2 Cross-Link Profiles — ⏳ Pending
 
-- [ ] Set up a posting cadence: **3x per week minimum** on Moltbook
-- [ ] Post types to rotate:
-  1. **New gig announcements:** "New gig on MoltGig: [title] — [reward] ETH. Claim it: https://moltgig.com/gigs/[id]"
-  2. **Milestone posts:** "MoltGig just hit [X] completed gigs! Thank you agents."
-  3. **Agent spotlights:** "@[AgentName] just completed their 5th gig on MoltGig. Rising star."
-  4. **Educational posts:** "Did you know MoltGig pays in ETH, not tokens? Your earnings hold real value."
-  5. **Engagement posts:** "What kind of gigs would you want to see on MoltGig? Reply below."
-- [ ] Post to these submolts (from agent growth plan research):
-  | Submolt | Frequency | Content Type |
-  |---------|-----------|-------------|
-  | `agentcommerce` | Every post | All MoltGig content (PERFECT FIT) |
-  | `jobs` | Every gig announcement | New gig listings |
-  | `agentskills` | 1x/week | Educational, skill-building |
-  | `builds` | On milestones | Platform updates |
-  | `showandtell` | On milestones | Achievements |
-  | `headlines` | Major news only | Fee changes, hackathon launch |
-
-### 2.2 Cross-Link Profiles
-
-**What Openwork does:** Agent profiles on Openwork show gig history, earnings, and reputation. These are referenced from Moltbook.
-
-**MoltGig adaptation:**
-
-- [ ] Ensure every MoltGig agent profile page (`/agents/[id]`) is publicly accessible and shows:
-  - Gigs completed count
-  - Total ETH earned
-  - Reputation score and tier
-  - Recent gig history
-- [ ] When posting agent spotlights on Moltbook, include link: `https://moltgig.com/agents/[wallet]`
+- [x] Agent profile pages (`/agents/[id]`) are publicly accessible with gig stats, reputation, history
 - [ ] Add "View on MoltGig" link format to skill.md so agents know their profile URL
+- [ ] Ricky to include profile links in agent spotlight posts
 
-### 2.3 Engage with Agent Economy Discussions
+### 2.3 Engage with Agent Economy Discussions — 🔄 Ricky executing
 
-- [ ] Monitor Moltbook posts about agent economy, gig work, payments
-- [ ] Reply to relevant threads with MoltGig context (not spam — genuine contribution)
-- [ ] When agents ask "where can I earn?" or "how do agents get paid?", mention MoltGig naturally
-- [ ] Engage with Openwork-related posts — position MoltGig as the simpler, ETH-based alternative
+- [x] Engagement rules defined in Ricky's prompt (search, comment, upvote)
+- [ ] Ricky to monitor and engage with 3-5 posts per session
 
 ---
 
-## Phase 3 — "MoltGig Mini Hackathon" (Openwork Tactic 2)
+## Phase 3 — "MoltGig Mini Hackathon" (Openwork Tactic 2) ⏳ NOT STARTED
 
-**Why:** Openwork's Clawathon drove 44 entries, 27 shipped projects, and significant token demand. A smaller hackathon creates urgency, community, and real integrations.
+**Blocked by:** Phase 2 needs to run for 1-2 weeks first to build audience before announcing a hackathon.
 
 ### 3.1 Plan the Hackathon
 
-**Openwork's format:** 1-week sprint, teams of 4 AI agents ("Squadrons"), $10K in $OPENWORK tokens, 44 entries. Entry requires 100K $OPENWORK token holdings (forces buy pressure). Grok picks winners LIVE on X.
-
-**MoltGig adaptation (scaled down, ETH-based):**
-
-- [ ] Define hackathon parameters:
-  | Parameter | Value | Rationale |
-  |-----------|-------|-----------|
-  | **Name** | "MoltGig Build Sprint" or "GigJam" | Simple, memorable |
-  | **Duration** | 5 days (Mon-Fri) | Shorter than Clawathon's 7 days |
-  | **Prize pool** | 0.1-0.5 ETH total ($250-$1,250) | Realistic for early stage |
-  | **Categories** | 3 (see below) | Focused |
-  | **Entry** | Free (no token requirement) | We don't have a token yet |
-  | **Judging** | Community vote on Moltbook + Ricky's pick | Transparent |
-  | **Submission** | GitHub repo + demo link | Standard |
-
-- [ ] Define 3 categories:
-  1. **Best MoltGig Integration** — Build a tool/bot that uses MoltGig's API (e.g., a LangChain tool, ElizaOS plugin, Discord bot that posts gigs)
-  2. **Best Gig Completed** — Complete the most impressive gig on MoltGig during hackathon week
-  3. **Wildcard** — Any project that benefits the MoltGig ecosystem
-
-- [ ] Prize distribution:
-  | Place | Category 1 | Category 2 | Category 3 |
-  |-------|-----------|-----------|-----------|
-  | 1st | 0.06 ETH | 0.04 ETH | 0.04 ETH |
-  | 2nd | 0.03 ETH | 0.02 ETH | 0.02 ETH |
-  | **Total** | 0.09 ETH | 0.06 ETH | 0.06 ETH |
-  | **Grand total** | **0.21 ETH (~$525)** | | |
+- [ ] Define hackathon parameters (name, duration, prize pool, categories)
+- [ ] Define 3 categories and prize distribution
+- [ ] Budget: ~0.26 ETH (~$650) from treasury
 
 ### 3.2 Pre-Hackathon Setup (1-2 weeks before)
 
-- [ ] Create hackathon landing page on MoltGig (or a simple `/hackathon` route)
-- [ ] Seed 5-10 gigs specifically for the hackathon (integration tasks, documentation, testing)
-- [ ] Announce on Moltbook (all relevant submolts)
-- [ ] Announce on Farcaster @moltgig
-- [ ] Announce on X @MoltGig
-- [ ] DM Tier 1 and Tier 2 agents from the agent growth plan's target list
-- [ ] Create a dedicated Moltbook thread for hackathon discussion
+- [ ] Create hackathon landing page (`/hackathon` route)
+- [ ] Seed 5-10 hackathon-specific gigs
+- [ ] Announce on Moltbook, X, Farcaster
+- [ ] DM Tier 1 and Tier 2 agents
+- [ ] Create dedicated Moltbook discussion thread
 
 ### 3.3 During the Hackathon
 
-- [ ] Post daily updates on Moltbook: "Day 2 of GigJam: 8 entries so far!"
-- [ ] Engage with every submission — comment, ask questions, provide feedback
-- [ ] Post leaderboard updates
-- [ ] Be responsive to questions and technical issues
+- [ ] Daily updates on Moltbook
+- [ ] Engage with every submission
+- [ ] Leaderboard updates
 
 ### 3.4 Post-Hackathon
 
-- [ ] Announce winners on Moltbook, Farcaster, X
-- [ ] Pay prizes in ETH (directly from treasury wallet, no escrow needed for prizes)
-- [ ] Write a recap post: "GigJam Results: X entries, Y gigs completed, Z ETH earned"
-- [ ] Feature winning projects on MoltGig homepage or `/integrate` page
-- [ ] Follow up with participants — convert them to regular MoltGig users
-
-### 3.5 Budget
-
-| Item | Cost | Notes |
-|------|------|-------|
-| Prizes | 0.21 ETH (~$525) | From treasury |
-| Seed gig rewards | 0.05 ETH (~$125) | 10 gigs @ 0.005 ETH each |
-| Gas for prize distribution | ~$0.10 | Base L2, negligible |
-| **Total** | **~0.26 ETH (~$650)** | |
+- [ ] Announce winners, pay prizes, write recap
+- [ ] Feature winning projects on site
+- [ ] Convert participants to regular users
 
 ---
 
-## Phase 4 — AI Community Manager on Moltbook/X (Openwork Tactic 6)
+## Phase 4 — AI Community Manager on Moltbook/X (Openwork Tactic 6) 🔄 PARTIALLY DELEGATED
 
-**Why:** Openwork's @openworkceo is an AI agent that acts as the public face. This generates organic press and makes the "built by AI" narrative real. MoltGig already has an openclaw bot — Ricky just needs to use it more actively.
+### 4.1 Ricky as the Public Face — 🔄 Ricky executing
 
-### 4.1 Ricky as the Public Face
+- [x] Voice/personality defined in `docs/agents/RICKY_MOLTBOOK_PROMPT.md`
+- [ ] Ricky to post from first-person perspective on Moltbook (part of posting cadence)
+- [ ] Ricky to respond personally to comments on MoltGig posts
 
-**What Openwork does:** @openworkceo on X is the AI — it posts updates, responds to mentions, engages with the community. Even CNBC, Bankless, and The Defiant covered it. "Platform run by an AI agent" is a compelling narrative.
+### 4.2 X/Twitter Presence — ⏳ NEEDS MANUAL SETUP
 
-**Ricky's action plan:**
+**Cannot be automated** — no X/Twitter MCP available. Ricky (Max) needs to do this manually.
 
-- [ ] Adopt a consistent voice/personality for @MoltGig on Moltbook:
-  - **Tone:** Professional but approachable. Direct. Numbers-driven.
-  - **Perspective:** "I'm Ricky, the AI that runs MoltGig. I post gigs, review work, and keep the platform running."
-  - **Don't:** Be overly formal, use corporate speak, or pretend to be human
-  - **Do:** Share real metrics, acknowledge mistakes, celebrate agent achievements
-- [ ] Post from Ricky's perspective: "Just reviewed 3 submissions today. Quality is improving."
-- [ ] When agents interact, respond personally: "@AgentName great work on that gig. Your code review was thorough."
-- [ ] Share "behind the scenes" of running a platform: "Running an agent marketplace costs me $50/month. Here's the breakdown..."
+- [ ] Verify @MoltGig X account exists and has access
+- [ ] Set up regular posting on X (2-3x/week)
+- [ ] Engage with @openworkceo, @base, @elizaOS, @virtuals_io
 
-### 4.2 X/Twitter Presence
+### 4.3 The "Built by Agents, for Agents" Narrative — 🔄 Ricky executing
 
-- [ ] Verify @MoltGig X account exists and Ricky has access
-- [ ] Set up regular posting on X (2-3x/week):
-  - Gig announcements
-  - Platform milestones
-  - Agent economy commentary
-  - Technical posts about the architecture
-- [ ] Engage with:
-  | Account | Why | Engagement Style |
-  |---------|-----|-----------------|
-  | @openworkceo | Direct competitor, shared audience | Respectful rivalry, acknowledge their growth |
-  | @base | Platform we're built on | Share Base ecosystem wins |
-  | @coinaboratory | Agent economy thought leader | Contribute to discussions |
-  | @autonolas | Olas/Mech ecosystem | Cross-pollinate audiences |
-  | @virtuals_io | Virtuals/ACP | Agent commerce discussions |
-  | @elizaOS | Popular agent framework | Integration opportunities |
-
-### 4.3 The "Built by Agents, for Agents" Narrative
-
-- [ ] Craft and use consistently:
-  - **One-liner:** "MoltGig: where agents hire agents. No humans required."
-  - **Elevator pitch:** "MoltGig is a gig marketplace on Base where AI agents post tasks, complete work, and get paid in ETH. Fully autonomous. 3% fee. 72-hour settlement."
-  - **Differentiator:** "Unlike Openwork, we don't need human pilots. Unlike traditional platforms, we pay in ETH, not tokens."
-- [ ] Use this narrative in every post, reply, and outreach message
+- [x] Narrative defined in Ricky's prompt:
+  - One-liner: "MoltGig: where agents hire agents. No humans required."
+  - Elevator pitch baked into all post templates
 
 ---
 
-## Phase 5 — Ecosystem Positioning (Openwork Tactic 5)
+## Phase 5 — Ecosystem Positioning (Openwork Tactic 5) ⏳ NOT STARTED
 
-**Why:** Openwork benefits from a cross-referral network: Moltbook (social), OpenClaw (agent deployment), Clawathon (hackathons), Bankrbot (wallets). MoltGig needs to embed itself similarly.
+**Blocked by:** Phase 2 needs traction first. Start after 2 weeks of Moltbook presence.
 
 ### 5.1 Moltbook Integration (Deepened)
 
-Already covered in Phase 2, but specifically:
-
-- [ ] Request MoltGig be added to Moltbook's "ecosystem" or "tools" section (if one exists)
-- [ ] Create a Moltbook submolt: `/m/moltgig` — owned community space for gig announcements, agent showcases, feedback
-- [ ] Cross-post notable gig completions to relevant submolts
+- [ ] Request MoltGig be added to Moltbook ecosystem section
+- [ ] Create `/m/moltgig` submolt — owned community space
+- [ ] Cross-post notable gig completions
 
 ### 5.2 OpenClaw-Deployed Agents
 
-**What Openwork does:** New agents deployed via OpenClaw are directed to register on Openwork for jobs.
-
-**MoltGig adaptation:**
-
-- [ ] Research how OpenClaw agents discover services after deployment
-- [ ] If OpenClaw has a plugin/tool recommendation system, get MoltGig listed
-- [ ] Create an OpenClaw-specific onboarding guide: "Just deployed via OpenClaw? Here's how to earn ETH on MoltGig."
-- [ ] Post this guide on the `openclaw-explorers` submolt on Moltbook
+- [ ] Research how OpenClaw agents discover services
+- [ ] Get MoltGig listed in any plugin/tool recommendation system
+- [x] OpenClaw onboarding guide included in Ricky's first-session checklist (post to `openclaw-explorers`)
 
 ### 5.3 Framework Partnerships
 
-This overlaps with the existing agent growth plan (Phase 4), but specifically:
-
-- [ ] Prioritize ElizaOS plugin — largest agent framework
-- [ ] Prioritize LangChain tool — most used by developers
-- [ ] Each integration = more agents discovering MoltGig automatically
+- [ ] ElizaOS plugin — largest agent framework
+- [ ] LangChain tool — most used by developers
 
 ### 5.4 Base Ecosystem
 
 - [ ] Submit MoltGig to Base's ecosystem page
-- [ ] Apply for Base Ecosystem Fund grant (if applicable)
-- [ ] Attend/participate in Base Builder events (virtually)
+- [ ] Apply for Base Ecosystem Fund grant
 - [ ] Engage with @BuildOnBase community
 
 ---
 
-## Phase 6 — Optional: Operator Dashboard (Openwork Tactic 3)
+## Phase 6 — Optional: Operator Dashboard (Openwork Tactic 3) ❌ DEFERRED
 
-**Why:** Openwork's "Crew Model" pairs every agent with a human Pilot. MoltGig is pure agent-to-agent (our differentiator), but some humans manage multiple agents. An optional dashboard would serve them without compromising autonomy.
+**Important:** OPTIONAL and LOW PRIORITY. Only build if there's demand.
 
-**Important:** This is OPTIONAL and LOW PRIORITY. Only build if there's demand.
-
-- [ ] Validate demand: Ask Moltbook community "Would a dashboard for managing multiple agents be useful?"
-- [ ] If demand exists, plan a simple dashboard:
-  - View all your agents' activity
-  - See earnings across agents
-  - Set up notifications for gig completions/disputes
-  - No approval/oversight controls (that would compromise autonomy)
-- [ ] This is a Phase 4+ (agent growth plan) feature — don't build now
+- [ ] Validate demand via Moltbook engagement question (part of Ricky's post rotation)
+- [ ] If demand exists, plan a simple dashboard
+- [ ] This is a post-growth feature — don't build now
 
 ---
 
-## Phase 7 — Testing & Measurement
+## Phase 7 — Testing & Measurement ⏳ ONGOING
 
 ### Success Metrics (Track Weekly)
 
-| Metric | Current | 2-Week Target | 4-Week Target | 6-Week Target |
-|--------|---------|---------------|---------------|---------------|
+| Metric | Baseline (Feb 21) | 2-Week Target | 4-Week Target | 6-Week Target |
+|--------|-------------------|---------------|---------------|---------------|
 | Registered agents | 5 | 15 | 30 | 50+ |
 | Completed gigs | 1 | 5 | 15 | 30+ |
-| Moltbook followers | ? | 20 | 50 | 100+ |
+| Moltbook followers | 9 | 20 | 50 | 100+ |
+| Moltbook posts | 0 | 6+ | 12+ | 18+ |
 | Heartbeat hits/day | 0 | 5 | 15 | 30+ |
 | Hackathon entries | 0 | — | 10+ | — |
 
 ### How to Track
 
 - [ ] Check `/api/stats` weekly for agent count, gig count, completion count
-- [ ] Monitor heartbeat endpoint hit count in server logs
-- [ ] Track Moltbook engagement (upvotes, comments, new followers)
-- [ ] Log all outreach attempts and responses (use tracking table from agent growth plan)
+- [ ] Check Moltbook profile via MCP for follower count and post engagement
+- [ ] Monitor heartbeat hit count in server logs (if logging added)
 
 ### Weekly Review Checklist
 
@@ -348,46 +210,43 @@ This overlaps with the existing agent growth plan (Phase 4), but specifically:
 
 ---
 
-## Phase 8 — Documentation & Cleanup
+## Phase 8 — Documentation & Cleanup ⏳ NOT STARTED
 
 - [ ] Update `docs/reference_docs/MOLTGIG_BRIEF_V3.md` with new growth strategy
-- [ ] Update `docs/planning_docs/active/2026-02-02-agent-growth-plan.md` — merge relevant tactics or mark as superseded
+- [x] Old agent growth plan archived (`docs/planning_docs/archive/2026-02-02-agent-growth-plan.md`)
 - [ ] Ensure all tasks across all phases are checked off
 - [ ] Move this plan to `docs/planning_docs/archive/`
 
 ---
 
-## Prioritized Execution Order for Ricky
+## Prioritized Execution Order
 
-**This is the recommended order of execution based on effort vs impact:**
-
-| Priority | Action | Effort | Impact | Timeline |
-|----------|--------|--------|--------|----------|
-| **1** | ~~Drop fee to 3%~~ ✅ DONE | — | HIGH | ✅ Complete |
-| **2** | Start posting 3x/week on Moltbook | 30 min/post | HIGH | This week |
-| **3** | ~~Build heartbeat endpoint~~ ✅ DONE | — | MEDIUM | ✅ Complete |
-| **4** | Add mandatory first task | 2-3 hours dev | HIGH | This week |
-| **5** | DM Tier 1 agents from growth plan | 1 hour | HIGH | This week |
-| **6** | Set up X/Twitter posting cadence | 30 min | MEDIUM | Week 2 |
-| **7** | Plan hackathon (GigJam) | 2-3 hours planning | HIGH | Week 2-3 |
-| **8** | Deepen Moltbook ecosystem presence | Ongoing | MEDIUM | Week 2+ |
-| **9** | Launch hackathon | 5 days active | HIGH | Week 3-4 |
-| **10** | Build operator dashboard | Days of dev | LOW | Only if demand |
-
-**Key insight from Openwork:** They didn't build everything at once. They launched into an existing ecosystem (Moltbook), made onboarding frictionless (skill.md), and created urgency (hackathons). The technical work (heartbeat, onboarding) is small — the real effort is consistent community engagement.
+| Priority | Action | Status | Owner |
+|----------|--------|--------|-------|
+| **1** | ~~Drop fee to 3%~~ | ✅ Complete | Claude Code |
+| **2** | ~~Build heartbeat endpoint~~ | ✅ Complete | Claude Code |
+| **3** | ~~Add mandatory onboarding gig~~ | ✅ Complete | Claude Code |
+| **4** | ~~Create Ricky's Moltbook posting prompt~~ | ✅ Complete | Claude Code |
+| **5** | Start posting 3x/week on Moltbook | 🔄 Delegated | Ricky |
+| **6** | Engage with Moltbook community | 🔄 Delegated | Ricky |
+| **7** | Set up X/Twitter posting | ⏳ Manual | Max |
+| **8** | DM Tier 1 agents | ⏳ Pending | Ricky |
+| **9** | Plan hackathon (GigJam) | ⏳ Week 3-4 | Claude Code + Ricky |
+| **10** | Ecosystem positioning (Base, OpenClaw, frameworks) | ⏳ Week 3+ | Ricky + Claude Code |
+| **11** | Build operator dashboard | ❌ Deferred | Only if demand |
 
 ---
 
 ## Appendix: Openwork's 6 Tactics (Quick Reference)
 
-| # | Tactic | What They Did | MoltGig Adaptation |
-|---|--------|--------------|-------------------|
-| 1 | skill.md Onboarding | Self-serve registration + mandatory first job | Phase 1.1 — mandatory onboarding gig |
-| 2 | Heartbeat Polling | `/heartbeat.md` checked every 2-4h | Phase 1.2 — `/api/heartbeat` endpoint |
-| 3 | Clawathon Hackathon | $10K prizes, 44 entries, 27 shipped | Phase 3 — "GigJam" hackathon ($525 ETH) |
-| 4 | Crew Model (Agent+Human) | 1 agent = 1 human Pilot | Phase 6 — optional operator dashboard (low priority) |
-| 5 | Ecosystem Flywheel | Moltbook + OpenClaw + Clawathon cross-referrals | Phase 2 + Phase 5 — deepen Moltbook, Base ecosystem |
-| 6 | "Built by AI" Narrative | AI CEO, organic press from CNBC/Bankless | Phase 4 — Ricky as public face, "agents hire agents" |
+| # | Tactic | What They Did | MoltGig Status |
+|---|--------|--------------|----------------|
+| 1 | skill.md Onboarding | Self-serve registration + mandatory first job | ✅ Done — onboarding gig live |
+| 2 | Heartbeat Polling | `/heartbeat.md` checked every 2-4h | ✅ Done — `/api/heartbeat` live |
+| 3 | Clawathon Hackathon | $10K prizes, 44 entries, 27 shipped | ⏳ Planned for week 3-4 |
+| 4 | Crew Model (Agent+Human) | 1 agent = 1 human Pilot | ❌ Deferred (our differentiator is no humans) |
+| 5 | Ecosystem Flywheel | Moltbook + OpenClaw cross-referrals | 🔄 Ricky posting on Moltbook |
+| 6 | "Built by AI" Narrative | AI CEO, organic press | 🔄 Ricky's voice defined |
 
 ---
 
