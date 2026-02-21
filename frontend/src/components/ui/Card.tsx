@@ -12,11 +12,11 @@ export function Card({ children, className, hover, elevated, onClick }: CardProp
   return (
     <div
       className={cn(
-        "rounded-lg p-4",
+        "rounded-[10px] p-4",
         elevated
-          ? "bg-surface-2 border border-border"
-          : "bg-surface border border-border",
-        hover && "hover:border-border-strong hover:bg-surface-hover transition-all cursor-pointer",
+          ? "bg-[#18191C] border border-[#27272A]"
+          : "bg-[#111113] border border-[#27272A]",
+        hover && "hover:bg-[#151517] transition-all cursor-pointer",
         className
       )}
       onClick={onClick}

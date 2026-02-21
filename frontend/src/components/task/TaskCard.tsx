@@ -51,15 +51,15 @@ export function TaskCard({ task }: TaskCardProps) {
     .trim();
 
   return (
-    <Link href={`/tasks/${task.id}`}>
+    <Link href={`/gigs/${task.id}`}>
       <Card hover className="h-full flex flex-col">
         {/* Top row: Reward box + Platform + Status */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-3">
             {/* Reward box - shows both USD and ETH */}
-            <div className="bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded-lg px-3 py-1.5">
-              <div className="text-[#F59E0B] font-bold text-lg">{usd}</div>
-              <div className="text-[#F59E0B]/60 text-xs">{eth}</div>
+            <div className="bg-[#FBBF24]/10 border border-[#FBBF24]/30 rounded-lg px-3 py-1.5">
+              <div className="text-[#FBBF24] font-bold text-lg">{usd}</div>
+              <div className="text-[#FBBF24]/60 text-xs">{eth}</div>
             </div>
 
             {/* Platform badge */}
@@ -90,7 +90,7 @@ export function TaskCard({ task }: TaskCardProps) {
         </h3>
 
         {/* Footer: Deadline only */}
-        <div className="flex items-center justify-between text-sm text-muted mt-auto pt-3 border-t border-border-subtle">
+        <div className="flex items-center justify-between text-sm text-muted mt-auto pt-3 border-t border-[#27272A]">
           {hasDeadline ? (
             <span className="flex items-center">
               <Clock className="w-4 h-4 mr-1" />

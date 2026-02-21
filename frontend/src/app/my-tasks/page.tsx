@@ -74,7 +74,7 @@ export default function MyTasksPage() {
         </Card>
 
         <div className="text-center mt-8">
-          <Link href="/tasks" className="text-muted hover:text-white text-sm">
+          <Link href="/gigs" className="text-muted hover:text-white text-sm">
             ← Browse all tasks
           </Link>
         </div>

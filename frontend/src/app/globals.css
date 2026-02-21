@@ -1,34 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  /* Enhanced Gray Scale (Demo 3) */
-  --bg-deep: #050506;
-  --background: #0A0B0D;
-  --bg-raised: #111214;
-  --surface: #18191C;
-  --surface-2: #1E1F23;
-  --surface-hover: #252629;
+  /* Carbon G4 — Gray Scale */
+  --bg-deep: #09090B;
+  --background: #09090B;
+  --bg-raised: #111113;
+  --surface: #111113;
+  --surface-2: #18191C;
+  --surface-hover: #151517;
 
-  /* Enhanced borders */
-  --border-subtle: #2A2B2F;
-  --border: #3A3B40;
-  --border-strong: #4A4B52;
+  /* Borders */
+  --border-subtle: #27272A;
+  --border: #27272A;
+  --border-strong: #3F3F46;
 
-  /* Brand colors */
-  --primary: #0052FF;
-  --primary-dark: #1E40AF;
-  --primary-light: #3B82F6;
+  /* Brand / Accent */
+  --primary: #818CF8;
+  --primary-dark: #6366F1;
+  --primary-light: #A5B4FC;
+  --accent: #818CF8;
 
   /* Semantic colors */
-  --success: #10B981;
+  --success: #4ADE80;
+  --green: #4ADE80;
   --error: #EF4444;
-  --warning: #F59E0B;
-  --amber: #F59E0B;
+  --warning: #FBBF24;
+  --amber: #FBBF24;
 
   /* Text colors */
-  --foreground: #ffffff;
-  --muted: #6B7280;
-  --muted-light: #9CA3AF;
+  --foreground: #FAFAFA;
+  --muted: #71717A;
+  --muted-light: #A1A1AA;
+  --text-tertiary: #3F3F46;
 }
 
 @theme inline {

@@ -8,11 +8,11 @@ interface ReputationBadgeProps {
 }
 
 const TIER_CONFIG: Record<string, { emoji: string; label: string; color: string }> = {
-  new: { emoji: '🌱', label: 'New', color: 'text-gray-400' },
-  rising: { emoji: '📈', label: 'Rising', color: 'text-green-400' },
-  established: { emoji: '⭐', label: 'Established', color: 'text-yellow-400' },
-  trusted: { emoji: '🏆', label: 'Trusted', color: 'text-orange-400' },
-  elite: { emoji: '💎', label: 'Elite', color: 'text-blue-400' },
+  new: { emoji: '\u{1F331}', label: 'New', color: 'text-[#71717A]' },
+  rising: { emoji: '\u{1F4C8}', label: 'Rising', color: 'text-[#4ADE80]' },
+  established: { emoji: '\u{2B50}', label: 'Established', color: 'text-[#FBBF24]' },
+  trusted: { emoji: '\u{1F3C6}', label: 'Trusted', color: 'text-[#818CF8]' },
+  elite: { emoji: '\u{1F48E}', label: 'Elite', color: 'text-[#A5B4FC]' },
 };
 
 export function ReputationBadge({ tier, score, compact = false, showScore = false }: ReputationBadgeProps) {
@@ -31,7 +31,7 @@ export function ReputationBadge({ tier, score, compact = false, showScore = fals
       <span>{config.emoji}</span>
       <span className="text-sm font-medium">{config.label}</span>
       {showScore && score !== undefined && (
-        <span className="text-xs text-gray-500">({score})</span>
+        <span className="text-xs" style={{ color: '#71717A' }}>({score})</span>
       )}
     </span>
   );

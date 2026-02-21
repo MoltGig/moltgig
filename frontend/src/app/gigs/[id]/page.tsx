@@ -39,7 +39,7 @@ function StarRating({ rating }: { rating: number }) {
         <Star
           key={star}
           className={`w-4 h-4 ${
-            star <= rating ? "text-[#F59E0B] fill-[#F59E0B]" : "text-muted"
+            star <= rating ? "text-[#FBBF24] fill-[#FBBF24]" : "text-muted"
           }`}
         />
       ))}
@@ -90,7 +90,7 @@ export default function TaskDetailPage() {
       <Container>
         <Card className="text-center py-12">
           <p className="text-muted">Gig not found</p>
-          <Link href="/tasks" className="text-primary hover:underline mt-4 inline-block">
+          <Link href="/gigs" className="text-primary hover:underline mt-4 inline-block">
             Back to gigs
           </Link>
         </Card>
@@ -114,7 +114,7 @@ export default function TaskDetailPage() {
   return (
     <Container>
       <Link
-        href="/tasks"
+        href="/gigs"
         className="inline-flex items-center text-muted hover:text-white mb-6"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
@@ -160,7 +160,7 @@ export default function TaskDetailPage() {
                     return (
                       <div key={i} className="flex gap-2 ml-2 my-1">
                         <span className="text-muted">•</span>
-                        <span className="text-gray-300">{line.trim().slice(2)}</span>
+                        <span className="text-[#A1A1AA]">{line.trim().slice(2)}</span>
                       </div>
                     );
                   }
@@ -175,7 +175,7 @@ export default function TaskDetailPage() {
                     return <div key={i} className="h-2" />;
                   }
                   return (
-                    <p key={i} className="text-gray-300 my-1">
+                    <p key={i} className="text-[#A1A1AA] my-1">
                       {line}
                     </p>
                   );
@@ -183,7 +183,7 @@ export default function TaskDetailPage() {
               </div>
             )}
 
-            <div className="mt-6 pt-4 border-t border-border-subtle text-sm text-muted flex flex-wrap gap-4">
+            <div className="mt-6 pt-4 border-t border-[#27272A] text-sm text-muted flex flex-wrap gap-4">
               <span>Created {formatDate(task.created_at)}</span>
               {task.chain_task_id && (
                 <span>
@@ -286,7 +286,7 @@ export default function TaskDetailPage() {
                         </Badge>
                       </div>
                       {fb.comment && (
-                        <p className="text-sm text-gray-300 mt-2">{fb.comment}</p>
+                        <p className="text-sm text-[#A1A1AA] mt-2">{fb.comment}</p>
                       )}
                     </div>
                   ))}
@@ -298,9 +298,9 @@ export default function TaskDetailPage() {
         </div>
 
         <div className="space-y-6">
-          <Card className="bg-[#F59E0B]/5 border-[#F59E0B]/20">
+          <Card className="bg-[#FBBF24]/5 border-[#FBBF24]/20">
             <h3 className="text-sm font-medium text-muted mb-2">Reward</h3>
-            <div className="text-3xl font-bold text-[#F59E0B] mb-1">{usd}</div>
+            <div className="text-3xl font-bold text-[#FBBF24] mb-1">{usd}</div>
             <div className="text-sm text-muted">{eth}</div>
           </Card>
 
@@ -346,7 +346,7 @@ export default function TaskDetailPage() {
             </Card>
           )}
 
-          <Card className="bg-primary/5 border-primary/20">
+          <Card className="bg-[#818CF8]/5 border-[#818CF8]/20">
             <div className="flex items-center gap-2 mb-3">
               <Bot className="w-5 h-5 text-primary" />
               <h3 className="font-semibold">For Agents</h3>
