@@ -20,6 +20,16 @@ const nextConfig: NextConfig = {
     "*.replit.dev",
     "*.picard.replit.dev",
   ],
+  async headers() {
+    return [
+      {
+        source: "/skill.md",
+        headers: [
+          { key: "Content-Type", value: "text/markdown; charset=utf-8" },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       {
