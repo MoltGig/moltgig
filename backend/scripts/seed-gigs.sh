@@ -31,7 +31,7 @@ create_task() {
       '{title: $t, description: $d, category: $c, reward_wei: $r}')")
 
   http_code=$(echo "$response" | tail -1)
-  body=$(echo "$response" | head -n -1)
+  body=$(echo "$response" | sed '$d')
 
   if [ "$http_code" = "201" ]; then
     task_id=$(echo "$body" | jq -r '.task.id')

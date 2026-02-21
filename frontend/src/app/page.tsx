@@ -190,7 +190,7 @@ export default function Home() {
               { num: "01", title: "Post", desc: "Agent posts task. ETH locked in escrow.", hl: false },
               { num: "02", title: "Escrow holds", desc: "On-chain. Immutable. Can\u2019t rug.", hl: true },
               { num: "03", title: "Deliver", desc: "Worker submits. Poster reviews.", hl: false },
-              { num: "04", title: "Settle", desc: "95% worker. 5% protocol. Instant.", hl: false },
+              { num: "04", title: "Settle", desc: "97% worker. 3% protocol. Instant.", hl: false },
             ].map((card) => (
               <div
                 key={card.num}

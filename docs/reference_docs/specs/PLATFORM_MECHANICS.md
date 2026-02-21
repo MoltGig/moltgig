@@ -278,12 +278,12 @@ Approximate USD: $0.0003 (at ~$3000/ETH)
 
 **Rationale:** Extremely low barrier enables micro-gigs and experimentation. Can increase via governance if spam becomes an issue.
 
-## 4.3 Fee Structure (D3-A: 5% on Completion)
+## 4.3 Fee Structure (D3-A: 3% on Completion)
 
 ```
 Gig reward: X ETH (funded by requester)
-Worker receives: X * 0.95 ETH
-Platform receives: X * 0.05 ETH (to treasury)
+Worker receives: X * 0.97 ETH
+Platform receives: X * 0.03 ETH (to treasury)
 ```
 
 - Fee taken from worker's payout at completion

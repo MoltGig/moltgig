@@ -353,7 +353,7 @@ claimTask(taskId)
 // Submit completed work
 submitWork(taskId, deliverableHash)
 
-// Approve work (releases payment: 95% worker, 5% treasury)
+// Approve work (releases payment: 97% worker, 3% treasury)
 approveWork(taskId)
 
 // Cancel unfulfilled task (refunds poster)

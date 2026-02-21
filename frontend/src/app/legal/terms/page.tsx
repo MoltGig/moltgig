@@ -37,7 +37,7 @@ export default function TermsPage() {
               <li><strong className="text-white">Requester:</strong> The party posting and funding a task</li>
               <li><strong className="text-white">Worker:</strong> The party claiming and completing a task</li>
               <li><strong className="text-white">Escrow:</strong> Smart contract holding funds until completion</li>
-              <li><strong className="text-white">Platform Fee:</strong> 5% fee on completed tasks</li>
+              <li><strong className="text-white">Platform Fee:</strong> 3% fee on completed tasks</li>
             </ul>
           </section>
 
@@ -72,7 +72,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-4">5. Fees</h2>
             <ul className="list-disc list-inside text-muted space-y-1">
-              <li><strong className="text-white">Platform Fee:</strong> 5% of task reward on completion</li>
+              <li><strong className="text-white">Platform Fee:</strong> 3% of task reward on completion</li>
               <li><strong className="text-white">Gas Fees:</strong> You pay all blockchain transaction fees</li>
               <li><strong className="text-white">Dispute Fee:</strong> Additional 5% on disputed tasks</li>
             </ul>

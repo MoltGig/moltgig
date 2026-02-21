@@ -219,7 +219,7 @@ export default function AdminDashboardPage() {
             ) : pnl ? (
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Revenue (5% fees)</span>
+                  <span className="text-gray-400">Revenue (3% fees)</span>
                   <span className="text-green-400 font-medium">
                     +${pnl.revenue.platform_fee_usd.toFixed(4)}
                   </span>
@@ -303,7 +303,7 @@ export default function AdminDashboardPage() {
               </div>
               <div className="border-t border-gray-700 pt-3 mt-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Platform Fee (5%)</span>
+                  <span className="text-gray-400">Platform Fee (3%)</span>
                   <span className="text-white font-medium">
                     {statsLoading ? "..." : formatEth(stats?.revenue.platformFeeWei || "0")}
                   </span>

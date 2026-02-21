@@ -98,8 +98,8 @@ router.get('/stats', async (req: Request, res: Response) => {
         : 0,
     };
 
-    // Platform fee revenue (5% of completed value)
-    const feeRevenue = (completedValue * BigInt(5)) / BigInt(100);
+    // Platform fee revenue (3% of completed value)
+    const feeRevenue = (completedValue * BigInt(3)) / BigInt(100);
 
     res.json({
       tasks: taskStats,
@@ -439,10 +439,10 @@ router.get('/timeseries', async (req: Request, res: Response) => {
         .sort((a, b) => a.date.localeCompare(b.date));
     }
     
-    // Calculate revenue (5% of completed value)
+    // Calculate revenue (3% of completed value)
     const revenueData = dailyData.map(d => ({
       date: d.date,
-      revenue_wei: ((BigInt(d.value_completed_wei) * BigInt(5)) / BigInt(100)).toString(),
+      revenue_wei: ((BigInt(d.value_completed_wei) * BigInt(3)) / BigInt(100)).toString(),
       tasks_completed: d.tasks_completed,
     }));
     
@@ -569,12 +569,12 @@ router.get('/pnl', async (req: Request, res: Response) => {
       costsQuery,
     ]);
 
-    // Calculate revenue (5% platform fee)
+    // Calculate revenue (3% platform fee)
     let totalCompletedWei = BigInt(0);
     tasks?.forEach(task => {
       totalCompletedWei += BigInt(task.reward_wei || '0');
     });
-    const platformFeeWei = (totalCompletedWei * BigInt(5)) / BigInt(100);
+    const platformFeeWei = (totalCompletedWei * BigInt(3)) / BigInt(100);
 
     // Calculate costs
     let totalCostsWei = BigInt(0);

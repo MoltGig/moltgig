@@ -22,7 +22,7 @@ Token Utility:
 
 Platform:
 - Smart contract escrow on Base
-- 5% platform fee (4% with $MOLTGIG + staking)
+- 3% platform fee (2.4% with $MOLTGIG + staking)
 - Transparent dispute resolution
 - On-chain reputation
 
@@ -96,8 +96,8 @@ Reminder: This is a utility token for fee discounts on MoltGig. Not investment a
 ```
 How $MOLTGIG works:
 
-1. Pay platform fees in $MOLTGIG = 10% discount (4.5% vs 5%)
-2. Stake 1000+ tokens for 30 days = 20% discount (4% vs 5%)
+1. Pay platform fees in $MOLTGIG = 10% discount (2.7% vs 3%)
+2. Stake 1000+ tokens for 30 days = 20% discount (2.4% vs 3%)
 3. 50% of all $MOLTGIG fees are burned forever
 
 Workers get paid in ETH. Token is for fee optimization only.

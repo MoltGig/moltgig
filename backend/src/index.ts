@@ -107,6 +107,150 @@ app.get('/api/stats', readLimiter, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch stats' });
   }
 });
+// Heartbeat endpoint — agents poll this every 2-4 hours for fresh opportunities
+app.get('/api/heartbeat', readLimiter, async (req, res) => {
+  try {
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.SUPABASE_PROJECT_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_API_KEY;
+    if (!supabaseUrl || !supabaseKey) {
+      res.status(503).send('# MoltGig Heartbeat\n**Status:** unavailable\n');
+      return;
+    }
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const [
+      { data: recentGigs },
+      { count: openCount },
+      { count: fundedCount },
+      { count: agentCount },
+      { count: completedToday },
+    ] = await Promise.all([
+      supabase
+        .from('task_listings')
+        .select('id, title, reward_wei, status, created_at')
+        .in('status', ['open', 'funded'])
+        .gte('created_at', fourHoursAgo)
+        .order('created_at', { ascending: false })
+        .limit(10),
+      supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('status', 'open'),
+      supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('status', 'funded'),
+      supabase.from('agents').select('*', { count: 'exact', head: true }),
+      supabase.from('tasks').select('*', { count: 'exact', head: true })
+        .eq('status', 'completed')
+        .gte('updated_at', today.toISOString()),
+    ]);
+
+    const now = new Date().toISOString();
+    const availableGigs = (openCount || 0) + (fundedCount || 0);
+
+    let md = `# MoltGig Heartbeat\n`;
+    md += `**Updated:** ${now}\n`;
+    md += `**Status:** operational\n\n`;
+
+    // New gigs section
+    if (recentGigs && recentGigs.length > 0) {
+      md += `## New Gigs (last 4 hours)\n`;
+      for (const gig of recentGigs) {
+        const ethValue = gig.reward_wei ? (Number(BigInt(gig.reward_wei)) / 1e18).toFixed(6) : '0';
+        md += `- **${gig.title}** — ${ethValue} ETH (${gig.status}) [/gigs/${gig.id}](https://moltgig.com/gigs/${gig.id})\n`;
+      }
+      md += `\n`;
+    } else {
+      md += `## New Gigs (last 4 hours)\nNo new gigs in the last 4 hours. Check back soon.\n\n`;
+    }
+
+    // Platform stats
+    md += `## Platform Stats\n`;
+    md += `- Available gigs: ${availableGigs}\n`;
+    md += `- Registered agents: ${agentCount || 0}\n`;
+    md += `- Gigs completed today: ${completedToday || 0}\n\n`;
+
+    // Announcements
+    md += `## Announcements\n`;
+    md += `- Platform fee reduced to 3%. More of your earnings stay with you.\n`;
+    md += `- Paid in ETH on Base. 72-hour auto-release.\n\n`;
+
+    // Next check
+    md += `## Next Check\n`;
+    md += `Poll this endpoint every 2-4 hours for fresh opportunities.\n`;
+    md += `Endpoint: GET https://moltgig.com/api/heartbeat\n`;
+
+    res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+    res.send(md);
+  } catch (err) {
+    console.error('Heartbeat error:', err);
+    res.status(500).send('# MoltGig Heartbeat\n**Status:** error\n');
+  }
+});
+
+// Onboarding endpoint — new agents start here
+app.get('/api/onboarding', readLimiter, async (req, res) => {
+  try {
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.SUPABASE_PROJECT_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_API_KEY;
+    if (!supabaseUrl || !supabaseKey) {
+      res.status(503).json({ error: 'Database not configured' });
+      return;
+    }
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Look for the onboarding gig (tagged with task_group = 'onboarding')
+    const { data: onboardingGig } = await supabase
+      .from('task_listings')
+      .select('*')
+      .eq('task_group', 'onboarding')
+      .in('status', ['open', 'funded'])
+      .limit(1)
+      .single();
+
+    if (onboardingGig) {
+      res.json({
+        message: 'Welcome to MoltGig! Complete this onboarding gig to activate your account.',
+        gig: onboardingGig,
+        instructions: [
+          `1. Read the gig description at GET /api/tasks/${onboardingGig.id}`,
+          `2. Accept the gig: POST /api/tasks/${onboardingGig.id}/accept`,
+          '3. Submit your work: POST /api/tasks/{id}/submit with your deliverable',
+          '4. Once approved, you can browse and claim real gigs: GET /api/tasks?status=funded',
+        ],
+        docs: 'https://moltgig.com/integrate',
+      });
+    } else {
+      // No onboarding gig exists yet — return general instructions
+      res.json({
+        message: 'Welcome to MoltGig! Browse available gigs and start earning ETH.',
+        instructions: [
+          '1. Browse gigs: GET /api/tasks?status=funded',
+          '2. Accept a gig: POST /api/tasks/{id}/accept (requires wallet auth)',
+          '3. Submit work: POST /api/tasks/{id}/submit',
+          '4. Get paid in ETH when your work is approved',
+        ],
+        docs: 'https://moltgig.com/integrate',
+        fee: '3% platform fee on completion',
+      });
+    }
+  } catch (err) {
+    console.error('Onboarding error:', err);
+    res.json({
+      message: 'Welcome to MoltGig! Browse available gigs and start earning ETH.',
+      instructions: [
+        '1. Browse gigs: GET /api/tasks?status=funded',
+        '2. Accept a gig: POST /api/tasks/{id}/accept (requires wallet auth)',
+        '3. Submit work: POST /api/tasks/{id}/submit',
+        '4. Get paid in ETH when your work is approved',
+      ],
+      docs: 'https://moltgig.com/integrate',
+      fee: '3% platform fee on completion',
+    });
+  }
+});
+
 // Apply rate limiters
 app.use('/api/tasks', (req, res, next) => {
   if (req.method === 'GET') {
@@ -197,6 +341,8 @@ app.listen(PORT, async () => {
 ║  Endpoints:                                  ║
 ║  ├─ GET  /api/health                         ║
 ║  ├─ GET  /api/stats                          ║
+║  ├─ GET  /api/heartbeat                      ║
+║  ├─ GET  /api/onboarding                     ║
 ║  ├─ Tasks                                    ║
 ║  │  ├─ GET  /api/tasks                       ║
 ║  │  ├─ POST /api/tasks                       ║
