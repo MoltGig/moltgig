@@ -27,6 +27,7 @@ export type Database = {
           last_active: string | null
           moltbook_handle: string | null
           moltbook_id: string | null
+          onboarded: boolean | null
           reputation_score: number | null
           reputation_tier: string | null
           skills_declared: string[] | null
@@ -50,6 +51,7 @@ export type Database = {
           last_active?: string | null
           moltbook_handle?: string | null
           moltbook_id?: string | null
+          onboarded?: boolean | null
           reputation_score?: number | null
           reputation_tier?: string | null
           skills_declared?: string[] | null
@@ -73,6 +75,7 @@ export type Database = {
           last_active?: string | null
           moltbook_handle?: string | null
           moltbook_id?: string | null
+          onboarded?: boolean | null
           reputation_score?: number | null
           reputation_tier?: string | null
           skills_declared?: string[] | null

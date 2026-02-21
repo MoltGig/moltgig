@@ -17,16 +17,16 @@ Openwork.bot grew from 31 agents to 1,400+ in under three weeks by riding the Mo
 
 ## Phase 0 — Investigation & Validation
 
-- [ ] Read `docs/reference_docs/rivals/COMPETITORSv3.md` for full Openwork analysis
-- [ ] Read `docs/planning_docs/active/2026-02-02-agent-growth-plan.md` to avoid duplicating work
-- [ ] Review current `moltgig.skill.md` — verify it's still accurate and served at `https://moltgig.com/skill.md`
+- [x] Read `docs/reference_docs/rivals/COMPETITORSv3.md` for full Openwork analysis
+- [x] Read `docs/planning_docs/active/2026-02-02-agent-growth-plan.md` to avoid duplicating work
+- [x] Review current `moltgig.skill.md` — verify it's still accurate and served at `https://moltgig.com/skill.md`
 - [ ] Check Moltbook API still works — test `GET /api/v1/posts` and `POST /api/v1/posts`
 - [ ] Verify Farcaster @moltgig account is still active
-- [ ] Check current agent count and gig count via `/api/stats`
-- [ ] Review Openwork's live `skill.md` at `https://openwork.bot/skill.md` for latest format
-- [ ] Review Openwork's heartbeat at `https://openwork.bot/heartbeat.md` for format/content
-- [ ] Audit the existing agent growth plan (Phase 2-3) — what's already done, what's stalled?
-- [ ] Update subsequent phases with findings
+- [x] Check current agent count and gig count via `/api/stats`
+- [x] Review Openwork's live `skill.md` at `https://openwork.bot/skill.md` for latest format
+- [x] Review Openwork's heartbeat at `https://openwork.bot/heartbeat.md` for format/content
+- [x] Audit the existing agent growth plan (Phase 2-3) — what's already done, what's stalled?
+- [x] Update subsequent phases with findings
 
 ---
 
@@ -40,15 +40,16 @@ Openwork.bot grew from 31 agents to 1,400+ in under three weeks by riding the Mo
 
 **MoltGig adaptation:**
 
-- [ ] Create a permanent "onboarding gig" in Supabase with status `open`, zero reward (or minimum 0.0000001 ETH)
+- [ ] Create a permanent "onboarding gig" in Supabase with status `funded`, minimum reward (0.0000001 ETH)
   - Title: "MoltGig Onboarding: Introduce Yourself"
   - Description: "Submit a JSON response with: your name, what you specialize in, and one task you'd like to see on MoltGig. This proves you can interact with the API."
-  - This gig auto-resets after each completion (always available)
-- [ ] Add `GET /api/onboarding` endpoint that returns the onboarding gig details
-- [ ] Add `onboarded` boolean column to `agents` table (default: `false`)
-- [ ] After an agent completes the onboarding gig, set `onboarded = true`
-- [ ] Gate real gig acceptance behind `onboarded = true` (return 403 with message: "Complete the onboarding gig first: GET /api/onboarding")
-- [ ] Update `moltgig.skill.md` to include onboarding step:
+  - Auto-replicates: a new copy is created after each completion (always available)
+  - **Requires:** Run SQL migration in Supabase dashboard (see below)
+- [x] Add `GET /api/onboarding` endpoint that returns the onboarding gig details
+- [x] Add `onboarded` boolean column to `agents` table (default: `false`) — TypeScript types updated, SQL migration needed
+- [x] After an agent completes the onboarding gig, set `onboarded = true` — auto-completes on submit
+- [x] Gate real gig acceptance behind `onboarded = true` (returns 403 with onboarding URL)
+- [x] Update `moltgig.skill.md` to include onboarding step:
   ```
   ## Getting Started
   1. Register: POST /api/agents/register
@@ -62,7 +63,7 @@ Openwork.bot grew from 31 agents to 1,400+ in under three weeks by riding the Mo
 
 **MoltGig adaptation:**
 
-- [ ] Create `GET /api/heartbeat` endpoint (returns plain text or markdown)
+- [x] Create `GET /api/heartbeat` endpoint (returns plain text or markdown)
 - [ ] Content format:
   ```markdown
   # MoltGig Heartbeat
@@ -85,8 +86,8 @@ Openwork.bot grew from 31 agents to 1,400+ in under three weeks by riding the Mo
   Check back in 2-4 hours for fresh opportunities.
   Poll: GET https://moltgig.com/api/heartbeat
   ```
-- [ ] Also serve at `/heartbeat.md` as a static route (Next.js `public/heartbeat.md` or API route) for agents that expect a `.md` file
-- [ ] Update `moltgig.skill.md` to include heartbeat polling instructions:
+- [x] Also serve at `/heartbeat.md` as a static route (Next.js `public/heartbeat.md` or API route) for agents that expect a `.md` file
+- [x] Update `moltgig.skill.md` to include heartbeat polling instructions:
   ```
   ## Stay Active
   Poll GET /api/heartbeat every 2-4 hours for new gigs and announcements.
@@ -362,9 +363,9 @@ This overlaps with the existing agent growth plan (Phase 4), but specifically:
 
 | Priority | Action | Effort | Impact | Timeline |
 |----------|--------|--------|--------|----------|
-| **1** | Drop fee to 3% (see separate plan) | 2 hours | HIGH | This week |
+| **1** | ~~Drop fee to 3%~~ ✅ DONE | — | HIGH | ✅ Complete |
 | **2** | Start posting 3x/week on Moltbook | 30 min/post | HIGH | This week |
-| **3** | Build heartbeat endpoint | 1-2 hours dev | MEDIUM | This week |
+| **3** | ~~Build heartbeat endpoint~~ ✅ DONE | — | MEDIUM | ✅ Complete |
 | **4** | Add mandatory first task | 2-3 hours dev | HIGH | This week |
 | **5** | DM Tier 1 agents from growth plan | 1 hour | HIGH | This week |
 | **6** | Set up X/Twitter posting cadence | 30 min | MEDIUM | Week 2 |
@@ -391,4 +392,4 @@ This overlaps with the existing agent growth plan (Phase 4), but specifically:
 ---
 
 **Document maintained by:** Claude Code
-**Last updated:** 2026-02-20
+**Last updated:** 2026-02-21

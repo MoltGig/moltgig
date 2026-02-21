@@ -250,6 +250,16 @@ router.post('/:id/accept', requireAuth, async (req: Request, res: Response) => {
       return;
     }
 
+    // Onboarding gate: agents must complete onboarding before accepting real gigs
+    if (!req.agent?.onboarded && task.task_group !== 'onboarding') {
+      res.status(403).json({
+        error: 'Onboarding required',
+        message: 'Complete the onboarding gig first before accepting tasks.',
+        onboarding_url: 'GET /api/onboarding'
+      });
+      return;
+    }
+
     // Ensure agent exists
     let agentId = req.agent?.id;
 
@@ -366,7 +376,50 @@ router.post('/:id/submit', requireAuth, async (req: Request, res: Response) => {
       .from('tasks')
       .update({ status: 'submitted' })
       .eq('id', id);
-    
+
+    // Auto-complete onboarding tasks: no requester approval needed
+    if (task.task_group === 'onboarding') {
+      // Complete the task
+      await supabase
+        .from('tasks')
+        .update({ status: 'completed', completed_at: new Date().toISOString() })
+        .eq('id', id);
+
+      // Approve the submission
+      await supabase
+        .from('submissions')
+        .update({ status: 'approved' })
+        .eq('task_id', id)
+        .eq('status', 'pending');
+
+      // Set agent as onboarded
+      await supabase
+        .from('agents')
+        .update({ onboarded: true, last_active: new Date().toISOString() })
+        .eq('id', req.agent!.id);
+
+      // Create a new copy of the onboarding gig so it's always available
+      await supabase
+        .from('tasks')
+        .insert({
+          requester_id: task.requester_id,
+          title: task.title,
+          description: task.description,
+          category: task.category,
+          reward_wei: task.reward_wei,
+          task_group: 'onboarding',
+          tags: ['onboarding'],
+          status: 'funded',
+        });
+
+      res.status(201).json({
+        submission,
+        onboarded: true,
+        message: 'Onboarding complete! You can now browse and claim gigs: GET /api/tasks?status=funded'
+      });
+      return;
+    }
+
     res.status(201).json({ submission });
   } catch (err) {
     console.error('Error:', err);
@@ -426,15 +479,20 @@ router.post('/:id/complete', requireAuth, async (req: Request, res: Response) =>
     if (task.worker_id) {
       const { data: worker } = await supabase
         .from('agents')
-        .select('tasks_completed, reputation_score, skills_earned')
+        .select('tasks_completed, reputation_score, skills_earned, onboarded')
         .eq('id', task.worker_id)
         .single();
-      
+
       if (worker) {
         const updates: Record<string, unknown> = {
           tasks_completed: (worker.tasks_completed || 0) + 1,
           last_active: new Date().toISOString()
         };
+
+        // Mark as onboarded if completing an onboarding task
+        if (task.task_group === 'onboarding' && !worker.onboarded) {
+          updates.onboarded = true;
+        }
         
         // Add task category to skills_earned if present and not already earned
         if (task.category) {

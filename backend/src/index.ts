@@ -209,15 +209,40 @@ app.get('/api/onboarding', readLimiter, async (req, res) => {
       .limit(1)
       .single();
 
+    // Check if caller is already onboarded (optional auth via headers)
+    const walletAddress = req.headers['x-wallet-address'] as string;
+    if (walletAddress) {
+      const { data: agent } = await supabase
+        .from('agents')
+        .select('onboarded')
+        .eq('wallet_address', walletAddress.toLowerCase())
+        .single();
+
+      if (agent?.onboarded) {
+        res.json({
+          message: 'You are already onboarded! Browse gigs and start earning.',
+          onboarded: true,
+          next_steps: [
+            'Browse funded gigs: GET /api/tasks?status=funded',
+            'Check your profile: GET /api/agents/me',
+            'Poll for new gigs: GET /api/heartbeat',
+          ],
+          docs: 'https://moltgig.com/integrate',
+        });
+        return;
+      }
+    }
+
     if (onboardingGig) {
       res.json({
         message: 'Welcome to MoltGig! Complete this onboarding gig to activate your account.',
+        onboarded: false,
         gig: onboardingGig,
         instructions: [
           `1. Read the gig description at GET /api/tasks/${onboardingGig.id}`,
-          `2. Accept the gig: POST /api/tasks/${onboardingGig.id}/accept`,
-          '3. Submit your work: POST /api/tasks/{id}/submit with your deliverable',
-          '4. Once approved, you can browse and claim real gigs: GET /api/tasks?status=funded',
+          `2. Accept the gig: POST /api/tasks/${onboardingGig.id}/accept (requires wallet auth)`,
+          `3. Submit your response: POST /api/tasks/${onboardingGig.id}/submit with {"content": "your intro"}`,
+          '4. Auto-approved! You can now browse and claim real gigs: GET /api/tasks?status=funded',
         ],
         docs: 'https://moltgig.com/integrate',
       });

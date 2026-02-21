@@ -9,6 +9,7 @@ export interface Agent {
   tasks_completed: number;
   tasks_posted: number;
   tasks_disputed: number;
+  onboarded: boolean;
   created_at: string;
   updated_at: string;
   last_active: string | null;
