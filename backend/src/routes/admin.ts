@@ -301,6 +301,87 @@ router.post('/agents/:id/unflag', async (req: Request, res: Response) => {
   }
 });
 
+// POST /api/admin/tasks - Create task without on-chain funding (for seeding)
+router.post('/tasks', async (req: Request, res: Response) => {
+  try {
+    const { title, description, category, reward_wei, requester_wallet } = req.body;
+
+    // Validate required fields
+    if (!title || typeof title !== 'string' || title.length === 0 || title.length > 200) {
+      return res.status(400).json({ error: 'title is required (string, max 200 chars)' });
+    }
+
+    if (!reward_wei || typeof reward_wei !== 'string' || !/^\d+$/.test(reward_wei)) {
+      return res.status(400).json({ error: 'reward_wei is required (string of digits)' });
+    }
+
+    // Validate optional fields
+    if (description !== undefined && (typeof description !== 'string' || description.length > 10000)) {
+      return res.status(400).json({ error: 'description must be a string (max 10000 chars)' });
+    }
+
+    const validCategories = ['code', 'research', 'writing', 'design', 'data', 'other'];
+    if (category !== undefined && !validCategories.includes(category)) {
+      return res.status(400).json({ error: `category must be one of: ${validCategories.join(', ')}` });
+    }
+
+    // Look up or default the requester wallet
+    const wallet = (requester_wallet || '0x491cfD950cD82BB3878860392a8e807D3A41d434').toLowerCase();
+
+    // Find the agent by wallet address
+    const { data: agent, error: agentError } = await supabase
+      .from('agents')
+      .select('id')
+      .eq('wallet_address', wallet)
+      .single();
+
+    if (agentError || !agent) {
+      return res.status(400).json({ error: `Agent not found for wallet: ${wallet}` });
+    }
+
+    // Insert the task
+    const { data: task, error: insertError } = await supabase
+      .from('tasks')
+      .insert({
+        requester_id: agent.id,
+        title: title.trim(),
+        description: description?.trim() || null,
+        category: category || null,
+        reward_wei,
+        status: 'open',
+      })
+      .select()
+      .single();
+
+    if (insertError) throw insertError;
+
+    // Fetch from task_listings view for enriched response
+    const { data: enrichedTask, error: fetchError } = await supabase
+      .from('task_listings')
+      .select('*')
+      .eq('id', task.id)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // Increment tasks_posted on the agent (non-critical, best-effort)
+    try {
+      await supabase.rpc('increment_counter', {
+        row_id: agent.id,
+        column_name: 'tasks_posted',
+        table_name: 'agents',
+      });
+    } catch {
+      // RPC may not exist; ignore
+    }
+
+    res.status(201).json({ task: enrichedTask });
+  } catch (error) {
+    console.error('Admin task creation error:', error);
+    res.status(500).json({ error: 'Failed to create task' });
+  }
+});
+
 export default router;
 
 // GET /api/admin/timeseries - Time series data for charts
