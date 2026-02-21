@@ -76,6 +76,14 @@ const nextConfig: NextConfig = {
         destination: `${backendUrl}/api/webhooks/:path*`,
       },
       {
+        source: "/api/heartbeat",
+        destination: `${backendUrl}/api/heartbeat`,
+      },
+      {
+        source: "/api/onboarding",
+        destination: `${backendUrl}/api/onboarding`,
+      },
+      {
         source: "/api/feedback",
         destination: `${backendUrl}/api/feedback`,
       },
