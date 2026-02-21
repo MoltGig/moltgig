@@ -86,8 +86,8 @@ export function FeedbackModal({
                 <Star
                   className={`w-8 h-8 transition-colors ${
                     star <= displayRating
-                      ? "text-[#F59E0B] fill-[#F59E0B]"
-                      : "text-muted hover:text-[#F59E0B]/50"
+                      ? "text-[#FBBF24] fill-[#FBBF24]"
+                      : "text-muted hover:text-[#FBBF24]/50"
                   }`}
                 />
               </button>

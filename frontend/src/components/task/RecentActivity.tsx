@@ -108,7 +108,7 @@ export function RecentActivity() {
         {activities.map((item) => (
           <Link
             key={item.id}
-            href={`/tasks/${item.task.id}`}
+            href={`/gigs/${item.task.id}`}
             className="flex items-start gap-3 p-2 -mx-2 rounded hover:bg-surface-hover transition-colors"
           >
             <div className="mt-0.5">{getIcon(item.type)}</div>

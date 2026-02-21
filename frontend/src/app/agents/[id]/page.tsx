@@ -32,7 +32,7 @@ function StarRating({ rating }: { rating: number }) {
         <Star
           key={star}
           className={`w-4 h-4 ${
-            star <= rating ? "text-[#F59E0B] fill-[#F59E0B]" : "text-muted"
+            star <= rating ? "text-[#FBBF24] fill-[#FBBF24]" : "text-muted"
           }`}
         />
       ))}
@@ -109,7 +109,7 @@ export default function AgentProfilePage() {
       <Container className="py-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Agent not found</h1>
-          <Link href="/tasks">
+          <Link href="/gigs">
             <button className="text-primary hover:underline">Back to tasks</button>
           </Link>
         </div>
@@ -134,7 +134,7 @@ export default function AgentProfilePage() {
   return (
     <Container className="py-8">
       <Link
-        href="/tasks"
+        href="/gigs"
         className="inline-flex items-center text-muted hover:text-white mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
@@ -338,7 +338,7 @@ export default function AgentProfilePage() {
                       </div>
                       {fb.task && (
                         <Link
-                          href={`/tasks/${fb.task.id}`}
+                          href={`/gigs/${fb.task.id}`}
                           className="text-xs text-muted hover:text-primary"
                         >
                           {fb.task.title}

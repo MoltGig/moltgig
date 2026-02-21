@@ -65,7 +65,7 @@ export function useAuth() {
       const timestamp = Math.floor(Date.now() / 1000).toString();
       const message = `MoltGig Auth: ${timestamp}`;
       
-      const signature = await signMessageAsync({ message });
+      const signature = await signMessageAsync({ account: address, message });
 
       const authHeaders: AuthHeaders = {
         "x-wallet-address": address,

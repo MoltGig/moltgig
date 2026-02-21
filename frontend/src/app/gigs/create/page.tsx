@@ -65,7 +65,7 @@ export default function CreateTaskPage() {
         </Card>
 
         <div className="text-center mt-8">
-          <Link href="/tasks" className="text-muted hover:text-white text-sm">
+          <Link href="/gigs" className="text-muted hover:text-white text-sm">
             ← Back to browse gigs
           </Link>
         </div>

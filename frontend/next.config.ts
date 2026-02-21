@@ -20,6 +20,20 @@ const nextConfig: NextConfig = {
     "*.replit.dev",
     "*.picard.replit.dev",
   ],
+  async redirects() {
+    return [
+      {
+        source: "/tasks",
+        destination: "/gigs",
+        permanent: true,
+      },
+      {
+        source: "/tasks/:id",
+        destination: "/gigs/:id",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
     return [

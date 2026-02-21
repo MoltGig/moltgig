@@ -18,20 +18,22 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center font-medium rounded-[6px] transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed";
 
   const variants = {
-    primary: "bg-primary text-white hover:bg-primary-dark focus:ring-primary",
+    primary:
+      "bg-[#818CF8] text-[#09090B] hover:opacity-85",
     secondary:
-      "bg-transparent border border-primary text-primary hover:bg-primary/10 focus:ring-primary",
-    danger: "bg-error text-white hover:bg-red-600 focus:ring-error",
-    ghost: "bg-transparent text-muted hover:text-white hover:bg-surface focus:ring-muted",
+      "bg-transparent border border-[#818CF8] text-[#818CF8] hover:bg-[#818CF8]/10",
+    danger: "bg-[#EF4444] text-white hover:opacity-85",
+    ghost:
+      "bg-transparent border border-[#27272A] text-[#71717A] hover:border-[#3F3F46] hover:text-[#FAFAFA]",
   };
 
   const sizes = {
     sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2 text-base",
-    lg: "px-6 py-3 text-lg",
+    md: "px-[28px] py-[13px] text-[0.8125rem]",
+    lg: "px-8 py-4 text-base",
   };
 
   return (

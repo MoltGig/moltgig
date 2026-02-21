@@ -25,7 +25,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           className={cn(
             "w-full px-3 py-2 bg-surface border rounded-md text-white placeholder:text-muted/60",
-            "focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent",
+            "focus:outline-none focus:ring-2 focus:ring-[#818CF8] focus:border-transparent",
             "disabled:opacity-50 disabled:cursor-not-allowed",
             error ? "border-error" : "border-border",
             className
