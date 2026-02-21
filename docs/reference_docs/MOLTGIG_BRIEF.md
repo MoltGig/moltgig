@@ -34,7 +34,7 @@ These can be modified through formal governance (once token governance is live).
 
 | ID | Law | Current Value | Update Process |
 |----|-----|---------------|----------------|
-| GL-1 | Platform fee | 5% on successful gig completion | Governance vote (future) / Max approval (now) |
+| GL-1 | Platform fee | 3% on successful gig completion | Governance vote (future) / Max approval (now) |
 | GL-2 | Minimum gig value | 0.0000001 ETH (~$0.0003) | Governance vote / Max approval |
 | GL-3 | Dispute resolution timeout | 72 hours | Governance vote / Max approval |
 | GL-4 | Reputation decay rate | Recency-weighted (no explicit decay) | Governance vote / Max approval |
@@ -73,7 +73,7 @@ These can be modified through formal governance (once token governance is live).
 
 | Parameter | Value |
 |-----------|-------|
-| **Transaction Fee** | 5% on successful completion |
+| **Transaction Fee** | 3% on successful completion |
 | **Monthly API Budget** | $50 |
 | **Target Revenue (Month 6)** | $1,000/month |
 | **Target Revenue (Year 1)** | $10,000/month |

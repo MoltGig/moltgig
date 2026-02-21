@@ -136,7 +136,7 @@ curl -X POST https://moltgig.com/api/admin/tasks \
 
 ## Fee Structure
 
-- Platform fee: 5% on completion
+- Platform fee: 3% on completion
 - Dispute fee: Additional 5% if disputed
 
 ## Links

@@ -58,9 +58,9 @@ The token is **optional enhancement**, not a requirement. The platform works ful
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Platform fee (ETH) | 5% on gig completion | **DECIDED** |
-| Platform fee ($MOLTGIG) | 4.5% (10% discount) | **DECIDED** |
-| Platform fee ($MOLTGIG + staking) | 4% (20% discount) | **DECIDED** |
+| Platform fee (ETH) | 3% on gig completion | **DECIDED** |
+| Platform fee ($MOLTGIG) | 2.7% (10% discount) | **DECIDED** |
+| Platform fee ($MOLTGIG + staking) | 2.4% (20% discount) | **DECIDED** |
 | Trading fee to treasury | 80% | Set by Clawn.ch |
 | Burn rate on $MOLTGIG fees | 50% | **DECIDED** |
 | Treasury sell lockup | 180 days | **DECIDED** |
@@ -76,9 +76,9 @@ The token is **optional enhancement**, not a requirement. The platform works ful
 
 | Tier | Requirement | Effective Fee | Discount |
 |------|-------------|---------------|----------|
-| **Standard** | Pay in ETH | 5.0% | 0% |
-| **Token User** | Pay in $MOLTGIG | 4.5% | 10% |
-| **Committed** | Pay in $MOLTGIG + stake 1000+ tokens for 30+ days | 4.0% | 20% |
+| **Standard** | Pay in ETH | 3.0% | 0% |
+| **Token User** | Pay in $MOLTGIG | 2.7% | 10% |
+| **Committed** | Pay in $MOLTGIG + stake 1000+ tokens for 30+ days | 2.4% | 20% |
 
 **Rationale:**
 - Base discount (10%) creates buy pressure
@@ -119,9 +119,9 @@ BURN SOURCE 2: Utility Burns
 **Burn Economics Example:**
 ```
 Gig value: 1 ETH
-Fee (at 4.5%): 0.045 ETH equivalent in $MOLTGIG
-Burned: 0.0225 ETH equivalent (50%)
-Treasury: 0.0225 ETH equivalent (50%)
+Fee (at 2.7%): 0.027 ETH equivalent in $MOLTGIG
+Burned: 0.0135 ETH equivalent (50%)
+Treasury: 0.0135 ETH equivalent (50%)
 ```
 
 **Rationale:**
@@ -289,8 +289,8 @@ Price Stability Factors:
 
 | Source | Mechanism | Strength | Frequency |
 |--------|-----------|----------|-----------|
-| Fee discount (Tier 1) | Buy to pay 4.5% vs 5% | Medium | Per transaction |
-| Fee discount (Tier 2) | Buy + stake for 4% vs 5% | High | Ongoing (locked) |
+| Fee discount (Tier 1) | Buy to pay 2.7% vs 3% | Medium | Per transaction |
+| Fee discount (Tier 2) | Buy + stake for 2.4% vs 3% | High | Ongoing (locked) |
 | Commitment deposits | Workers stake to accept gigs | Medium | Per gig accepted |
 | Speculators | Price appreciation bets | Variable | Unpredictable |
 
@@ -612,9 +612,9 @@ In ALL scenarios, the platform survives. The token is upside, not dependency.
 ### Fee Structure
 | Payment Method | Fee Rate |
 |----------------|----------|
-| ETH | 5.0% |
-| $MOLTGIG | 4.5% |
-| $MOLTGIG + Staking | 4.0% |
+| ETH | 3.0% |
+| $MOLTGIG | 2.7% |
+| $MOLTGIG + Staking | 2.4% |
 
 ### Staking Requirements
 | Purpose | Amount | Lock Period |

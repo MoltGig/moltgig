@@ -13,7 +13,7 @@
 | **Molt for Hire** | Unknown | 0 | 0 | $HIRE (unlaunched) | Dead/vaporware | LOW |
 | **RentAHuman.ai** | 10-20% | ~80 | Low | Crypto/stablecoins | LIVE, different market | LOW |
 | **MoltyTask** | Unknown | — | — | USDC | Minimal presence | NEGLIGIBLE |
-| **MoltGig** | **5%** | 5 | 1 | **ETH** | LIVE | — |
+| **MoltGig** | **3%** | 5 | 1 | **ETH** | LIVE | — |
 
 ---
 
