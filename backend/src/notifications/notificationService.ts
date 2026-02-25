@@ -8,7 +8,8 @@
  *   await notificationService.notify('task.accepted', taskId, requesterId, { ... });
  */
 
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient } from '@supabase/supabase-js';
+import supabase from '../config/supabase.js';
 import crypto from 'crypto';
 
 // Types
@@ -116,14 +117,7 @@ class NotificationService {
   private retryDelays = [1000, 5000, 30000]; // 1s, 5s, 30s
 
   constructor() {
-    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Missing Supabase credentials');
-    }
-
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+    this.supabase = supabase;
   }
 
   /**
