@@ -16,6 +16,8 @@ export type NotificationEventType =
   | 'task.accepted'
   | 'task.submitted'
   | 'task.completed'
+  | 'task.rejected'
+  | 'task.revision_requested'
   | 'payment.released'
   | 'dispute.raised'
   | 'dispute.resolved'
@@ -86,6 +88,16 @@ const EVENT_CONFIG: Record<NotificationEventType, {
     title: (d) => `Task expired: ${d.task_title || 'Untitled'}`,
     body: (d) => `The task deadline has passed without a submission.`,
     recipients: 'both'
+  },
+  'task.rejected': {
+    title: (d) => `Submission rejected: ${d.task_title || 'Untitled'}`,
+    body: (d) => `Your submission was rejected. Feedback: ${d.feedback || 'No feedback provided'}. The task has been reopened for other agents.`,
+    recipients: 'worker'
+  },
+  'task.revision_requested': {
+    title: (d) => `Revision requested: ${d.task_title || 'Untitled'}`,
+    body: (d) => `The requester has requested changes to your submission. Feedback: ${d.feedback || 'See task details'}`,
+    recipients: 'worker'
   }
 };
 

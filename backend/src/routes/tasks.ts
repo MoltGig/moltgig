@@ -3,6 +3,7 @@ import { calculateReputation } from '../utils/reputation.js';
 import { z } from 'zod';
 import supabase from '../config/supabase.js';
 import { requireAuth, optionalAuth } from '../middleware/auth.js';
+import { notificationService } from '../notifications/notificationService.js';
 import type { Task, CreateTaskInput } from '../types/index.js';
 
 const router = Router();
@@ -308,7 +309,12 @@ router.post('/:id/accept', requireAuth, async (req: Request, res: Response) => {
       res.status(409).json({ error: 'Task was already claimed by another agent' });
       return;
     }
-    
+
+    // Fire notification to requester
+    notificationService.notify('task.accepted', id).catch(err =>
+      console.error('Notification error (task.accepted):', err)
+    );
+
     res.json({ task: updatedTask });
   } catch (err) {
     console.error('Error:', err);
@@ -420,6 +426,11 @@ router.post('/:id/submit', requireAuth, async (req: Request, res: Response) => {
       return;
     }
 
+    // Fire notification to requester
+    notificationService.notify('task.submitted', id).catch(err =>
+      console.error('Notification error (task.submitted):', err)
+    );
+
     res.status(201).json({ submission });
   } catch (err) {
     console.error('Error:', err);
@@ -509,7 +520,12 @@ router.post('/:id/complete', requireAuth, async (req: Request, res: Response) =>
       }
     }
     
-    res.json({ 
+    // Fire notification to both parties
+    notificationService.notify('task.completed', id).catch(err =>
+      console.error('Notification error (task.completed):', err)
+    );
+
+    res.json({
       task: updatedTask,
       message: 'Task completed. Payment will be released on-chain.'
     });
@@ -571,11 +587,124 @@ router.post('/:id/dispute', requireAuth, async (req: Request, res: Response) => 
         .eq('id', req.agent.id);
     }
     
-    res.json({ 
+    // Fire notification to both parties
+    notificationService.notify('dispute.raised', id, { reason }).catch(err =>
+      console.error('Notification error (dispute.raised):', err)
+    );
+
+    res.json({
       message: 'Dispute raised. A moderator will review.',
       task_id: id,
       reason
     });
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
+ * POST /api/tasks/:id/reject - Reject a submission
+ *
+ * Actions:
+ *   "reject"             - Reject and reopen task for other agents
+ *   "revision_requested" - Ask the same worker to resubmit
+ */
+router.post('/:id/reject', requireAuth, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { feedback, action } = req.body;
+
+    if (!feedback) {
+      res.status(400).json({ error: 'Feedback is required when rejecting a submission' });
+      return;
+    }
+
+    const validActions = ['reject', 'revision_requested'];
+    const resolvedAction = action || 'reject';
+    if (!validActions.includes(resolvedAction)) {
+      res.status(400).json({ error: `Invalid action. Must be one of: ${validActions.join(', ')}` });
+      return;
+    }
+
+    // Get task
+    const { data: task } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (!task) {
+      res.status(404).json({ error: 'Task not found' });
+      return;
+    }
+
+    // Verify caller is the requester
+    if (task.requester_id !== req.agent?.id) {
+      res.status(403).json({ error: 'Only the task requester can reject submissions' });
+      return;
+    }
+
+    if (task.status !== 'submitted') {
+      res.status(400).json({ error: 'Task must have a pending submission to reject' });
+      return;
+    }
+
+    if (resolvedAction === 'reject') {
+      // Full rejection: reopen task for other agents
+      await supabase
+        .from('submissions')
+        .update({ status: 'rejected', feedback, updated_at: new Date().toISOString() })
+        .eq('task_id', id)
+        .eq('status', 'pending');
+
+      const { data: updatedTask } = await supabase
+        .from('tasks')
+        .update({
+          status: 'funded',
+          worker_id: null,
+          accepted_at: null,
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+      // Notify the worker
+      notificationService.notify('task.rejected', id, { feedback }).catch(err =>
+        console.error('Notification error (task.rejected):', err)
+      );
+
+      res.json({
+        task: updatedTask,
+        message: 'Submission rejected. Task reopened for other agents.',
+        feedback
+      });
+    } else {
+      // Revision requested: keep same worker, let them resubmit
+      await supabase
+        .from('submissions')
+        .update({ status: 'revision_requested', feedback, updated_at: new Date().toISOString() })
+        .eq('task_id', id)
+        .eq('status', 'pending');
+
+      const { data: updatedTask } = await supabase
+        .from('tasks')
+        .update({ status: 'accepted' })
+        .eq('id', id)
+        .select()
+        .single();
+
+      // Notify the worker
+      notificationService.notify('task.revision_requested', id, { feedback }).catch(err =>
+        console.error('Notification error (task.revision_requested):', err)
+      );
+
+      res.json({
+        task: updatedTask,
+        message: 'Revision requested. The worker can resubmit.',
+        feedback
+      });
+    }
   } catch (err) {
     console.error('Error:', err);
     res.status(500).json({ error: 'Internal server error' });
