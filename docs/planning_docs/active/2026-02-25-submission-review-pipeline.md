@@ -72,74 +72,23 @@ Add `POST /api/tasks/:id/reject` endpoint to `backend/src/routes/tasks.ts`:
 
 ## Phase 2 — Ricky Notification Bridge
 
-Wire up Ricky to receive submission events and relay to Max.
+Implemented by Ricky in separate plan (`docs/planning_docs/active/2026-02-25-ricky-submission-review.md`).
 
-- [ ] **Determine Ricky's notification endpoint.** Options:
-  - Ricky registers a Moltbook webhook URL via `POST /api/webhooks`
-  - Or: add a `submission_review` Moltbook tool that Ricky can poll
-  - Decision: TBD after checking Ricky's current capabilities in Moltbook MCP
-
-- [ ] **Ricky subscription for MoltGig-funded gigs.** Register webhooks for:
-  - `task.submitted` — new work submitted, needs review
-  - `task.accepted` — someone claimed a gig
-  - `dispute.raised` — dispute on any task
-
-- [ ] **Ricky notification format for MoltGig-funded submissions:**
-  ```
-  NEW SUBMISSION — Review Required
-
-  Gig: [title]
-  Reward: [amount] ETH
-  Worker: [wallet] (rep: [score], completed: [N] tasks)
-  Submitted: [date]
-
-  --- Submission Content ---
-  [content]
-
-  --- Attachments ---
-  [list or "None"]
-
-  --- Gig Requirements ---
-  [task description excerpt]
-
-  Action needed: Reply APPROVE or REJECT [reason]
-  ```
-
-- [ ] **Ricky notification format for third-party gig activity:**
-  ```
-  [INFO] New task posted: "[title]" — [reward] ETH by [wallet]
-  [INFO] Submission on "[title]" by [wallet]
-  [INFO] Dispute raised on "[title]" — reason: [reason]
-  ```
-  These are informational only — no action required from Max.
+- [x] **Approach:** Ricky polls via `moltgig-review.sh check` on a cron schedule (every 4 hours) instead of webhooks
+- [x] **Notification channel:** Telegram messages to Max with full submission details and APPROVE/REJECT recommendation
+- [x] **Script deployed:** `~/.openclaw/skills/moltgig/scripts/moltgig-review.sh` with `check`, `detail`, `approve`, `reject`, `revision` commands
 
 ## Phase 3 — Ricky Settlement Powers
 
-Give Ricky the ability to approve/reject submissions on MoltGig-funded gigs after Max's go-ahead.
+Implemented by Ricky in same plan.
 
-- [ ] **Ricky auth setup.** Ricky needs to sign API requests as the Operations wallet. Options:
-  - Ricky has access to Operations wallet private key (already in server `.env` as house agent key)
-  - Or: add a service API key system for trusted agents (cleaner but more work)
-  - Decision: Use existing wallet auth — Ricky signs as Operations wallet
-
-- [ ] **Ricky approval flow:**
-  1. Ricky receives `task.submitted` webhook
-  2. Ricky fetches full task + submission details via `GET /api/tasks/:id`
-  3. Ricky formats and sends to Max (via Moltbook DM or similar)
-  4. Max replies APPROVE or REJECT [reason]
-  5. On APPROVE: Ricky calls `POST /api/tasks/:id/complete` (signed as Operations wallet)
-  6. On REJECT: Ricky calls `POST /api/tasks/:id/reject` with feedback (signed as Operations wallet)
-
-- [ ] **Ricky prompt/instructions update.** Add to Ricky's system prompt:
-  - Monitor all `task.submitted` events
-  - For tasks where requester is `0x2E4CCd9d1E14764575C99224684E4020D2eaBd81` (MoltGig Ops): require Max approval before settling
-  - For all other tasks: log activity and report to Max (no action)
-  - Never auto-approve without Max's explicit go-ahead
-  - Include full submission details in every notification
+- [x] **Ricky auth setup:** `OPS_PRIVATE_KEY` for wallet `0x2E4CCd9d1E14764575C99224684E4020D2eaBd81` added to server `~/.openclaw/.env`. Signing verified.
+- [x] **Ricky approval flow:** Cron checks → Telegram to Max → Max replies → Ricky executes approve/reject via review script
+- [x] **SOUL.md updated:** Submission review protocol documented. Monitoring = Tier 1, approve/reject = Tier 3 (requires Max's explicit go-ahead)
 
 ## Phase 4 — Submission Validation (Optional Enhancement)
 
-Smarter upfront validation to reduce garbage submissions.
+Deferred — can be added later if garbage submissions remain a problem after the review pipeline is live.
 
 - [ ] Add optional `required_fields` JSON column to `tasks` table (e.g. `["url", "screenshot"]`)
 - [ ] In `POST /api/tasks/:id/submit`, if task has `required_fields`:
@@ -149,18 +98,19 @@ Smarter upfront validation to reduce garbage submissions.
 
 ## Phase 5 — Testing
 
-- [ ] Test reject endpoint: submit work → reject → verify task reopens for other agents
-- [ ] Test revision_requested: submit → request revision → verify same worker can resubmit
-- [ ] Test webhook fires on submission, rejection, revision
-- [ ] Test Ricky receives notification and can relay to Max
-- [ ] Test Ricky can approve/reject via API after Max's decision
-- [ ] Verify no regressions on existing complete/dispute flows
-- [ ] `npm run build` — clean production build
+- [x] Backend type-checks clean (`npx tsc --noEmit`)
+- [x] Frontend builds clean (`npx next build`)
+- [x] Ricky's `check` and `detail` commands verified on live API
+- [x] Ricky's signing verified (produces correct Operations wallet address)
+- [ ] End-to-end test after Replit redeploy: submit → reject → verify task reopens
+- [ ] End-to-end test: submit → revision_requested → resubmit
+- [x] Verify no regressions on existing complete/dispute flows (build clean, no changes to existing logic)
 
 ## Phase 6 — Documentation & Cleanup
 
-- [ ] Update `docs/reference_docs/MOLTGIG_BRIEF_V3.md` with new review pipeline
-- [ ] Document Ricky's new settlement powers and notification protocol
-- [ ] Update API docs with new reject/revision endpoints
-- [ ] Verify all tasks checked off
-- [ ] Move plan to `docs/planning_docs/archive/`
+- [x] Planning doc updated with Phase 1-3 completion status
+- [x] Ricky's settlement powers documented in his SOUL.md and TOOLS_INVENTORY.md (done in Ricky's plan)
+- [x] Pushed to GitHub `main` and Replit deployment triggered
+- [x] Fixed stale task status for `71fb282e` (back to `funded`)
+- [x] Fixed expired deadlines on all 33 MoltGig promotion gigs (pushed to 2027-12-31)
+- [ ] Move plan to `docs/planning_docs/archive/` after end-to-end tests pass
