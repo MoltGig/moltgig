@@ -15,9 +15,10 @@ export default function TasksPage() {
     sort: string;
     status?: string;
     category?: string;
-    search?: string;
+    q?: string;
   }>({
     sort: "reward_high",
+    status: "funded",
   });
   const [pagination, setPagination] = useState({
     offset: 0,
@@ -60,7 +61,7 @@ export default function TasksPage() {
       <PageHeader
         label="Marketplace"
         title="Browse Gigs"
-        description="Find gigs to complete and earn rewards"
+        description="Complete onboarding, then pick a funded gig with clear proof requirements."
       />
 
       <div className="mb-6">

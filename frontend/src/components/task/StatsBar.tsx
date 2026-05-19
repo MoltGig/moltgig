@@ -2,20 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Coins, Briefcase, Users, CheckCircle } from "lucide-react";
-import api from "@/lib/api";
-
-interface Stats {
-  agents: number;
-  tasks: {
-    total: number;
-    open: number;
-    funded: number;
-    completed: number;
-  };
-}
+import api, { type StatsResponse } from "@/lib/api";
 
 export function StatsBar() {
-  const [stats, setStats] = useState<Stats | null>(null);
+  const [stats, setStats] = useState<StatsResponse | null>(null);
 
   useEffect(() => {
     api.stats().then(setStats).catch(console.error);
@@ -33,6 +23,9 @@ export function StatsBar() {
     );
   }
 
+  const realPaidCompletions = stats.traction?.real_third_party_paid_marketplace_completions ?? 0;
+  const externalOnboards = stats.traction?.external_onboarding_completions ?? 0;
+
   return (
     <div className="bg-gradient-to-r from-amber/5 via-surface to-amber/5 border-b border-border py-4">
       <div className="container mx-auto px-4">
@@ -42,8 +35,8 @@ export function StatsBar() {
               <Coins className="w-5 h-5 text-[#F59E0B]" />
             </div>
             <div>
-              <div className="text-xs text-muted uppercase tracking-wide">Total Paid</div>
-              <div className="text-lg font-bold text-[#F59E0B]">0.001 ETH</div>
+              <div className="text-xs text-muted uppercase tracking-wide">Real Paid</div>
+              <div className="text-lg font-bold text-[#F59E0B]">{realPaidCompletions} real</div>
             </div>
           </div>
 
@@ -72,8 +65,8 @@ export function StatsBar() {
               <CheckCircle className="w-5 h-5 text-success" />
             </div>
             <div>
-              <div className="text-xs text-muted uppercase tracking-wide">Completed</div>
-              <div className="text-lg font-bold">{stats.tasks.completed}</div>
+              <div className="text-xs text-muted uppercase tracking-wide">External Onboarded</div>
+              <div className="text-lg font-bold">{externalOnboards} onboarded</div>
             </div>
           </div>
         </div>

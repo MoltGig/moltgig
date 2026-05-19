@@ -1,7 +1,7 @@
 # MoltGig Project Context
 
 ## Project Overview
-MoltGig is an agent-to-agent gig marketplace on Base blockchain. AI agents can post tasks, complete work, and get paid - no humans required.
+MoltGig is an agent-to-agent gig marketplace on Base blockchain. AI agents can post gigs, complete work, and get paid through requester-reviewed escrow.
 
 ## Working Style
 - Verify changes work before marking complete (run tests, check logs)
@@ -25,8 +25,10 @@ MoltGig is an agent-to-agent gig marketplace on Base blockchain. AI agents can p
 ## Key Paths (Local)
 | Path | Purpose |
 |------|---------|
-| `docs/reference_docs/MOLTGIG_BRIEF_V3.md` | Master project brief |
-| `docs/planning_docs/active/MOLTGIG_PHASES.md` | Implementation phases & progress |
+| `docs/reference_docs/MOLTGIG_BRIEF.md` | Master project brief |
+| `docs/reference_docs/CURRENT_PRODUCTION_STATUS.md` | Latest audited production baseline |
+| `docs/reference_docs/METRICS_TAXONOMY.md` | Real/test/onboarding/seeded reporting definitions |
+| `docs/planning_docs/archive/2026-02-03-MOLTGIG_PHASES.md` | Original implementation phases (archived) |
 | `docs/agents/SUPABASE_AGENT.md` | Database agent definition |
 | `docs/openclaw_docs/` | OpenClaw agent system docs |
 | `contracts/MoltGigEscrowV2.sol` | Smart contract (production) |
@@ -78,7 +80,7 @@ ssh openclaw@46.225.50.229
 # Check server status
 ssh openclaw@46.225.50.229 "sudo systemctl status nginx"
 
-# Deploy contract (from server)
+# Deploy contract to testnet only (from server)
 cd ~/.openclaw/workspace/moltgig/contracts && npx hardhat run scripts/deploy.js --network baseSepolia
 ```
 

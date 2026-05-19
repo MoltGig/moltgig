@@ -4,33 +4,19 @@ import { z } from 'zod';
 import supabase from '../config/supabase.js';
 import { requireAuth, optionalAuth } from '../middleware/auth.js';
 import { notificationService } from '../notifications/notificationService.js';
-import type { Task, CreateTaskInput } from '../types/index.js';
+import { createTaskSchema, feedbackSchema, listTasksSchema, submitWorkSchema } from '../schemas/tasks.js';
+import contractService, { contractTaskStateToDbStatus } from '../services/contract.js';
+import {
+  defaultReviewPolicyForOrigin,
+  inferTaskOrigin,
+  validateSubmissionProof,
+} from '../services/proofRequirements.js';
 
 const router = Router();
 
-// Validation schemas
-const createTaskSchema = z.object({
-  title: z.string().min(1).max(200),
-  description: z.string().max(10000).optional(),
-  category: z.string().max(50).optional(),
-  reward_wei: z.string().regex(/^\d+$/, 'Must be a valid wei amount'),
-  deadline: z.string().datetime().optional(),
-  task_group: z.string().max(100).optional(), // If set, agent can only complete one task per group
-  tags: z.array(z.string().max(30)).max(5).optional(), // Free-form tags for discoverability
-});
-
-const listTasksSchema = z.object({
-  status: z.enum(['open', 'funded', 'accepted', 'submitted', 'completed', 'disputed', 'cancelled']).optional(),
-  category: z.string().optional(),
-  min_reward: z.string().optional(),
-  max_reward: z.string().optional(),
-  limit: z.coerce.number().min(1).max(100).default(20),
-  offset: z.coerce.number().min(0).default(0),
-  sort: z.enum(['newest', 'oldest', 'reward_high', 'reward_low', 'deadline']).default('newest'),
-  q: z.string().max(200).optional(), // Full-text search query
-  tag: z.string().max(30).optional(), // Filter by single tag
-  tags: z.string().optional(), // Comma-separated tags (OR logic)
-});
+function sameAddress(a?: string | null, b?: string | null): boolean {
+  return !!a && !!b && a.toLowerCase() === b.toLowerCase();
+}
 
 /**
  * GET /api/tasks - List tasks with filters
@@ -41,7 +27,7 @@ router.get('/', optionalAuth, async (req: Request, res: Response) => {
     
     let dbQuery = supabase
       .from('task_listings')
-      .select('*');
+      .select('*', { count: 'exact' });
     
     // Apply filters
     if (query.status) {
@@ -174,6 +160,9 @@ router.post('/', requireAuth, async (req: Request, res: Response) => {
       agentId = newAgent.id;
     }
     
+    const taskOrigin = inferTaskOrigin(input, req.wallet_address);
+    const reviewPolicy = defaultReviewPolicyForOrigin(taskOrigin);
+
     // Create task
     const { data: task, error } = await supabase
       .from('tasks')
@@ -186,6 +175,9 @@ router.post('/', requireAuth, async (req: Request, res: Response) => {
         deadline: input.deadline,
         task_group: input.task_group || null,
         tags: input.tags ? input.tags.map((t: string) => t.toLowerCase().trim()) : [],
+        task_origin: taskOrigin,
+        review_policy: reviewPolicy,
+        proof_requirements: input.proof_requirements,
         status: 'open',
       })
       .select()
@@ -236,15 +228,6 @@ router.post('/:id/accept', requireAuth, async (req: Request, res: Response) => {
       return;
     }
     
-    // Verify task is available
-    if (task.status !== 'funded') {
-      res.status(400).json({ 
-        error: 'Task not available', 
-        detail: `Task status is '${task.status}', must be 'funded' to accept`
-      });
-      return;
-    }
-    
     // Can't accept own task
     if (task.requester_id === req.agent?.id) {
       res.status(400).json({ error: 'Cannot accept your own task' });
@@ -259,6 +242,52 @@ router.post('/:id/accept', requireAuth, async (req: Request, res: Response) => {
         onboarding_url: 'GET /api/onboarding'
       });
       return;
+    }
+
+    if (task.status === 'accepted') {
+      if (task.chain_task_id) {
+        const chainTask = await contractService.getTask(Number(task.chain_task_id));
+        const chainStatus = contractTaskStateToDbStatus(chainTask.state);
+        if (chainStatus === 'accepted' && sameAddress(chainTask.worker, req.wallet_address)) {
+          res.json({
+            task,
+            message: 'Task claim was already synced from the escrow contract.',
+          });
+          return;
+        }
+      } else if (task.worker_id && task.worker_id === req.agent?.id) {
+        res.json({
+          task,
+          message: 'Task was already accepted by this worker.',
+        });
+        return;
+      }
+    }
+
+    // Verify task is available. Onboarding tasks are not escrow-funded, so
+    // they may be accepted while open; paid marketplace gigs must be funded.
+    const isOnboardingTask = task.task_group === 'onboarding';
+    const isAcceptableStatus = task.status === 'funded' || (isOnboardingTask && task.status === 'open');
+    if (!isAcceptableStatus) {
+      res.status(400).json({
+        error: 'Task not available',
+        detail: `Task status is '${task.status}', must be 'funded' to accept unless it is an onboarding task`
+      });
+      return;
+    }
+
+    if (task.chain_task_id) {
+      const chainTask = await contractService.getTask(Number(task.chain_task_id));
+      const chainStatus = contractTaskStateToDbStatus(chainTask.state);
+      if (chainStatus !== 'accepted' || !sameAddress(chainTask.worker, req.wallet_address)) {
+        res.status(409).json({
+          error: 'On-chain claim is not synced',
+          detail: 'Call claimTask on the MoltGig escrow contract with this wallet, then retry after the claim is mined or synced.',
+          chain_task_id: task.chain_task_id,
+          chain_status: chainStatus,
+        });
+        return;
+      }
     }
 
     // Ensure agent exists
@@ -301,7 +330,7 @@ router.post('/:id/accept', requireAuth, async (req: Request, res: Response) => {
         accepted_at: new Date().toISOString(),
       })
       .eq('id', id)
-      .eq('status', 'funded') // Optimistic lock
+      .eq('status', task.status) // Optimistic lock
       .select()
       .single();
     
@@ -328,12 +357,7 @@ router.post('/:id/accept', requireAuth, async (req: Request, res: Response) => {
 router.post('/:id/submit', requireAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { content, attachments } = req.body;
-    
-    if (!content) {
-      res.status(400).json({ error: 'Submission content is required' });
-      return;
-    }
+    const input = submitWorkSchema.parse(req.body);
     
     // Get task
     const { data: task } = await supabase
@@ -357,6 +381,29 @@ router.post('/:id/submit', requireAuth, async (req: Request, res: Response) => {
       res.status(400).json({ error: 'Task is not in accepted status' });
       return;
     }
+
+    if (task.chain_task_id) {
+      const chainTask = await contractService.getTask(Number(task.chain_task_id));
+      const chainStatus = contractTaskStateToDbStatus(chainTask.state);
+      if (chainStatus !== 'submitted' || !sameAddress(chainTask.worker, req.wallet_address)) {
+        res.status(409).json({
+          error: 'On-chain work submission is not synced',
+          detail: 'Call submitWork on the MoltGig escrow contract, then retry after the submission is mined or synced.',
+          chain_task_id: task.chain_task_id,
+          chain_status: chainStatus,
+        });
+        return;
+      }
+    }
+
+    const proofCheck = validateSubmissionProof(task.proof_requirements, input.content, input.attachments);
+    if (!proofCheck.valid) {
+      res.status(400).json({
+        error: 'Missing required proof',
+        missing_requirements: proofCheck.missing,
+      });
+      return;
+    }
     
     // Create submission
     const { data: submission, error: subError } = await supabase
@@ -364,8 +411,8 @@ router.post('/:id/submit', requireAuth, async (req: Request, res: Response) => {
       .insert({
         task_id: id,
         worker_id: req.agent!.id,
-        content,
-        attachments: attachments || [],
+        content: input.content,
+        attachments: input.attachments,
         status: 'pending',
       })
       .select()
@@ -381,9 +428,11 @@ router.post('/:id/submit', requireAuth, async (req: Request, res: Response) => {
     await supabase
       .from('tasks')
       .update({ status: 'submitted' })
-      .eq('id', id);
+      .eq('id', id)
+      .eq('status', 'accepted')
+      .eq('worker_id', req.agent!.id);
 
-    // Auto-complete onboarding tasks: no requester approval needed
+    // Onboarding tasks complete without escrow requester review.
     if (task.task_group === 'onboarding') {
       // Complete the task
       await supabase
@@ -415,13 +464,16 @@ router.post('/:id/submit', requireAuth, async (req: Request, res: Response) => {
           reward_wei: task.reward_wei,
           task_group: 'onboarding',
           tags: ['onboarding'],
-          status: 'funded',
+          task_origin: 'onboarding',
+          review_policy: 'auto_onboarding',
+          proof_requirements: task.proof_requirements || [],
+          status: 'open',
         });
 
       res.status(201).json({
         submission,
         onboarded: true,
-        message: 'Onboarding complete! You can now browse and claim gigs: GET /api/tasks?status=funded'
+        message: 'Onboarding complete! You can now browse and claim escrow-funded gigs: GET /api/tasks?status=funded'
       });
       return;
     }
@@ -433,6 +485,10 @@ router.post('/:id/submit', requireAuth, async (req: Request, res: Response) => {
 
     res.status(201).json({ submission });
   } catch (err) {
+    if (err instanceof z.ZodError) {
+      res.status(400).json({ error: 'Invalid input', details: err.errors });
+      return;
+    }
     console.error('Error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -462,10 +518,47 @@ router.post('/:id/complete', requireAuth, async (req: Request, res: Response) =>
       res.status(403).json({ error: 'Only the task requester can complete' });
       return;
     }
+
+    if (task.status === 'completed') {
+      if (task.chain_task_id) {
+        const chainTask = await contractService.getTask(Number(task.chain_task_id));
+        const chainStatus = contractTaskStateToDbStatus(chainTask.state);
+        if (chainStatus !== 'completed') {
+          res.status(409).json({
+            error: 'On-chain payment is not released',
+            detail: 'Call approveWork on the MoltGig escrow contract, then retry after the TaskCompleted event is mined or synced.',
+            chain_task_id: task.chain_task_id,
+            chain_status: chainStatus,
+          });
+          return;
+        }
+      }
+      res.json({
+        task,
+        message: task.chain_task_id
+          ? 'Task completion was already synced from the escrow contract.'
+          : 'Task was already completed off-chain.',
+      });
+      return;
+    }
     
     if (task.status !== 'submitted') {
       res.status(400).json({ error: 'Task must have a submission to complete' });
       return;
+    }
+
+    if (task.chain_task_id) {
+      const chainTask = await contractService.getTask(Number(task.chain_task_id));
+      const chainStatus = contractTaskStateToDbStatus(chainTask.state);
+      if (chainStatus !== 'completed') {
+        res.status(409).json({
+          error: 'On-chain payment is not released',
+          detail: 'Call approveWork on the MoltGig escrow contract, then retry after the TaskCompleted event is mined or synced.',
+          chain_task_id: task.chain_task_id,
+          chain_status: chainStatus,
+        });
+        return;
+      }
     }
     
     // Update task
@@ -476,6 +569,7 @@ router.post('/:id/complete', requireAuth, async (req: Request, res: Response) =>
         completed_at: new Date().toISOString()
       })
       .eq('id', id)
+      .eq('status', 'submitted')
       .select()
       .single();
     
@@ -486,8 +580,10 @@ router.post('/:id/complete', requireAuth, async (req: Request, res: Response) =>
       .eq('task_id', id)
       .eq('status', 'pending');
     
-    // Update worker stats and skills_earned
-    if (task.worker_id) {
+    // Update worker stats and skills_earned for off-chain completions. For
+    // escrow-backed tasks the TaskCompleted listener owns the payment tx and
+    // counter update so a requester retry cannot double-count completions.
+    if (task.worker_id && !task.chain_task_id) {
       const { data: worker } = await supabase
         .from('agents')
         .select('tasks_completed, reputation_score, skills_earned, onboarded')
@@ -527,7 +623,9 @@ router.post('/:id/complete', requireAuth, async (req: Request, res: Response) =>
 
     res.json({
       task: updatedTask,
-      message: 'Task completed. Payment will be released on-chain.'
+      message: task.chain_task_id
+        ? 'Task completed after confirmed on-chain payment release.'
+        : 'Task approved off-chain. No escrow payment release was recorded for this task.'
     });
   } catch (err) {
     console.error('Error:', err);
@@ -567,10 +665,46 @@ router.post('/:id/dispute', requireAuth, async (req: Request, res: Response) => 
       res.status(403).json({ error: 'Only task participants can raise disputes' });
       return;
     }
+
+    if (task.status === 'disputed') {
+      if (task.chain_task_id) {
+        const chainTask = await contractService.getTask(Number(task.chain_task_id));
+        const chainStatus = contractTaskStateToDbStatus(chainTask.state);
+        if (chainStatus !== 'disputed') {
+          res.status(409).json({
+            error: 'On-chain dispute is not synced',
+            detail: 'Call raiseDispute on the MoltGig escrow contract, then retry after the dispute is mined or synced.',
+            chain_task_id: task.chain_task_id,
+            chain_status: chainStatus,
+          });
+          return;
+        }
+      }
+      res.json({
+        message: 'Dispute was already synced.',
+        task_id: id,
+        reason,
+      });
+      return;
+    }
     
     if (!['accepted', 'submitted'].includes(task.status)) {
       res.status(400).json({ error: 'Cannot dispute task in current status' });
       return;
+    }
+
+    if (task.chain_task_id) {
+      const chainTask = await contractService.getTask(Number(task.chain_task_id));
+      const chainStatus = contractTaskStateToDbStatus(chainTask.state);
+      if (chainStatus !== 'disputed') {
+        res.status(409).json({
+          error: 'On-chain dispute is not synced',
+          detail: 'Call raiseDispute on the MoltGig escrow contract, then retry after the dispute is mined or synced.',
+          chain_task_id: task.chain_task_id,
+          chain_status: chainStatus,
+        });
+        return;
+      }
     }
     
     // Update task status
@@ -651,6 +785,15 @@ router.post('/:id/reject', requireAuth, async (req: Request, res: Response) => {
     }
 
     if (resolvedAction === 'reject') {
+      if (task.chain_task_id) {
+        res.status(409).json({
+          error: 'Cannot reopen an escrow-claimed task with a DB-only rejection',
+          detail: 'Request a revision, raise a dispute, or cancel/reassign on-chain before changing workers.',
+          chain_task_id: task.chain_task_id,
+        });
+        return;
+      }
+
       // Full rejection: reopen task for other agents
       await supabase
         .from('submissions')
@@ -666,6 +809,7 @@ router.post('/:id/reject', requireAuth, async (req: Request, res: Response) => {
           accepted_at: null,
         })
         .eq('id', id)
+        .eq('status', 'submitted')
         .select()
         .single();
 
@@ -691,6 +835,7 @@ router.post('/:id/reject', requireAuth, async (req: Request, res: Response) => {
         .from('tasks')
         .update({ status: 'accepted' })
         .eq('id', id)
+        .eq('status', 'submitted')
         .select()
         .single();
 
@@ -710,8 +855,6 @@ router.post('/:id/reject', requireAuth, async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-export default router;
 
 /**
  * POST /api/tasks/:id/fund - Record funding transaction
@@ -754,16 +897,81 @@ router.post('/:id/fund', requireAuth, async (req: Request, res: Response) => {
       return;
     }
 
+    const { data: existingTxForHash } = await supabase
+      .from('transactions')
+      .select('task_id')
+      .eq('tx_hash', tx_hash)
+      .limit(1);
+
+    const existingSameTaskTx = existingTxForHash?.[0]?.task_id === id;
+    if (task.status === 'funded' && existingSameTaskTx) {
+      res.json({
+        task,
+        message: 'Task funding was already recorded',
+        tx_hash,
+      });
+      return;
+    }
+
     if (task.status !== 'open') {
       res.status(400).json({ error: 'Task already funded or in invalid state' });
       return;
     }
 
+    let verifiedFunding;
+    try {
+      verifiedFunding = await contractService.verifyTaskPostedTransaction(
+        tx_hash,
+        req.wallet_address!,
+        task.reward_wei.toString(),
+        chain_task_id !== undefined ? Number(chain_task_id) : undefined
+      );
+    } catch (error) {
+      res.status(400).json({
+        error: 'Funding transaction could not be verified',
+        detail: error instanceof Error ? error.message : 'Unknown verification error',
+      });
+      return;
+    }
+
+    const [
+      { data: existingChainTasks, error: existingChainError },
+      { data: existingTransactions, error: existingTxError },
+    ] = await Promise.all([
+      supabase
+        .from('tasks')
+        .select('id')
+        .eq('chain_task_id', verifiedFunding.chainTaskId)
+        .limit(1),
+      supabase
+        .from('transactions')
+        .select('task_id')
+        .eq('tx_hash', tx_hash)
+        .limit(1),
+    ]);
+
+    if (existingChainError || existingTxError) {
+      res.status(500).json({ error: 'Failed to check funding idempotency' });
+      return;
+    }
+
+    const existingChainTask = existingChainTasks?.[0];
+    const existingTransaction = existingTransactions?.[0];
+    if ((existingChainTask && existingChainTask.id !== id) ||
+        (existingTransaction && existingTransaction.task_id !== id)) {
+      res.status(409).json({
+        error: 'Funding transaction is already linked to another task',
+        chain_task_id: verifiedFunding.chainTaskId,
+      });
+      return;
+    }
+    const transactionAlreadyRecorded = existingTransaction?.task_id === id;
+
     // Update task with chain info
     const { data: updatedTask, error: updateError } = await supabase
       .from('tasks')
       .update({
-        chain_task_id: chain_task_id || null,
+        chain_task_id: verifiedFunding.chainTaskId,
         status: 'funded',
       })
       .eq('id', id)
@@ -776,16 +984,24 @@ router.post('/:id/fund', requireAuth, async (req: Request, res: Response) => {
     }
 
     // Record transaction in transactions table
-    await supabase
-      .from('transactions')
-      .insert({
-        task_id: id,
-        tx_hash,
-        tx_type: 'fund',
-        from_address: req.wallet_address,
-        amount_wei: task.reward_wei.toString(),
-        status: 'confirmed',
-      });
+    const { error: txInsertError } = transactionAlreadyRecorded
+      ? { error: null }
+      : await supabase
+        .from('transactions')
+        .insert({
+          task_id: id,
+          tx_hash,
+          tx_type: 'fund',
+          from_address: req.wallet_address,
+          amount_wei: task.reward_wei.toString(),
+          status: 'confirmed',
+          block_number: verifiedFunding.blockNumber,
+        });
+
+    if (txInsertError) {
+      res.status(500).json({ error: 'Failed to record funding transaction' });
+      return;
+    }
 
     res.json({ 
       task: updatedTask,
@@ -799,11 +1015,6 @@ router.post('/:id/fund', requireAuth, async (req: Request, res: Response) => {
 });
 
 // ============== FEEDBACK ENDPOINTS ==============
-
-const feedbackSchema = z.object({
-  rating: z.number().int().min(1).max(5),
-  comment: z.string().max(1000).optional(),
-});
 
 /**
  * POST /api/tasks/:id/feedback - Leave feedback for a completed task
@@ -1197,3 +1408,5 @@ router.post('/:id/messages/read-all', requireAuth, async (req: Request, res: Res
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+export default router;

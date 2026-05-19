@@ -8,17 +8,22 @@ echo ""
 
 # Test 1: Moltbook API Functionality
 echo "🔍 TEST 1: Moltbook API Posting"
-MOLTBOOK_TEST=$(curl -s -X POST "https://www.moltbook.com/api/v1/posts" \
-  -H "Authorization: Bearer moltbook_sk_6OidlgiT5U3GQwHgdkd1qG02D1RC9Lr_" \
-  -H "Content-Type: application/json" \
-  -d '{"submolt": "general", "title": "AUTOMATED TEST", "content": "Testing automated verification"}')
-
-if echo "$MOLTBOOK_TEST" | grep -q '"success":true'; then
-    echo "✅ Moltbook posting: WORKING"
-    MOLTBOOK_STATUS="WORKING"
+if [ -z "$MOLTBOOK_API_KEY" ]; then
+    echo "⚠️ Moltbook posting: SKIPPED - set MOLTBOOK_API_KEY to test archived script"
+    MOLTBOOK_STATUS="SKIPPED"
 else
-    echo "❌ Moltbook posting: FAILED - $MOLTBOOK_TEST"
-    MOLTBOOK_STATUS="FAILED"
+    MOLTBOOK_TEST=$(curl -s -X POST "https://www.moltbook.com/api/v1/posts" \
+      -H "Authorization: Bearer $MOLTBOOK_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"submolt": "general", "title": "AUTOMATED TEST", "content": "Testing automated verification"}')
+
+    if echo "$MOLTBOOK_TEST" | grep -q '"success":true'; then
+        echo "✅ Moltbook posting: WORKING"
+        MOLTBOOK_STATUS="WORKING"
+    else
+        echo "❌ Moltbook posting: FAILED - $MOLTBOOK_TEST"
+        MOLTBOOK_STATUS="FAILED"
+    fi
 fi
 
 # Test 2: Smart Contract Deployment

@@ -40,7 +40,7 @@ export enum ContractTaskState {
 }
 
 // Map contract states to our database states
-const CONTRACT_TO_DB_STATE: Record<number, string> = {
+export const CONTRACT_TO_DB_STATE: Record<number, string> = {
   [ContractTaskState.Posted]: 'funded',      // Posted on-chain = funded
   [ContractTaskState.Claimed]: 'accepted',
   [ContractTaskState.InProgress]: 'accepted',
@@ -50,19 +50,37 @@ const CONTRACT_TO_DB_STATE: Record<number, string> = {
   [ContractTaskState.Cancelled]: 'cancelled',
 };
 
+export function contractTaskStateToDbStatus(state: number): string {
+  return CONTRACT_TO_DB_STATE[state] || 'open';
+}
+
+export interface ContractPaymentEvent {
+  chainTaskId: number;
+  txHash: string;
+  blockNumber: number;
+  logIndex: number;
+  txType: 'complete' | 'refund' | 'dispute_resolve';
+  fromAddress: string;
+  toAddress: string | null;
+  amountWei: string | null;
+  feeWei: string | null;
+  winnerAddress?: string | null;
+}
+
 export class ContractService {
   private provider: Provider;
   private contract: Contract;
+  private contractAddress: string;
   private wallet: Wallet | null = null;
 
   constructor() {
     const rpcUrl = process.env.BASE_RPC_URL ||
       `https://base-mainnet.g.alchemy.com/v2/${process.env.MOLTGIG_ALCHEMY_API_KEY}`;
-    const contractAddress = process.env.ESCROW_CONTRACT_ADDRESS ||
+    this.contractAddress = process.env.ESCROW_CONTRACT_ADDRESS ||
       '0xf605936078F3d9670780a9582d53998a383f8020';
 
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
-    this.contract = new Contract(contractAddress, ESCROW_ABI, this.provider);
+    this.contract = new Contract(this.contractAddress, ESCROW_ABI, this.provider);
 
     // If we have a private key, create a wallet for write operations
     if (process.env.MOLTGIG_DEPLOYER_PRIVATE_KEY) {
@@ -120,6 +138,212 @@ export class ContractService {
     return Number(await this.contract.taskCounter());
   }
 
+  async verifyTaskPostedTransaction(
+    txHash: string,
+    expectedPoster: string,
+    expectedValueWei: string,
+    expectedChainTaskId?: number
+  ) {
+    const receipt = await this.provider.getTransactionReceipt(txHash);
+    if (!receipt) {
+      throw new Error('Funding transaction is not mined yet');
+    }
+    if (receipt.status !== 1) {
+      throw new Error('Funding transaction failed on-chain');
+    }
+
+    const taskPostedLog = receipt.logs
+      .filter((log) => log.address.toLowerCase() === this.contractAddress.toLowerCase())
+      .map((log) => {
+        try {
+          return this.contract.interface.parseLog(log);
+        } catch {
+          return null;
+        }
+      })
+      .find((log) => log?.name === 'TaskPosted');
+
+    if (!taskPostedLog) {
+      throw new Error('Funding transaction did not emit TaskPosted for MoltGig escrow');
+    }
+
+    const chainTaskId = Number(taskPostedLog.args.taskId);
+    const poster = String(taskPostedLog.args.poster).toLowerCase();
+    const value = taskPostedLog.args.value.toString();
+
+    if (poster !== expectedPoster.toLowerCase()) {
+      throw new Error('Funding transaction poster does not match requester');
+    }
+    if (value !== expectedValueWei) {
+      throw new Error('Funding transaction value does not match task reward');
+    }
+    if (expectedChainTaskId !== undefined && expectedChainTaskId !== chainTaskId) {
+      throw new Error('Funding transaction task id does not match request');
+    }
+
+    return {
+      chainTaskId,
+      poster,
+      value,
+      blockNumber: receipt.blockNumber,
+      txHash,
+    };
+  }
+
+  private getEventBackfillFromBlock(): number {
+    const rawValue = process.env.ESCROW_CONTRACT_DEPLOY_BLOCK || process.env.CONTRACT_DEPLOY_BLOCK || '0';
+    const fromBlock = Number(rawValue);
+    if (!Number.isFinite(fromBlock) || fromBlock < 0) {
+      throw new Error('Invalid ESCROW_CONTRACT_DEPLOY_BLOCK/CONTRACT_DEPLOY_BLOCK');
+    }
+    return Math.floor(fromBlock);
+  }
+
+  private getEventBackfillChunkSize(): number {
+    const rawValue = process.env.ESCROW_EVENT_BACKFILL_CHUNK_SIZE || '100000';
+    const chunkSize = Number(rawValue);
+    if (!Number.isFinite(chunkSize) || chunkSize < 1) {
+      throw new Error('Invalid ESCROW_EVENT_BACKFILL_CHUNK_SIZE');
+    }
+    return Math.floor(chunkSize);
+  }
+
+  private sortEventsByChainOrder(events: Array<any>): Array<any> {
+    return [...events].sort((a, b) => {
+      if ((a.blockNumber || 0) !== (b.blockNumber || 0)) {
+        return (a.blockNumber || 0) - (b.blockNumber || 0);
+      }
+      return (a.index ?? a.logIndex ?? 0) - (b.index ?? b.logIndex ?? 0);
+    });
+  }
+
+  private async queryLatestPaymentEventInChunks(chainTaskId: number): Promise<{ eventName: 'TaskCompleted' | 'DisputeResolved'; event: any } | null> {
+    const fromBlock = this.getEventBackfillFromBlock();
+    const latestBlock = await this.provider.getBlockNumber();
+    const chunkSize = this.getEventBackfillChunkSize();
+    const filters = this.contract.filters as any;
+
+    // Scan backwards so recent repairs finish quickly, while avoiding provider
+    // getLogs range limits on Base mainnet.
+    for (let endBlock = latestBlock; endBlock >= fromBlock; endBlock -= chunkSize) {
+      const startBlock = Math.max(fromBlock, endBlock - chunkSize + 1);
+      const [completedEvents, disputeResolvedEvents] = await Promise.all([
+        this.contract.queryFilter(filters.TaskCompleted(BigInt(chainTaskId)), startBlock, endBlock) as Promise<Array<any>>,
+        this.contract.queryFilter(filters.DisputeResolved(BigInt(chainTaskId)), startBlock, endBlock) as Promise<Array<any>>,
+      ]);
+      const latestInChunk = this.sortEventsByChainOrder([
+        ...completedEvents.map((event) => ({ eventName: 'TaskCompleted' as const, event })),
+        ...disputeResolvedEvents.map((event) => ({ eventName: 'DisputeResolved' as const, event })),
+      ]).at(-1);
+
+      if (latestInChunk) {
+        return latestInChunk;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Find the chain event that proves an escrow-backed task paid out or refunded.
+   *
+   * This is used by explicit admin reconciliation repair after listener downtime.
+   * It does not infer payment finality from task state alone; it requires the
+   * concrete event log and transaction hash.
+   */
+  async findPaymentEventForTask(
+    chainTaskId: number,
+    workerWallet?: string | null
+  ): Promise<ContractPaymentEvent | null> {
+    const paymentEvent = await this.queryLatestPaymentEventInChunks(chainTaskId);
+
+    if (!paymentEvent) {
+      return null;
+    }
+
+    if (paymentEvent.eventName === 'TaskCompleted') {
+      const completedEvent = paymentEvent.event;
+      const chainTask = await this.getTask(chainTaskId);
+      const chainWorker = chainTask.worker === ethers.ZeroAddress ? null : chainTask.worker.toLowerCase();
+
+      return {
+        chainTaskId,
+        txHash: completedEvent.transactionHash,
+        blockNumber: completedEvent.blockNumber,
+        logIndex: completedEvent.index ?? completedEvent.logIndex ?? 0,
+        txType: 'complete',
+        fromAddress: this.contractAddress,
+        toAddress: chainWorker || workerWallet?.toLowerCase() || null,
+        amountWei: completedEvent.args.payment?.toString() || null,
+        feeWei: completedEvent.args.fee?.toString() || null,
+      };
+    }
+
+    const disputeResolvedEvent = paymentEvent.event;
+    const chainTask = await this.getTask(chainTaskId);
+    const chainWorker = chainTask.worker === ethers.ZeroAddress ? null : chainTask.worker.toLowerCase();
+    const winnerAddress = String(disputeResolvedEvent.args.winner || '').toLowerCase();
+    const normalizedWorker = workerWallet?.toLowerCase() || null;
+    const effectiveWorker = chainWorker || normalizedWorker;
+    const workerWon = effectiveWorker !== null && winnerAddress === effectiveWorker;
+
+    return {
+      chainTaskId,
+      txHash: disputeResolvedEvent.transactionHash,
+      blockNumber: disputeResolvedEvent.blockNumber,
+      logIndex: disputeResolvedEvent.index ?? disputeResolvedEvent.logIndex ?? 0,
+      txType: workerWon ? 'dispute_resolve' : 'refund',
+      fromAddress: this.contractAddress,
+      toAddress: winnerAddress || null,
+      amountWei: null,
+      feeWei: disputeResolvedEvent.args.fee?.toString() || null,
+      winnerAddress,
+    };
+  }
+
+  /**
+   * Record a confirmed payment/refund event recovered from chain logs.
+   * Returns false when the tx hash already exists, keeping the operation idempotent.
+   */
+  async recordBackfilledPaymentEvent(taskId: string, event: ContractPaymentEvent): Promise<boolean> {
+    const { data: existing, error: existingError } = await supabase
+      .from('transactions')
+      .select('id')
+      .eq('tx_hash', event.txHash)
+      .maybeSingle();
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    if (existing) {
+      return false;
+    }
+
+    const { error } = await supabase
+      .from('transactions')
+      .insert({
+        task_id: taskId,
+        tx_hash: event.txHash,
+        tx_type: event.txType,
+        from_address: event.fromAddress.toLowerCase(),
+        to_address: event.toAddress?.toLowerCase() || null,
+        amount_wei: event.amountWei,
+        fee_wei: event.feeWei,
+        block_number: event.blockNumber,
+        status: 'confirmed',
+      });
+
+    if (error) {
+      if (error.code === '23505') {
+        return false;
+      }
+      throw error;
+    }
+
+    return true;
+  }
+
   /**
    * Record a transaction in the database
    */
@@ -129,7 +353,8 @@ export class ContractService {
     txType: 'fund' | 'complete' | 'refund' | 'dispute_resolve',
     fromAddress: string,
     toAddress: string | null,
-    amountWei: string | null
+    amountWei: string | null,
+    feeWei: string | null = null
   ) {
     const { data, error } = await supabase
       .from('transactions')
@@ -140,6 +365,7 @@ export class ContractService {
         from_address: fromAddress.toLowerCase(),
         to_address: toAddress?.toLowerCase() || null,
         amount_wei: amountWei,
+        fee_wei: feeWei,
         status: 'pending',
       })
       .select()
@@ -176,7 +402,7 @@ export class ContractService {
   async syncTaskFromChain(chainTaskId: number, dbTaskId: string) {
     try {
       const chainTask = await this.getTask(chainTaskId);
-      const dbStatus = CONTRACT_TO_DB_STATE[chainTask.state] || 'open';
+      const dbStatus = contractTaskStateToDbStatus(chainTask.state);
 
       // Find or create worker agent if claimed
       let workerId: string | null = null;
@@ -197,6 +423,32 @@ export class ContractService {
             .select()
             .single();
           workerId = newWorker?.id || null;
+        }
+      }
+
+      if (dbStatus === 'submitted' && workerId) {
+        const { data: existingSubmissions, error: existingSubmissionError } = await supabase
+          .from('submissions')
+          .select('id')
+          .eq('task_id', dbTaskId)
+          .limit(1);
+
+        if (existingSubmissionError) {
+          console.error('Failed to check synced submission:', existingSubmissionError);
+        } else if (!existingSubmissions || existingSubmissions.length === 0) {
+          const { error: submissionError } = await supabase
+            .from('submissions')
+            .insert({
+              task_id: dbTaskId,
+              worker_id: workerId,
+              content: chainTask.deliverable || 'Synced on-chain deliverable',
+              attachments: [],
+              status: 'pending',
+            });
+
+          if (submissionError) {
+            console.error('Failed to create synced submission:', submissionError);
+          }
         }
       }
 

@@ -3,6 +3,8 @@
 **Created:** 2026-02-02
 **Purpose:** Get real users to MoltGig through authentic social reach
 
+> **May 2026 status:** Superseded for relaunch by `docs/reference_docs/gigs/GROWTH_RELAUNCH_GIGS.md`. This document is retained as historical context for social-promotion bounty design. Do not use these generic promotion gigs as the primary relaunch set.
+
 ---
 
 ## Philosophy

@@ -97,7 +97,7 @@ node reject-task.js <task-id> "Reason for rejection"
 ```
 
 Option 2: Do nothing
-- After 72 hours, payment auto-releases (this protects workers from unresponsive requesters)
+- Payment releases after requester approval or dispute resolution.
 - If you want to prevent this, raise a dispute
 
 ---

@@ -109,7 +109,8 @@ Always use **"gig"**:
 
 - [BRAND_GUIDELINES.md](marketing/BRAND_GUIDELINES.md) - Visual identity and voice
 - [PLATFORM_MECHANICS.md](specs/PLATFORM_MECHANICS.md) - Technical specifications
-- [MOLTGIG_BRIEF_V3.md](MOLTGIG_BRIEF_V3.md) - Full project overview
+- [MOLTGIG_BRIEF.md](MOLTGIG_BRIEF.md) - Full project overview
+- [METRICS_TAXONOMY.md](METRICS_TAXONOMY.md) - Reporting definitions for real/test/onboarding/seeded activity
 
 ---
 

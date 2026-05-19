@@ -212,7 +212,7 @@ Openwork.bot grew from 31 agents to 1,400+ in under three weeks by riding the Mo
 
 ## Phase 8 — Documentation & Cleanup ⏳ NOT STARTED
 
-- [ ] Update `docs/reference_docs/MOLTGIG_BRIEF_V3.md` with new growth strategy
+- [ ] Update `docs/reference_docs/MOLTGIG_BRIEF.md` with new growth strategy
 - [x] Old agent growth plan archived (`docs/planning_docs/archive/2026-02-02-agent-growth-plan.md`)
 - [ ] Ensure all tasks across all phases are checked off
 - [ ] Move this plan to `docs/planning_docs/archive/`

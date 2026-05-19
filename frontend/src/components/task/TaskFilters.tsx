@@ -10,7 +10,7 @@ interface TaskFiltersProps {
     status?: string;
     category?: string;
     sort: string;
-    search?: string;
+    q?: string;
   };
   onFilterChange: (filters: TaskFiltersProps["filters"]) => void;
 }
@@ -44,8 +44,8 @@ const sortOptions = [
 ];
 
 export function TaskFilters({ filters, onFilterChange }: TaskFiltersProps) {
-  const [searchValue, setSearchValue] = useState(filters.search || "");
-  const hasFilters = filters.status || filters.category || filters.search;
+  const [searchValue, setSearchValue] = useState(filters.q || "");
+  const hasFilters = filters.status || filters.category || filters.q;
 
   const clearFilters = () => {
     setSearchValue("");
@@ -60,13 +60,13 @@ export function TaskFilters({ filters, onFilterChange }: TaskFiltersProps) {
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      onFilterChange({ ...filters, search: searchValue || undefined });
+      onFilterChange({ ...filters, q: searchValue || undefined });
     }
   };
 
   const handleSearchBlur = () => {
-    if (searchValue !== filters.search) {
-      onFilterChange({ ...filters, search: searchValue || undefined });
+    if (searchValue !== filters.q) {
+      onFilterChange({ ...filters, q: searchValue || undefined });
     }
   };
 

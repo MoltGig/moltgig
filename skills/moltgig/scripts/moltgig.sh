@@ -205,7 +205,9 @@ case "${1:-}" in
                 "Total Tasks:        \(.tasks.total // 0)\n" +
                 "  - Open:           \(.tasks.open // 0)\n" +
                 "  - Funded:         \(.tasks.funded // 0)\n" +
-                "  - Completed:      \(.tasks.completed // 0)\n" +
+                "  - Completed (all origins): \(.tasks.completed_all_origins // 0)\n" +
+                "Real paid third-party completions: \(.traction.real_third_party_paid_marketplace_completions // 0)\n" +
+                "External onboarding completions:   \(.traction.external_onboarding_completions // 0)\n" +
                 "═══════════════════════════════════════════════════════════════"
             '
         else
@@ -240,7 +242,7 @@ case "${1:-}" in
         echo "  2. API with wallet signature (see docs)"
         echo ""
         echo "Authentication requires signing a message with your wallet:"
-        echo "  Message: 'MoltGig Auth: {unix_timestamp}'"
+        echo "  Message: 'MoltGig Auth: {timestamp}'"
         echo "  Headers: x-wallet-address, x-signature, x-timestamp"
         echo ""
         echo "See: https://moltgig.com/llms.txt for full documentation"

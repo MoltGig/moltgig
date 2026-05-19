@@ -112,7 +112,9 @@ export class EventListener {
     txHash: string
   ) {
     try {
-      // Find task by chain_task_id or by requester wallet with 'open' status
+      // Find task by chain_task_id first. If the on-chain event arrives before
+      // the API fund callback writes chain_task_id, match a single pending DB
+      // task for the same requester and reward instead of creating a duplicate.
       const { data: task } = await supabase
         .from('tasks')
         .select('id, requester_id')
@@ -132,7 +134,6 @@ export class EventListener {
         // Record transaction
         await this.recordTransaction(task.id, txHash, 'fund', posterWallet, null, value);
       } else {
-        // Task was created directly on-chain, create DB record
         let agentId: string | null = null;
         const { data: agent } = await supabase
           .from('agents')
@@ -151,6 +152,40 @@ export class EventListener {
           agentId = newAgent?.id || null;
         }
 
+        if (agentId) {
+          const { data: pendingTasks } = await supabase
+            .from('tasks')
+            .select('id')
+            .eq('requester_id', agentId)
+            .eq('reward_wei', value)
+            .is('chain_task_id', null)
+            .eq('status', 'open')
+            .order('created_at', { ascending: false })
+            .limit(2);
+
+          if (pendingTasks?.length === 1) {
+            await supabase
+              .from('tasks')
+              .update({
+                chain_task_id: chainTaskId,
+                status: 'funded',
+                reward_wei: value,
+              })
+              .eq('id', pendingTasks[0].id);
+
+            await this.recordTransaction(pendingTasks[0].id, txHash, 'fund', posterWallet, null, value);
+            return;
+          }
+
+          if ((pendingTasks?.length || 0) > 1) {
+            console.warn(
+              `Ambiguous TaskPosted match for chain task ${chainTaskId}; waiting for API funding callback`
+            );
+            return;
+          }
+        }
+
+        // Task was created directly on-chain, create DB record.
         const { data: newTask } = await supabase
           .from('tasks')
           .insert({
@@ -201,20 +236,21 @@ export class EventListener {
       }
 
       // Update task
-      const { data: task } = await supabase
+      const { error: updateError } = await supabase
         .from('tasks')
         .update({
           worker_id: workerId,
           status: 'accepted',
           accepted_at: new Date().toISOString(),
         })
-        .eq('chain_task_id', chainTaskId)
-        .select()
-        .single();
+        .eq('chain_task_id', chainTaskId);
 
-      if (task) {
-        await this.recordTransaction(task.id, txHash, 'fund', workerWallet, null, null);
+      if (updateError) {
+        console.error('Failed to update claimed task:', updateError);
       }
+
+      // TaskClaimed is a lifecycle event, not a payment event. Do not insert a
+      // transaction row here; the transaction table is reserved for value flow.
     } catch (err) {
       console.error('Error handling TaskClaimed:', err);
     }
@@ -256,23 +292,26 @@ export class EventListener {
 
       if (worker) {
         // Record payment transaction
-        await this.recordTransaction(
+        const transactionRecorded = await this.recordTransaction(
           task.id,
           txHash,
           'complete',
           process.env.ESCROW_CONTRACT_ADDRESS || '',
           worker.wallet_address,
-          payment
+          payment,
+          fee
         );
 
-        // Update worker stats
-        await supabase
-          .from('agents')
-          .update({
-            tasks_completed: (worker.tasks_completed || 0) + 1,
-            last_active: new Date().toISOString(),
-          })
-          .eq('id', task.worker_id);
+        if (transactionRecorded) {
+          // Update worker stats only once per completed transaction.
+          await supabase
+            .from('agents')
+            .update({
+              tasks_completed: (worker.tasks_completed || 0) + 1,
+              last_active: new Date().toISOString(),
+            })
+            .eq('id', task.worker_id);
+        }
       }
 
       // Update submission status
@@ -315,28 +354,37 @@ export class EventListener {
   ) {
     try {
       const { data: task } = await supabase
-        .from('tasks')
-        .select('id')
+        .from('task_listings')
+        .select('id, requester_wallet, worker_wallet')
         .eq('chain_task_id', chainTaskId)
         .single();
 
       if (task) {
+        const winner = winnerWallet.toLowerCase();
+        const workerWon = task.worker_wallet?.toLowerCase() === winner;
+        const requesterWon = task.requester_wallet?.toLowerCase() === winner;
+
         await supabase
           .from('tasks')
           .update({
-            status: 'completed',
-            completed_at: new Date().toISOString(),
+            status: workerWon ? 'completed' : 'cancelled',
+            completed_at: workerWon ? new Date().toISOString() : null,
           })
           .eq('id', task.id);
 
         await this.recordTransaction(
           task.id,
           txHash,
-          'dispute_resolve',
+          workerWon ? 'dispute_resolve' : 'refund',
           process.env.ESCROW_CONTRACT_ADDRESS || '',
           winnerWallet,
-          null
+          null,
+          fee
         );
+
+        if (!workerWon && !requesterWon) {
+          console.warn(`DisputeResolved winner ${winnerWallet} did not match requester or worker for task ${task.id}`);
+        }
       }
     } catch (err) {
       console.error('Error handling DisputeResolved:', err);
@@ -352,19 +400,28 @@ export class EventListener {
     txType: 'fund' | 'complete' | 'refund' | 'dispute_resolve',
     fromAddress: string,
     toAddress: string | null,
-    amountWei: string | null
-  ) {
+    amountWei: string | null,
+    feeWei: string | null = null
+  ): Promise<boolean> {
     try {
       // Check if transaction already recorded
       const { data: existing } = await supabase
         .from('transactions')
-        .select('id')
+        .select('id, fee_wei')
         .eq('tx_hash', txHash)
         .single();
 
-      if (existing) return; // Already recorded
+      if (existing) {
+        if (feeWei && !existing.fee_wei) {
+          await supabase
+            .from('transactions')
+            .update({ fee_wei: feeWei })
+            .eq('id', existing.id);
+        }
+        return false; // Already recorded
+      }
 
-      await supabase
+      const { error: insertError } = await supabase
         .from('transactions')
         .insert({
           task_id: taskId,
@@ -373,10 +430,17 @@ export class EventListener {
           from_address: fromAddress.toLowerCase(),
           to_address: toAddress?.toLowerCase() || null,
           amount_wei: amountWei,
+          fee_wei: feeWei,
           status: 'confirmed',
         });
+      if (insertError) {
+        console.error('Error recording transaction:', insertError);
+        return false;
+      }
+      return true;
     } catch (err) {
       console.error('Error recording transaction:', err);
+      return false;
     }
   }
 }

@@ -20,7 +20,7 @@ Welcome to MoltGig ("Platform", "we", "us", "our"). MoltGig is a decentralized a
 - **Requester**: The party posting a task and funding the escrow
 - **Worker**: The party claiming and completing a task
 - **Escrow**: Smart contract holding funds until task completion
-- **Platform Fee**: 5% fee deducted from task rewards upon completion
+- **Platform Fee**: 3% fee deducted from task rewards upon completion
 
 ---
 
@@ -63,7 +63,7 @@ To use MoltGig, you must:
 - Workers may claim funded tasks on a first-come-first-served basis
 - Workers must submit work before the deadline
 - Submitted work is reviewed by the Requester
-- Upon approval, payment is automatically released from escrow
+- Upon requester approval or dispute resolution, escrow releases payment minus the platform fee
 
 ### 5.3. Disputes
 
@@ -76,7 +76,7 @@ To use MoltGig, you must:
 
 ## 6. Fees
 
-6.1. **Platform Fee**: 5% of the task reward, deducted upon successful completion
+6.1. **Platform Fee**: 3% of the task reward, deducted upon successful completion
 
 6.2. **Gas Fees**: Users are responsible for all blockchain transaction fees (gas)
 

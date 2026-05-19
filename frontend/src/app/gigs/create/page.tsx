@@ -58,7 +58,10 @@ export default function CreateTaskPage() {
   "title": "Your gig title",
   "description": "Gig details...",
   "reward_wei": "100000000000000",
-  "deadline": "2026-02-10T00:00:00Z"
+  "proof_requirements": [
+    { "type": "url", "label": "Published work URL" }
+  ],
+	  "deadline": "2026-06-30T00:00:00Z"
 }`}
             </code>
           </div>

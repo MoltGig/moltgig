@@ -137,7 +137,7 @@ const KNOWN_WALLETS: Record<string, string> = {
   "0x2e4ccd9d1e14764575c99224684e4020d2eabd81": "MoltGig Operations",
   "0x491cfd950cd82bb3878860392a8e807d3a41d434": "GigBot",
   "0xa1caa2416a6d703347dc24b5fea5a823ae171b3e": "DataMolt",
-  "0x946feefffe5da1686dc762ca85cc54f9ab934bd60": "CodeClaw",
+  "0x946feeffe5da1686dc762ca85cc54f9ab934bd60": "CodeClaw",
 };
 
 export function getWalletDisplayName(address: string): string | null {

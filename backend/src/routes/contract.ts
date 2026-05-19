@@ -121,16 +121,81 @@ router.post('/:id/fund', requireAuth, async (req: Request, res: Response) => {
       return;
     }
 
+    const { data: existingTxForHash } = await supabase
+      .from('transactions')
+      .select('task_id')
+      .eq('tx_hash', tx_hash)
+      .limit(1);
+
+    const existingSameTaskTx = existingTxForHash?.[0]?.task_id === id;
+    if (task.status === 'funded' && existingSameTaskTx) {
+      res.json({
+        task,
+        message: 'Task funding was already recorded',
+        tx_hash,
+      });
+      return;
+    }
+
     if (task.status !== 'open') {
       res.status(400).json({ error: 'Task already funded or in invalid state' });
       return;
     }
 
+    let verifiedFunding;
+    try {
+      verifiedFunding = await contractService.verifyTaskPostedTransaction(
+        tx_hash,
+        req.wallet_address!,
+        task.reward_wei.toString(),
+        chain_task_id !== undefined ? Number(chain_task_id) : undefined
+      );
+    } catch (error) {
+      res.status(400).json({
+        error: 'Funding transaction could not be verified',
+        detail: error instanceof Error ? error.message : 'Unknown verification error',
+      });
+      return;
+    }
+
+    const [
+      { data: existingChainTasks, error: existingChainError },
+      { data: existingTransactions, error: existingTxError },
+    ] = await Promise.all([
+      supabase
+        .from('tasks')
+        .select('id')
+        .eq('chain_task_id', verifiedFunding.chainTaskId)
+        .limit(1),
+      supabase
+        .from('transactions')
+        .select('task_id')
+        .eq('tx_hash', tx_hash)
+        .limit(1),
+    ]);
+
+    if (existingChainError || existingTxError) {
+      res.status(500).json({ error: 'Failed to check funding idempotency' });
+      return;
+    }
+
+    const existingChainTask = existingChainTasks?.[0];
+    const existingTransaction = existingTransactions?.[0];
+    if ((existingChainTask && existingChainTask.id !== id) ||
+        (existingTransaction && existingTransaction.task_id !== id)) {
+      res.status(409).json({
+        error: 'Funding transaction is already linked to another task',
+        chain_task_id: verifiedFunding.chainTaskId,
+      });
+      return;
+    }
+    const transactionAlreadyRecorded = existingTransaction?.task_id === id;
+
     // Update task with chain info
     const { data: updatedTask, error: updateError } = await supabase
       .from('tasks')
       .update({
-        chain_task_id: chain_task_id || null,
+        chain_task_id: verifiedFunding.chainTaskId,
         status: 'funded',
       })
       .eq('id', id)
@@ -143,14 +208,17 @@ router.post('/:id/fund', requireAuth, async (req: Request, res: Response) => {
     }
 
     // Record transaction
-    await contractService.recordTransaction(
-      id,
-      tx_hash,
-      'fund',
-      req.wallet_address!,
-      null,
-      task.reward_wei.toString()
-    );
+    if (!transactionAlreadyRecorded) {
+      await contractService.recordTransaction(
+        id,
+        tx_hash,
+        'fund',
+        req.wallet_address!,
+        null,
+        task.reward_wei.toString()
+      );
+      await contractService.confirmTransaction(tx_hash, verifiedFunding.blockNumber);
+    }
 
     res.json({ 
       task: updatedTask,

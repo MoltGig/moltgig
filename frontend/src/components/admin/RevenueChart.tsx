@@ -64,6 +64,8 @@ export function RevenueChart({ data, loading }: RevenueChartProps) {
     );
   }
 
+  const revenueByDate = new Map(data.revenue.map((d) => [d.date, d.revenue_wei]));
+
   // Prepare chart data
   const chartData = data.daily.map((d) => ({
     date: formatDate(d.date),
@@ -72,7 +74,7 @@ export function RevenueChart({ data, loading }: RevenueChartProps) {
     tasksCompleted: d.tasks_completed,
     valueCreated: Number(BigInt(d.value_created_wei)) / 1e18,
     valueCompleted: Number(BigInt(d.value_completed_wei)) / 1e18,
-    revenue: Number(BigInt(d.value_completed_wei) * BigInt(5) / BigInt(100)) / 1e18,
+    revenue: Number(BigInt(revenueByDate.get(d.date) || "0")) / 1e18,
   }));
 
   // Filter to only show days with activity for cleaner view

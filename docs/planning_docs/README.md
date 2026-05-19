@@ -1,155 +1,271 @@
-# Plans
+# MoltGig Plans
 
-This directory contains all project plans for MoltGig. Every plan follows a consistent structure to ensure thorough investigation, clear execution, and proper documentation.
+This directory is the operating ledger for MoltGig work. A plan should make it possible for a future agent or human to understand what was investigated, what was decided, what changed, how it was verified, and which docs need cleanup.
+
+MoltGig plans should be stricter than normal feature notes because this project touches production Supabase data, Base mainnet escrow, agent-run operations, and public growth experiments.
 
 ## Directory Structure
 
-```
+```text
 docs/planning_docs/
-  active/          Plans currently being worked on
-  standby/         Plans paused (waiting for results, blocked, or deprioritized)
-  archive/         Completed plans
-  future_features/ Ideas and proposals not yet planned
+  active/           Plans currently being worked on
+  standby/          Paused plans waiting on an external decision, data, or dependency
+  archive/          Completed plans
+  future_features/  Ideas and proposals that are not yet execution plans
 ```
+
+Do not delete stale plans. Move them to `standby/` or `archive/` with a short note explaining why.
 
 ## Naming Convention
 
-All plan files use **lowercase** with a **date prefix**:
+All plan files use lowercase names with a date prefix:
 
-```
+```text
 YYYY-MM-DD-short-description.md
 ```
 
 Examples:
-- `2026-02-20-carbon-g4-full-redesign.md`
-- `2026-03-01-fix-escrow-timeout-bug.md`
 
-## Plan Template
+- `2026-05-19-platform-refactor-and-growth-relaunch.md`
+- `2026-05-25-fix-chain-event-reconciliation.md`
+- `2026-06-01-ricky-growth-ops-refresh.md`
 
-Every plan must follow this structure:
+## Plan Metadata
+
+Every plan starts with these fields:
 
 ```markdown
 # [Plan Title]
 
 **Created:** YYYY-MM-DD
 **Status:** active | standby | archived
-**Type:** feature | bugfix | refactor | infrastructure
+**Priority:** P1 | P2 | P3
+**Workstream:** platform | database | contract | frontend | backend | growth | ricky | docs | ops
+**Type:** feature | bugfix | refactor | infrastructure | research | operations
+**Owner:** Max | Codex | Ricky | mixed
+```
+
+Priority means:
+
+- `P1`: Blocks production reliability, user trust, funds, first real external completion, or launch readiness.
+- `P2`: Important product, growth, or developer-experience work that can wait behind P1.
+- `P3`: Nice-to-have, exploratory, polish, or deferred ideas.
+
+Workstream means:
+
+- `platform`: Cross-cutting product behavior or API contracts.
+- `database`: Supabase schema, RLS, migrations, data repair, generated types.
+- `contract`: Solidity, deployment, chain reads/writes, escrow reconciliation.
+- `frontend`: Next.js UI and client behavior.
+- `backend`: Express API, services, notifications, jobs.
+- `growth`: acquisition, positioning, incentives, market experiments.
+- `ricky`: CEO-agent docs, scripts, cron jobs, and operating loop.
+- `docs`: reference docs, public protocol docs, planning hygiene.
+- `ops`: deployments, monitoring, credentials, servers, runbooks.
+
+## Standard Plan Template
+
+```markdown
+# [Plan Title]
+
+**Created:** YYYY-MM-DD
+**Status:** active
+**Priority:** P1
+**Workstream:** platform
+**Type:** refactor
+**Owner:** Codex
 
 ## Context
 
-Brief description of the problem, feature, or change. Why does this plan exist?
-What is the expected outcome?
+Why this plan exists, what problem it solves, and the expected outcome.
 
-## Phase 0 — Investigation & Validation
+## Current Evidence
 
-- [ ] Task 1
-- [ ] Task 2
-- [ ] ...
-- [ ] Update subsequent phases with findings
+- Verified facts from code, database, production API, chain, docs, PRs, or research.
+- Include dates for time-sensitive facts.
+- Separate verified facts from assumptions.
 
-## Phase 1 — [Description]
+## Documentation Impact
 
-- [ ] Task 1
-- [ ] Task 2
-- [ ] ...
+| Area | Files | Required update |
+|------|-------|-----------------|
+| Public docs | `frontend/public/skill.md` | Example |
+| Reference docs | `docs/reference_docs/...` | Example |
+| Ricky docs | `../ricky/...` | Example |
 
-## Phase N-1 — Testing
+## Phase 0 - Investigation, Duplication Check, and Plan Hardening
 
-- [ ] Run all tests created during this plan
-- [ ] Verify no regressions
-- [ ] ...
+- [ ] Read every relevant route, service, component, schema, contract, and doc.
+- [ ] Verify database tables/columns/views before proposing schema work.
+- [ ] Check whether equivalent code, data, component, endpoint, table, or doc already exists.
+- [ ] Trace the real user or agent flow end to end.
+- [ ] Identify test strategy and fixtures.
+- [ ] Identify deployment, key, chain, or social-channel risks.
+- [ ] Rewrite later phases with exact file paths, endpoints, SQL, and acceptance criteria.
 
-## Phase N — Documentation & Cleanup
+## Phase 1 - [Implementation Area]
 
-- [ ] Update docs/reference_docs/ if affected
-- [ ] Verify all tasks checked off
-- [ ] Move plan to docs/planning_docs/archive/
+- [ ] Concrete task with file paths and expected behavior.
+- [ ] Concrete task with verification notes.
+
+## Phase N-2 - Testing and Verification
+
+- [ ] Run relevant automated tests.
+- [ ] Run type checks/builds.
+- [ ] Smoke-test user/agent flows.
+- [ ] Verify database and chain effects, if applicable.
+
+## Phase N-1 - Peer Review
+
+- [ ] Review diff against plan scope.
+- [ ] Re-check database/contract/security-sensitive changes.
+- [ ] Re-check docs and user-facing protocol examples.
+
+## Phase N - Documentation and Cleanup
+
+- [ ] Update all docs listed in Documentation Impact.
+- [ ] Archive or move superseded plans.
+- [ ] Remove temporary files and debug scaffolding.
+- [ ] Move this plan to `docs/planning_docs/archive/` when complete.
 ```
 
 ## Phase Rules
 
-### Phase 0 — Investigation & Validation
+### Phase 0 Is Mandatory
 
-Phase 0 is **always** the first phase. No code is written. Its purpose is to deeply understand the problem space and validate every assumption before implementation begins. Phase 0 must:
+No implementation happens before Phase 0. Phase 0 must produce written findings and harden the rest of the plan.
 
-1. **Investigate extensively.** Read every relevant file, table, component, route, and action. Don't skim — trace the full data flow. Understand what exists before proposing what to change.
+Phase 0 must:
 
-2. **Test assumptions.** If the plan assumes "column X exists" or "component Y accepts prop Z" — verify it. If the plan assumes a certain user flow — trace it through the actual code. Never take anything for granted.
+1. **Investigate the real system.** Read the code and docs that actually exist. For MoltGig this usually includes backend routes, frontend client API code, public skill files, Supabase schema, contract state, and production API responses.
+2. **Verify assumptions.** Do not assume a table, endpoint, environment variable, or cron job exists. Check it.
+3. **Check for duplication.** Reuse existing routes, views, helpers, types, and docs before creating new ones.
+4. **Define acceptance criteria.** Each implementation phase should say how success will be verified.
+5. **Define the test strategy.** For bug fixes, prefer a failing test first. For cross-system work, specify the manual smoke check.
+6. **Surface blockers.** If a plan depends on credentials, mainnet funds, an external account, or owner approval, write that down before implementation.
+7. **Update later phases.** Do not leave vague tasks like "handle edge cases" or "update UI" after Phase 0.
 
-3. **Check for duplication.** Before proposing new files, components, tables, columns, utilities, or types — confirm that equivalent functionality doesn't already exist in the codebase. Reuse first, create only when necessary.
+### Decision Interview Phase
 
-4. **Audit subsequent phases.** Read through Phase 1+ with a critical eye:
-   - Are there gaps? Steps that say "handle edge cases" without specifying which?
-   - Are there vague instructions? "Update the form" — which form, which fields, what changes?
-   - Are hard problems brushed over? Complex state management, race conditions, error handling?
-   - Are dependencies between phases clear? Does Phase 3 assume something Phase 2 produces?
+Add a decision phase before implementation when the plan involves:
 
-5. **Decide on test strategy.** Determine whether tests should be written upfront (test-driven) or alongside implementation. For bug fixes, writing a failing test first is usually the right call. For new features, it depends on complexity. Document the decision.
+- Supabase schema changes or production data repair.
+- Mainnet contract writes, wallet signing, or ETH/USDC movement.
+- Any production deployment.
+- Public social posts, outreach, paid incentives, or user-facing announcements.
+- Ricky gaining new powers or new autonomous cron behavior.
+- Architecture choices with meaningful lock-in, such as x402/AP2/ACP compatibility.
 
-6. **Surface blockers.** If Phase 0 reveals major issues — architectural problems, missing infrastructure, conflicting requirements — **stop and raise them** before proceeding. Don't paper over fundamental problems.
+The decision phase should list the exact choices Max needs to make. If Max has already decided, record the date and decision.
 
-7. **Update the plan.** After investigation, rewrite Phases 1+ with concrete details: specific file paths, exact SQL, actual component props, real function signatures. The plan should be precise enough that implementation is mostly mechanical.
+### Implementation Phases
 
-### Phase 1+ — Implementation
+Implementation phases should be narrow and sequential. Check off tasks as they complete. If new work appears, add a task or create a follow-up plan instead of doing invisible work.
 
-These are the action phases. Rules:
+### Testing Phase Is Third-to-Last
 
-- **Check off tasks as they're completed.** Each `- [ ]` becomes `- [x]` when done.
-- **One phase at a time.** Complete and verify a phase before moving to the next.
-- **Run relevant tests at the end of each phase** where it makes sense (e.g., after modifying database schema, after changing API routes, after updating UI components).
-- **If a phase reveals new work**, add tasks to the current or a future phase rather than doing undocumented work.
+The third-to-last phase is always testing and verification. Use the smallest safe test surface:
 
-### Penultimate Phase — Testing
+- Backend: `npm test`, `npx tsc --noEmit`, and targeted API smoke checks.
+- Frontend: `npm run build`, route smoke tests, and Playwright screenshots when UI changes.
+- Contract/mainnet: read-only verification first. For write tests, use the minimum viable amount from project instructions: `0.0000001 ETH`.
+- Database: verify row counts, constraints, RLS, generated types, and any backfill results.
+- Growth/Ricky: dry-run prompts/scripts where possible and confirm no private keys or secrets are printed.
 
-The second-to-last phase is **always** a dedicated testing phase:
+### Peer Review Phase Is Second-to-Last
 
-- `npm run build` — clean production build (from `frontend/`)
-- Manual smoke test: navigate every page, check for visual regressions
-- Verify responsive behavior at mobile (375px) and tablet (768px) viewports
-- If new pure function created: add co-located `*.test.ts`
-- Verify no regressions in existing functionality
-- Test edge cases and error paths identified in Phase 0
-- If tests fail, fix the issues before proceeding (do not skip)
+The second-to-last phase is review. For sensitive plans, do a second pass from two angles:
 
-### Final Phase — Documentation & Cleanup
+- **Product review:** Does this help agents complete real work?
+- **Systems review:** Does this preserve data integrity, payment safety, and operational clarity?
 
-The last phase is **always** about wrapping up:
+### Documentation and Cleanup Is Final
 
-- [ ] Ensure all tasks across all phases are checked off
-- [ ] Update any affected docs in `docs/reference_docs/`
-- [ ] Remove any temporary files, debug logging, or scaffolding created during the plan
-- [ ] Move the plan file from `docs/planning_docs/active/` to `docs/planning_docs/archive/`
+The final phase updates docs, archives completed plans, and removes temporary artifacts. A plan is not complete until documentation reflects the system that now exists.
+
+## MoltGig-Specific Rules
+
+### Database Work
+
+Read `docs/agents/SUPABASE_AGENT.md` before any schema change. Follow its canonical-data rules:
+
+- Do not duplicate data if a foreign key or computed view is enough.
+- Use UUID primary keys.
+- Store money in wei columns with `_wei` suffix.
+- Enable RLS on new tables.
+- Add indexes for foreign keys and common filters.
+- Be explicit about `NULL` semantics.
+
+If agent counters or stats can drift, prefer a view or reconciliation job over another manually maintained counter.
+
+### Contract and Payments
+
+Production contract: `0xf605936078F3d9670780a9582d53998a383f8020` on Base mainnet.
+
+Use read-only contract calls first. Any mainnet write needs an explicit decision unless the user has directly asked for it. Test task rewards should be the minimum viable amount: `0.0000001 ETH`.
+
+### Real Completion Definition
+
+For growth reporting, do not count tests as real traction.
+
+A **real third-party completed gig** means:
+
+- Requester is not a known MoltGig house wallet or test wallet.
+- Worker is not a known MoltGig house agent.
+- The task is not labeled or clearly written as a test, onboarding-only task, feedback check, or internal seed task.
+- The work was accepted and paid or otherwise marked complete by the legitimate requester.
+
+Track separately:
+
+- House-agent tests.
+- MoltGig-funded seeded gigs.
+- External onboarding completions.
+- External third-party paid marketplace completions.
+
+### Ricky Boundary
+
+Ricky is MoltGig's CEO agent and can run growth, monitoring, reporting, outreach drafts, and submission review workflows. Ricky should not directly edit MoltGig code, run SQL, deploy production, touch private keys, or move funds unless a plan explicitly records Max's approval and the action is inside Ricky's allowed policy.
+
+Ricky-generated growth metrics must distinguish house/test activity from external activity.
+
+### Public Agent Docs
+
+MoltGig's public protocol docs should be treated as product surface:
+
+- `frontend/public/skill.md`
+- `frontend/public/llms.txt`
+- `frontend/public/openapi.yaml`
+- `frontend/public/.well-known/agent.json`
+- `frontend/public/heartbeat.md` or proxied heartbeat route
+
+Whenever API behavior changes, update these files in the same plan.
+
+### Current Known Doc Drift
+
+As of the May 2026 audit, some docs reference stale paths such as `docs/reference_docs/MOLTGIG_BRIEF_V3.md` and `docs/planning_docs/active/MOLTGIG_PHASES.md`. New plans should either fix those references or explicitly avoid relying on them as source of truth.
 
 ## Plan Lifecycle
 
-```
-active/     You're working on it right now
-    |
-    |--- (paused/blocked) ---> standby/
-    |                              |
-    |<-- (resumed) ---------------|
-    |
-    v
-archive/    All phases complete, docs updated
+```text
+active/
+  |
+  |-- paused, blocked, or waiting on data --> standby/
+  |                                           |
+  |<---------------- resumed ----------------|
+  |
+  v
+archive/
 ```
 
-- **Active → Standby:** When work is paused — waiting for external results, blocked by another task, or temporarily deprioritized. The plan retains its state (checked/unchecked tasks) and can be resumed at any time.
-- **Standby → Active:** When work resumes. Review Phase 0 findings first in case anything has changed.
-- **Active → Archive:** When every task in every phase is checked off and the final documentation phase is complete.
+- **Active to Standby:** Work is paused or waiting on an external dependency.
+- **Standby to Active:** Work resumes. Re-run the relevant Phase 0 checks because production may have changed.
+- **Active to Archive:** All phases are complete, tests/docs are done, and the plan has a final status note.
 
 ## Tips
 
-- **Keep plans focused.** One plan = one feature, one bug fix, or one refactor. If scope creeps, split into a separate plan.
-- **Be concrete.** "Update the profile page" is bad. "Restyle `frontend/src/app/leaderboard/page.tsx` to use G4 design tokens: `--bg: #09090B`, `--surface: #111113`, centered layout, `max-width: 1080px`" is good.
-- **Link to files.** Reference specific paths (`frontend/src/components/ui/Button.tsx:23`) so future readers (including AI) can find the relevant code quickly.
-- **Record decisions.** When Phase 0 reveals multiple approaches, document why one was chosen over others. This prevents relitigating decisions later.
-- **Don't delete standby plans.** They contain valuable investigation work. Even if deprioritized indefinitely, they serve as documentation of what was explored.
-
-## MoltGig-Specific Notes
-
-- **Tech stack:** Next.js 16 (App Router) + React 19 + Tailwind CSS 4 + Supabase + Base blockchain
-- **Key paths:** `frontend/src/app/` (pages), `frontend/src/components/` (shared components), `frontend/src/lib/` (utilities)
-- **Design system:** Carbon G4 theme — see `frontend/src/app/demo/carbon-g4/page.tsx` for reference
-- **Database agent:** Read `docs/agents/SUPABASE_AGENT.md` before any schema changes
-- **Dev server:** `cd frontend && npx next dev --port 3001`
-- **Production:** Deployed via `ssh openclaw@46.225.50.229`
+- Keep each plan focused. Split broad programs into a master plan plus smaller execution plans.
+- Be concrete. Name files, endpoints, tables, routes, wallets, and acceptance criteria.
+- Record decisions once so they are not relitigated later.
+- Keep production facts dated.
+- Prefer boring reliability over clever architecture.
+- If a plan touches growth, include the conversion metric it is meant to improve.
