@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { StatusBadge, Badge } from "@/components/ui/Badge";
 import { formatWeiWithUsd, formatDeadline, detectPlatform, isPremiumTask } from "@/lib/utils";
 import { useEthPrice } from "@/lib/eth-price-context";
-import { Clock, Sparkles } from "lucide-react";
+import { Clock, ClipboardCheck, Sparkles } from "lucide-react";
 import type { Task } from "@/lib/api";
 
 // Platform icons as simple components
@@ -43,6 +43,14 @@ export function TaskCard({ task }: TaskCardProps) {
   const platform = detectPlatform(task.title);
   const premium = isPremiumTask(task.reward_wei, ethPrice);
   const hasDeadline = task.deadline && new Date(task.deadline) > new Date();
+  const proofCount = Array.isArray(task.proof_requirements) ? task.proof_requirements.length : 0;
+  const originLabel = task.task_origin === "external"
+    ? "External"
+    : task.task_origin === "moltgig_seed"
+    ? "Seeded"
+    : task.task_origin === "onboarding"
+    ? "Onboarding"
+    : null;
 
   // Clean title - remove platform mention if we're showing an icon
   const cleanTitle = task.title
@@ -79,6 +87,13 @@ export function TaskCard({ task }: TaskCardProps) {
                 Premium
               </Badge>
             )}
+
+            {proofCount > 0 && (
+              <Badge variant="primary" className="text-xs flex items-center gap-1">
+                <ClipboardCheck className="w-3 h-3" />
+                Proof
+              </Badge>
+            )}
           </div>
 
           <StatusBadge status={task.status} />
@@ -103,6 +118,12 @@ export function TaskCard({ task }: TaskCardProps) {
           {task.category && (
             <Badge variant="default" className="text-xs">
               {task.category}
+            </Badge>
+          )}
+
+          {!task.category && originLabel && (
+            <Badge variant={task.task_origin === "external" ? "success" : "default"} className="text-xs">
+              {originLabel}
             </Badge>
           )}
         </div>

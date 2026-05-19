@@ -653,8 +653,9 @@ In ALL scenarios, the platform survives. The token is upside, not dependency.
 ## Appendix C: Related Documents
 
 - [TOKEN_LAUNCH_DRAFT.md](./TOKEN_LAUNCH_DRAFT.md) - Launch post content
-- [MOLTGIG_BRIEF_V3.md](../MOLTGIG_BRIEF_V3.md) - Master project brief
-- [MOLTGIG_PHASES.md](../../planning_docs/active/MOLTGIG_PHASES.md) - Implementation phases
+- [MOLTGIG_BRIEF.md](../MOLTGIG_BRIEF.md) - Master project brief
+- [METRICS_TAXONOMY.md](../METRICS_TAXONOMY.md) - Marketplace traction definitions
+- [MOLTGIG_PHASES.md](../../planning_docs/archive/2026-02-03-MOLTGIG_PHASES.md) - Original implementation phases (archived)
 
 ---
 

@@ -37,6 +37,30 @@ interface PnLData {
   meta: { tasks_completed: number; cost_entries: number };
 }
 
+interface FunnelData {
+  headline: {
+    real_third_party_paid_marketplace_completions: number;
+    real_third_party_completed_marketplace_gigs: number;
+    external_onboarding_completions: number;
+    external_submissions: number;
+    accepted_external_submissions: number;
+    stale_funded_gigs: number;
+  };
+  tasks: {
+    by_origin: Record<string, number>;
+    completed_by_origin: Record<string, number>;
+    paid_on_chain_by_origin: Record<string, number>;
+  };
+  agents: {
+    counter_drift: Array<{
+      wallet_address: string | null;
+      posted_delta: number;
+      completed_delta: number;
+    }>;
+  };
+  generated_at: string;
+}
+
 function formatEth(wei: string): string {
   const eth = Number(BigInt(wei || "0")) / 1e18;
   if (eth === 0) return "0 ETH";
@@ -51,9 +75,11 @@ export default function AdminDashboardPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [timeseries, setTimeseries] = useState<any>(null);
   const [pnl, setPnl] = useState<PnLData | null>(null);
+  const [funnel, setFunnel] = useState<FunnelData | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
   const [chartLoading, setChartLoading] = useState(true);
   const [pnlLoading, setPnlLoading] = useState(true);
+  const [funnelLoading, setFunnelLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -65,6 +91,7 @@ export default function AdminDashboardPage() {
       fetchStats();
       fetchTimeseries();
       fetchPnl();
+      fetchFunnel();
     }
   }, [user, session]);
 
@@ -114,10 +141,26 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const fetchFunnel = async () => {
+    if (!session?.access_token) return;
+    try {
+      setFunnelLoading(true);
+      const res = await fetch("/api/admin/funnel", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (res.ok) setFunnel(await res.json());
+    } catch (err) {
+      console.error("Funnel fetch error:", err);
+    } finally {
+      setFunnelLoading(false);
+    }
+  };
+
   const handleRefresh = () => {
     fetchStats();
     fetchTimeseries();
     fetchPnl();
+    fetchFunnel();
   };
 
   if (authLoading) {
@@ -197,6 +240,79 @@ export default function AdminDashboardPage() {
             </div>
           </Card>
         </div>
+
+        {/* Real traction funnel */}
+        <Card className="p-6 mb-8">
+          <div className="flex items-start justify-between gap-4 mb-5">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Real Traction Funnel</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Segments house tests, onboarding, seeded gigs, and external marketplace activity.
+              </p>
+            </div>
+            {funnel?.generated_at && (
+              <span className="text-xs text-gray-600 whitespace-nowrap">
+                {new Date(funnel.generated_at).toLocaleString()}
+              </span>
+            )}
+          </div>
+
+          {funnelLoading ? (
+            <div className="text-gray-500">Loading...</div>
+          ) : funnel ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                {[
+                  ["Real paid", funnel.headline.real_third_party_paid_marketplace_completions],
+                  ["Real completed", funnel.headline.real_third_party_completed_marketplace_gigs],
+                  ["Onboarded", funnel.headline.external_onboarding_completions],
+                  ["External subs", funnel.headline.external_submissions],
+                  ["Accepted ext.", funnel.headline.accepted_external_submissions],
+                  ["Stale funded", funnel.headline.stale_funded_gigs],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-lg border border-gray-800 bg-gray-900/40 p-4">
+                    <div className="text-xs text-gray-500 uppercase tracking-wide">{label}</div>
+                    <div className="text-2xl font-bold text-white mt-1">{value}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-300 mb-3">Tasks by Origin</h3>
+                  <div className="space-y-2">
+                    {Object.entries(funnel.tasks.by_origin).map(([origin, count]) => (
+                      <div key={origin} className="flex justify-between items-center">
+                        <span className="text-gray-400">{origin.replace(/_/g, " ")}</span>
+                        <span className="text-white font-medium">{count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-300 mb-3">Counter Drift</h3>
+                  {funnel.agents.counter_drift.length === 0 ? (
+                    <div className="text-gray-500">No drift detected.</div>
+                  ) : (
+                    <div className="space-y-2">
+                      {funnel.agents.counter_drift.slice(0, 5).map((row) => (
+                        <div key={row.wallet_address || `${row.posted_delta}-${row.completed_delta}`} className="flex justify-between gap-4 text-sm">
+                          <span className="text-gray-500 truncate">{row.wallet_address || "unknown"}</span>
+                          <span className="text-gray-300 whitespace-nowrap">
+                            posted {row.posted_delta >= 0 ? "+" : ""}{row.posted_delta}, completed {row.completed_delta >= 0 ? "+" : ""}{row.completed_delta}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="text-gray-500">No funnel data available</div>
+          )}
+        </Card>
 
         {/* Charts Section */}
         <Card className="p-6 mb-8">

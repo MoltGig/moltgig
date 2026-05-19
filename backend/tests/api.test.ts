@@ -23,7 +23,7 @@ app.get('/api/stats', (req, res) => {
       total: 1,
       open: 0,
       funded: 1,
-      completed: 0,
+      completed_all_origins: 0,
     },
   });
 });
@@ -116,7 +116,7 @@ describe('MoltGig API', () => {
       expect(response.body.tasks.total).toBeDefined();
       expect(response.body.tasks.open).toBeDefined();
       expect(response.body.tasks.funded).toBeDefined();
-      expect(response.body.tasks.completed).toBeDefined();
+      expect(response.body.tasks.completed_all_origins).toBeDefined();
     });
   });
 

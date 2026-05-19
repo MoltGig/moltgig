@@ -24,40 +24,54 @@ echo "   Curl: $(curl --version 2>/dev/null | head -1 || echo 'NOT INSTALLED')"
 # 2. Moltbook Connection Test
 echo ""
 echo "2. MOLTBOOK CONNECTION:"
-MOLTBOOK_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer moltbook_sk_6OidlgiT5U3GQwHgdkd1qG02D1RC9Lr_" \
-  "https://www.moltbook.com/api/v1/agents/me")
-
-if [ "$MOLTBOOK_STATUS" = "200" ]; then
-    echo -e "   ${GREEN}✅ Agent accessible${NC}"
+if [ -z "$MOLTBOOK_API_KEY" ]; then
+    echo -e "   ${YELLOW}⚠️  Skipped - set MOLTBOOK_API_KEY to test archived script${NC}"
+    MOLTBOOK_STATUS="SKIPPED"
 else
-    echo -e "   ${RED}❌ Agent not accessible (HTTP $MOLTBOOK_STATUS)${NC}"
+    MOLTBOOK_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+      -H "Authorization: Bearer $MOLTBOOK_API_KEY" \
+      "https://www.moltbook.com/api/v1/agents/me")
+
+    if [ "$MOLTBOOK_STATUS" = "200" ]; then
+        echo -e "   ${GREEN}✅ Agent accessible${NC}"
+    else
+        echo -e "   ${RED}❌ Agent not accessible (HTTP $MOLTBOOK_STATUS)${NC}"
+    fi
 fi
 
 # 3. Posting Test
 echo ""
 echo "3. POSTING CAPABILITY:"
-POST_TEST=$(curl -s -X POST "https://www.moltbook.com/api/v1/posts" \
-  -H "Authorization: Bearer moltbook_sk_6OidlgiT5U3GQwHgdkd1qG02D1RC9Lr_" \
-  -H "Content-Type: application/json" \
-  -d '{"submolt": "general", "title": "Daily Test", "content": "Automated verification test"}')
-
-if echo "$POST_TEST" | grep -q '"success":true'; then
-    echo -e "   ${GREEN}✅ Can post${NC}"
-    POST_STATUS="WORKING"
-elif echo "$POST_TEST" | grep -q '"error":"Failed to create post"'; then
-    echo -e "   ${RED}❌ Cannot post - API error${NC}"
-    POST_STATUS="FAILED"
+if [ -z "$MOLTBOOK_API_KEY" ]; then
+    echo -e "   ${YELLOW}⚠️  Skipped - set MOLTBOOK_API_KEY to test archived script${NC}"
+    POST_STATUS="SKIPPED"
 else
-    echo -e "   ${RED}❌ Cannot post - Unknown error${NC}"
-    POST_STATUS="UNKNOWN_ERROR"
+    POST_TEST=$(curl -s -X POST "https://www.moltbook.com/api/v1/posts" \
+      -H "Authorization: Bearer $MOLTBOOK_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"submolt": "general", "title": "Daily Test", "content": "Automated verification test"}')
+
+    if echo "$POST_TEST" | grep -q '"success":true'; then
+        echo -e "   ${GREEN}✅ Can post${NC}"
+        POST_STATUS="WORKING"
+    elif echo "$POST_TEST" | grep -q '"error":"Failed to create post"'; then
+        echo -e "   ${RED}❌ Cannot post - API error${NC}"
+        POST_STATUS="FAILED"
+    else
+        echo -e "   ${RED}❌ Cannot post - Unknown error${NC}"
+        POST_STATUS="UNKNOWN_ERROR"
+    fi
 fi
 
 # 4. Recent Activity Check
 echo ""
 echo "4. RECENT ACTIVITY:"
-RECENT_POSTS=$(curl -s "https://www.moltbook.com/api/v1/posts?sort=new&limit=5" \
-  -H "Authorization: Bearer moltbook_sk_6OidlgiT5U3GQwHgdkd1qG02D1RC9Lr_" | grep -o '"id":"[^"]*"' | wc -l)
+if [ -n "$MOLTBOOK_API_KEY" ]; then
+    RECENT_POSTS=$(curl -s "https://www.moltbook.com/api/v1/posts?sort=new&limit=5" \
+      -H "Authorization: Bearer $MOLTBOOK_API_KEY" | grep -o '"id":"[^"]*"' | wc -l)
+else
+    RECENT_POSTS=$(curl -s "https://www.moltbook.com/api/v1/posts?sort=new&limit=5" | grep -o '"id":"[^"]*"' | wc -l)
+fi
 echo "   Recent posts found: $RECENT_POSTS"
 
 # 5. Smart Contract Status
@@ -114,7 +128,7 @@ echo "Blockchain Access: $BLOCKCHAIN_STATUS"
 echo "GitHub Account: $GITHUB_STATUS"
 echo ""
 echo "=== VERIFICATION COMMANDS FOR MAX ==="
-echo "To verify Moltbook: curl -H 'Authorization: Bearer moltbook_sk_6OidlgiT5U3GQwHgdkd1qG02D1RC9Lr_' https://www.moltbook.com/api/v1/agents/me"
+echo "To verify Moltbook: MOLTBOOK_API_KEY=... curl -H 'Authorization: Bearer <redacted>' https://www.moltbook.com/api/v1/agents/me"
 echo "To verify contracts: ls -la contracts/"
 echo "To verify GitHub: curl https://api.github.com/users/moltgig"
 echo "To verify Base: curl https://api.basescan.org/api?module=block&action=getblockcount"

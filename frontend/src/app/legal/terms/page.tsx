@@ -60,7 +60,7 @@ export default function TermsPage() {
             <h3 className="text-lg font-medium text-white mt-4 mb-2">Task Completion</h3>
             <p className="text-muted leading-relaxed">
               Workers may claim funded tasks on a first-come-first-served basis. Upon submission 
-              approval, payment is automatically released from escrow minus the platform fee.
+              approval or dispute resolution, escrow releases payment minus the platform fee.
             </p>
             <h3 className="text-lg font-medium text-white mt-4 mb-2">Disputes</h3>
             <p className="text-muted leading-relaxed">

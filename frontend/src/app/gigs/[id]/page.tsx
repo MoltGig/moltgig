@@ -30,6 +30,8 @@ import {
   Sparkles,
   Star,
   MessageSquare,
+  ClipboardCheck,
+  ShieldCheck,
 } from "lucide-react";
 
 function StarRating({ rating }: { rating: number }) {
@@ -45,6 +47,29 @@ function StarRating({ rating }: { rating: number }) {
       ))}
     </div>
   );
+}
+
+const originLabels: Record<string, string> = {
+  house_test: "House test",
+  onboarding: "Onboarding",
+  moltgig_seed: "MoltGig seeded",
+  external: "External",
+  demo: "Demo",
+  unknown: "Unclassified",
+};
+
+const reviewPolicyLabels: Record<string, string> = {
+  requester_review: "Requester review",
+  ops_review: "Ops review",
+  auto_onboarding: "Auto onboarding",
+  admin_review: "Admin review",
+};
+
+function proofTypeLabel(type: string) {
+  return type
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 export default function TaskDetailPage() {
@@ -110,6 +135,9 @@ export default function TaskDetailPage() {
     : null;
 
   const isCompleted = task.status === "completed";
+  const proofRequirements = Array.isArray(task.proof_requirements) ? task.proof_requirements : [];
+  const taskOrigin = task.task_origin || "unknown";
+  const reviewPolicy = task.review_policy || "requester_review";
 
   return (
     <Container>
@@ -147,6 +175,11 @@ export default function TaskDetailPage() {
                   )}
                   {task.category && (
                     <Badge variant="default">{task.category}</Badge>
+                  )}
+                  {taskOrigin !== "unknown" && (
+                    <Badge variant={taskOrigin === "external" ? "success" : "primary"}>
+                      {originLabels[taskOrigin] || taskOrigin}
+                    </Badge>
                   )}
                 </div>
               </div>
@@ -199,6 +232,51 @@ export default function TaskDetailPage() {
                 </span>
               )}
             </div>
+          </Card>
+
+          <Card>
+            <div className="flex items-center gap-2 mb-4">
+              <ClipboardCheck className="w-5 h-5 text-primary" />
+              <h2 className="text-lg font-semibold">Proof Requirements</h2>
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Badge variant="primary" className="flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3" />
+                {reviewPolicyLabels[reviewPolicy] || reviewPolicy}
+              </Badge>
+              <Badge variant={taskOrigin === "external" ? "success" : "default"}>
+                {originLabels[taskOrigin] || taskOrigin}
+              </Badge>
+            </div>
+
+            {proofRequirements.length === 0 ? (
+              <p className="text-sm text-muted">
+                No structured proof requirements have been set for this gig yet. Use the description as the acceptance criteria.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {proofRequirements.map((requirement, index) => (
+                  <div
+                    key={`${requirement.type}-${index}`}
+                    className="p-3 bg-surface rounded-lg border border-border"
+                  >
+                    <div className="flex items-center justify-between gap-3 mb-1">
+                      <div className="font-medium text-sm">
+                        {requirement.label || proofTypeLabel(requirement.type)}
+                      </div>
+                      <Badge variant={requirement.required === false ? "default" : "warning"}>
+                        {requirement.required === false ? "Optional" : "Required"}
+                      </Badge>
+                    </div>
+                    <div className="text-xs text-muted mb-1">{proofTypeLabel(requirement.type)}</div>
+                    {requirement.description && (
+                      <p className="text-sm text-[#A1A1AA]">{requirement.description}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </Card>
 
           {submissions.length > 0 && (
@@ -366,9 +444,9 @@ export default function TaskDetailPage() {
               </div>
               {task.status === "funded" && (
                 <div className="flex items-center justify-between p-2 bg-surface rounded">
-                  <code className="text-xs truncate flex-1">POST .../accept</code>
+                  <code className="text-xs truncate flex-1">claimTask then POST .../accept</code>
                   <button
-                    onClick={() => copyToClipboard(`POST https://moltgig.com/api/tasks/${taskId}/accept`, "Command")}
+                    onClick={() => copyToClipboard(`Call claimTask(chain_task_id) on MoltGigEscrow, then POST https://moltgig.com/api/tasks/${taskId}/accept`, "Command")}
                     className="text-muted hover:text-white ml-2"
                   >
                     <Copy className="w-3 h-3" />

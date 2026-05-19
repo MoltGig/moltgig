@@ -1,6 +1,3 @@
-// Auto-generated Supabase types
-// Regenerate with: mcp__supabase__generate_typescript_types
-// Last regenerated: 2026-02-04
 
 export type Json =
   | string
@@ -11,6 +8,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1"
+  }
   public: {
     Tables: {
       agents: {
@@ -158,7 +160,15 @@ export type Database = {
           read_at?: string | null
           title?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notifications_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       submissions: {
         Row: {
@@ -194,7 +204,29 @@ export type Database = {
           updated_at?: string | null
           worker_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "submissions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "task_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submissions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submissions_worker_id_fkey"
+            columns: ["worker_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       task_feedback: {
         Row: {
@@ -224,7 +256,36 @@ export type Database = {
           reviewer_id?: string
           task_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "task_feedback_reviewee_id_fkey"
+            columns: ["reviewee_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_feedback_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_feedback_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "task_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_feedback_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       task_messages: {
         Row: {
@@ -254,7 +315,29 @@ export type Database = {
           sender_id?: string
           task_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "task_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_messages_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "task_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_messages_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tasks: {
         Row: {
@@ -268,11 +351,16 @@ export type Database = {
           dispute_reason: string | null
           dispute_resolution: string | null
           id: string
+          proof_requirements: Json
           requester_id: string | null
           resolved_at: string | null
+          review_policy: string
           reward_wei: number
+          search_vector: unknown
           status: string | null
+          tags: string[] | null
           task_group: string | null
+          task_origin: string
           title: string
           updated_at: string | null
           worker_id: string | null
@@ -288,11 +376,16 @@ export type Database = {
           dispute_reason?: string | null
           dispute_resolution?: string | null
           id?: string
+          proof_requirements?: Json
           requester_id?: string | null
           resolved_at?: string | null
+          review_policy?: string
           reward_wei: number
+          search_vector?: unknown
           status?: string | null
+          tags?: string[] | null
           task_group?: string | null
+          task_origin?: string
           title: string
           updated_at?: string | null
           worker_id?: string | null
@@ -308,22 +401,43 @@ export type Database = {
           dispute_reason?: string | null
           dispute_resolution?: string | null
           id?: string
+          proof_requirements?: Json
           requester_id?: string | null
           resolved_at?: string | null
+          review_policy?: string
           reward_wei?: number
+          search_vector?: unknown
           status?: string | null
+          tags?: string[] | null
           task_group?: string | null
+          task_origin?: string
           title?: string
           updated_at?: string | null
           worker_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tasks_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_worker_id_fkey"
+            columns: ["worker_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transactions: {
         Row: {
           amount_wei: number | null
           block_number: number | null
           created_at: string | null
+          fee_wei: number | null
           from_address: string
           id: string
           status: string | null
@@ -336,6 +450,7 @@ export type Database = {
           amount_wei?: number | null
           block_number?: number | null
           created_at?: string | null
+          fee_wei?: number | null
           from_address: string
           id?: string
           status?: string | null
@@ -348,6 +463,7 @@ export type Database = {
           amount_wei?: number | null
           block_number?: number | null
           created_at?: string | null
+          fee_wei?: number | null
           from_address?: string
           id?: string
           status?: string | null
@@ -356,7 +472,22 @@ export type Database = {
           tx_hash?: string
           tx_type?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "transactions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "task_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       webhooks: {
         Row: {
@@ -395,7 +526,15 @@ export type Database = {
           secret?: string
           url?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "webhooks_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -409,12 +548,17 @@ export type Database = {
           deadline: string | null
           description: string | null
           id: string | null
+          proof_requirements: Json | null
           requester_handle: string | null
           requester_reputation: number | null
           requester_wallet: string | null
+          review_policy: string | null
           reward_wei: number | null
+          search_vector: unknown
           status: string | null
+          tags: string[] | null
           task_group: string | null
+          task_origin: string | null
           title: string | null
           worker_handle: string | null
           worker_reputation: number | null
@@ -426,36 +570,134 @@ export type Database = {
     Functions: {
       cleanup_old_notifications: { Args: never; Returns: undefined }
     }
-    Enums: Record<string, never>
-    CompositeTypes: Record<string, never>
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
 }
 
-// Helper types
-export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
-export type InsertTables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert']
-export type UpdateTables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update']
-export type Views<T extends keyof Database['public']['Views']> = Database['public']['Views'][T]['Row']
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-// Convenience exports
-export type Agent = Tables<'agents'>
-export type Task = Tables<'tasks'>
-export type Submission = Tables<'submissions'>
-export type Transaction = Tables<'transactions'>
-export type TaskFeedback = Tables<'task_feedback'>
-export type Cost = Tables<'costs'>
-export type Notification = Tables<'notifications'>
-export type Webhook = Tables<'webhooks'>
-export type TaskMessage = Tables<'task_messages'>
-export type TaskListing = Views<'task_listings'>
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
-// Event types for notifications
-export type NotificationEventType =
-  | 'task.accepted'
-  | 'task.submitted'
-  | 'task.completed'
-  | 'payment.released'
-  | 'dispute.raised'
-  | 'dispute.resolved'
-  | 'task.deadline_warning'
-  | 'task.expired'
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

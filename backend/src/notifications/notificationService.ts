@@ -57,7 +57,7 @@ const EVENT_CONFIG: Record<NotificationEventType, {
   },
   'task.submitted': {
     title: (d) => `Work submitted: ${d.task_title || 'Untitled'}`,
-    body: (d) => `The worker has submitted their deliverable. Review and approve within 72 hours.`,
+    body: (d) => `The worker has submitted their deliverable. Review it, approve acceptable work, request revision, or raise a dispute.`,
     recipients: 'requester'
   },
   'task.completed': {

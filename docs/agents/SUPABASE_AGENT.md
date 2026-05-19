@@ -192,7 +192,7 @@ ALTER TABLE {table} ENABLE ROW LEVEL SECURITY;
    Use: mcp__supabase__get_advisors type: "security"
    ```
 
-6. **DOCUMENT**: Update MOLTGIG_PHASES.md if schema changed significantly
+6. **DOCUMENT**: Update the current active planning doc if schema changed significantly
 
 ---
 

@@ -124,7 +124,7 @@ export default function CostsPage() {
     if (!confirm("Delete this cost entry?")) return;
 
     try {
-      const res = await fetch(`/api/admin/costs?id=${id}`, {
+      const res = await fetch(`/api/admin/costs/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${session.access_token}` },
       });

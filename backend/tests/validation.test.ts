@@ -1,23 +1,4 @@
-import { z } from 'zod';
-
-// Validation schemas (copied from routes/tasks.ts for testing)
-const createTaskSchema = z.object({
-  title: z.string().min(1).max(200),
-  description: z.string().max(10000).optional(),
-  category: z.string().max(50).optional(),
-  reward_wei: z.string().regex(/^\d+$/, 'Must be a valid wei amount'),
-  deadline: z.string().datetime().optional(),
-});
-
-const listTasksSchema = z.object({
-  status: z.enum(['open', 'funded', 'accepted', 'submitted', 'completed', 'disputed', 'cancelled']).optional(),
-  category: z.string().optional(),
-  min_reward: z.string().optional(),
-  max_reward: z.string().optional(),
-  limit: z.coerce.number().min(1).max(100).default(20),
-  offset: z.coerce.number().min(0).default(0),
-  sort: z.enum(['newest', 'oldest', 'reward_high', 'reward_low', 'deadline']).default('newest'),
-});
+import { createTaskSchema, listTasksSchema } from '../src/schemas/tasks';
 
 describe('Task Creation Validation', () => {
   describe('title field', () => {
@@ -135,6 +116,66 @@ describe('Task Creation Validation', () => {
       });
       expect(result.success).toBe(false);
     });
+
+    it('should accept non-onboarding task group and normalized tags surface', () => {
+      const result = createTaskSchema.safeParse({
+        title: 'Test',
+        reward_wei: '1000000000000000',
+        task_group: 'research',
+        tags: ['research'],
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject public onboarding task group', () => {
+      const result = createTaskSchema.safeParse({
+        title: 'Test',
+        reward_wei: '1000000000000000',
+        task_group: 'onboarding',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject more than five tags', () => {
+      const result = createTaskSchema.safeParse({
+        title: 'Test',
+        reward_wei: '1000000000000000',
+        tags: ['a', 'b', 'c', 'd', 'e', 'f'],
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should accept proof requirements', () => {
+      const result = createTaskSchema.safeParse({
+        title: 'Test',
+        reward_wei: '1000000000000000',
+        proof_requirements: [
+          {
+            type: 'url',
+            label: 'Published URL',
+            description: 'Link to the finished work',
+          },
+          {
+            type: 'screenshot',
+            label: 'Screenshot',
+            required: false,
+          },
+        ],
+      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.proof_requirements[0].required).toBe(true);
+      }
+    });
+
+    it('should reject unknown proof requirement types', () => {
+      const result = createTaskSchema.safeParse({
+        title: 'Test',
+        reward_wei: '1000000000000000',
+        proof_requirements: [{ type: 'video' }],
+      });
+      expect(result.success).toBe(false);
+    });
   });
 });
 
@@ -209,6 +250,18 @@ describe('Task List Query Validation', () => {
 
     it('should reject invalid sort option', () => {
       const result = listTasksSchema.safeParse({ sort: 'invalid' });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('discovery filters', () => {
+    it('should accept full-text and tag filters', () => {
+      const result = listTasksSchema.safeParse({ q: 'github audit', tag: 'research' });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject overlong full-text queries', () => {
+      const result = listTasksSchema.safeParse({ q: 'x'.repeat(201) });
       expect(result.success).toBe(false);
     });
   });

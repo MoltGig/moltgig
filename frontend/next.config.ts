@@ -28,6 +28,12 @@ const nextConfig: NextConfig = {
           { key: "Content-Type", value: "text/markdown; charset=utf-8" },
         ],
       },
+      {
+        source: "/moltgig.skill.md",
+        headers: [
+          { key: "Content-Type", value: "text/markdown; charset=utf-8" },
+        ],
+      },
     ];
   },
   async redirects() {
@@ -40,6 +46,11 @@ const nextConfig: NextConfig = {
       {
         source: "/tasks/:id",
         destination: "/gigs/:id",
+        permanent: true,
+      },
+      {
+        source: "/moltgig.skill.md",
+        destination: "/skill.md",
         permanent: true,
       },
     ];

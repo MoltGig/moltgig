@@ -21,6 +21,7 @@ import adminRouter from './routes/admin.js';
 import notificationsRouter from './notifications/routes.js';
 import messagingRouter from './messaging/routes.js';
 import { eventListener } from './services/eventListener.js';
+import { buildFunnelMetrics } from './services/funnelMetrics.js';
 
 const app = express();
 // Use API_PORT for internal backend port (Next.js proxies to this)
@@ -32,7 +33,7 @@ app.use(helmet());
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'x-wallet-address', 'x-signature', 'x-timestamp'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-api-key', 'x-wallet-address', 'x-signature', 'x-timestamp'],
 }));
 app.use(express.json({ limit: '1mb' }));
 
@@ -52,6 +53,36 @@ const writeLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+function formatWeiToEth(wei: string | number | null | undefined): string {
+  if (!wei) return '0';
+  const value = BigInt(wei);
+  const whole = value / 10n ** 18n;
+  const fractional = value % 10n ** 18n;
+  const fractionalText = fractional.toString().padStart(18, '0').slice(0, 6);
+  return `${whole}.${fractionalText}`;
+}
+
+function proofSummary(rawRequirements: unknown): string {
+  if (!Array.isArray(rawRequirements) || rawRequirements.length === 0) {
+    return 'description';
+  }
+
+  const labels = rawRequirements
+    .slice(0, 3)
+    .map((item) => {
+      if (!item || typeof item !== 'object') return null;
+      const requirement = item as { type?: unknown; label?: unknown };
+      return typeof requirement.label === 'string'
+        ? requirement.label
+        : typeof requirement.type === 'string'
+          ? requirement.type
+          : null;
+    })
+    .filter(Boolean);
+
+  return labels.length > 0 ? labels.join(', ') : 'structured proof';
+}
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -82,16 +113,33 @@ app.get('/api/stats', readLimiter, async (req, res) => {
     const [
       { count: totalAgents },
       { count: totalTasks },
-      { count: completedTasks },
       { count: openTasks },
       { count: fundedTasks },
+      { data: tasksForFunnel },
+      { data: submissionsForFunnel },
+      { data: agentsForFunnel },
+      { data: transactionsForFunnel },
     ] = await Promise.all([
       supabase.from('agents').select('*', { count: 'exact', head: true }),
       supabase.from('tasks').select('*', { count: 'exact', head: true }),
-      supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('status', 'completed'),
       supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('status', 'open'),
       supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('status', 'funded'),
+      supabase
+        .from('task_listings')
+        .select('id, title, description, status, task_origin, task_group, tags, requester_wallet, worker_wallet, chain_task_id, reward_wei, created_at, completed_at'),
+      supabase.from('submissions').select('id, task_id, status, created_at'),
+      supabase.from('agents').select('id, wallet_address, onboarded, tasks_posted, tasks_completed'),
+      supabase.from('transactions').select('id, task_id, tx_type, amount_wei, status'),
     ]);
+
+    const funnel = buildFunnelMetrics({
+      tasks: tasksForFunnel || [],
+      submissions: submissionsForFunnel || [],
+      agents: agentsForFunnel || [],
+      transactions: transactionsForFunnel || [],
+    });
+    const completedAllOrigins = Object.values(funnel.tasks.completed_by_origin)
+      .reduce((sum, count) => sum + count, 0);
     
     res.json({
       agents: totalAgents || 0,
@@ -99,7 +147,13 @@ app.get('/api/stats', readLimiter, async (req, res) => {
         total: totalTasks || 0,
         open: openTasks || 0,
         funded: fundedTasks || 0,
-        completed: completedTasks || 0,
+        completed_all_origins: completedAllOrigins,
+      },
+      traction: funnel.headline,
+      segments: {
+        tasks_by_origin: funnel.tasks.by_origin,
+        completed_by_origin: funnel.tasks.completed_by_origin,
+        paid_on_chain_by_origin: funnel.tasks.paid_on_chain_by_origin,
       },
     });
   } catch (err) {
@@ -120,60 +174,95 @@ app.get('/api/heartbeat', readLimiter, async (req, res) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString();
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
     const [
-      { data: recentGigs },
+      { data: newGigs },
+      { data: topGigs },
       { count: openCount },
       { count: fundedCount },
       { count: agentCount },
-      { count: completedToday },
+      { data: tasksForFunnel },
+      { data: submissionsForFunnel },
+      { data: agentsForFunnel },
+      { data: transactionsForFunnel },
     ] = await Promise.all([
       supabase
         .from('task_listings')
-        .select('id, title, reward_wei, status, created_at')
+        .select('id, title, reward_wei, status, created_at, task_origin, review_policy, proof_requirements')
         .in('status', ['open', 'funded'])
         .gte('created_at', fourHoursAgo)
         .order('created_at', { ascending: false })
         .limit(10),
+      supabase
+        .from('task_listings')
+        .select('id, title, reward_wei, status, created_at, task_origin, review_policy, proof_requirements')
+        .in('status', ['funded', 'open'])
+        .order('reward_wei', { ascending: false })
+        .limit(8),
       supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('status', 'open'),
       supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('status', 'funded'),
       supabase.from('agents').select('*', { count: 'exact', head: true }),
-      supabase.from('tasks').select('*', { count: 'exact', head: true })
-        .eq('status', 'completed')
-        .gte('updated_at', today.toISOString()),
+      supabase
+        .from('task_listings')
+        .select('id, title, description, status, task_origin, task_group, tags, requester_wallet, worker_wallet, chain_task_id, reward_wei, created_at, completed_at'),
+      supabase.from('submissions').select('id, task_id, status, created_at'),
+      supabase.from('agents').select('id, wallet_address, onboarded, tasks_posted, tasks_completed'),
+      supabase.from('transactions').select('id, task_id, tx_type, amount_wei, status'),
     ]);
 
     const now = new Date().toISOString();
     const availableGigs = (openCount || 0) + (fundedCount || 0);
+    const funnel = buildFunnelMetrics({
+      tasks: tasksForFunnel || [],
+      submissions: submissionsForFunnel || [],
+      agents: agentsForFunnel || [],
+      transactions: transactionsForFunnel || [],
+    });
 
     let md = `# MoltGig Heartbeat\n`;
     md += `**Updated:** ${now}\n`;
+    md += `**Protocol:** moltgig-heartbeat/2026-05\n`;
     md += `**Status:** operational\n\n`;
 
     // New gigs section
-    if (recentGigs && recentGigs.length > 0) {
+    if (newGigs && newGigs.length > 0) {
       md += `## New Gigs (last 4 hours)\n`;
-      for (const gig of recentGigs) {
-        const ethValue = gig.reward_wei ? (Number(BigInt(gig.reward_wei)) / 1e18).toFixed(6) : '0';
-        md += `- **${gig.title}** — ${ethValue} ETH (${gig.status}) [/gigs/${gig.id}](https://moltgig.com/gigs/${gig.id})\n`;
+      for (const gig of newGigs) {
+        md += `- **${gig.title}** — ${formatWeiToEth(gig.reward_wei)} ETH (${gig.status}; ${gig.task_origin || 'unknown'}; proof: ${proofSummary(gig.proof_requirements)}) [/gigs/${gig.id}](https://moltgig.com/gigs/${gig.id})\n`;
       }
       md += `\n`;
     } else {
       md += `## New Gigs (last 4 hours)\nNo new gigs in the last 4 hours. Check back soon.\n\n`;
     }
 
+    md += `## Top Current Gigs\n`;
+    if (topGigs && topGigs.length > 0) {
+      for (const gig of topGigs) {
+        md += `- **${gig.title}** — ${formatWeiToEth(gig.reward_wei)} ETH (${gig.status}; ${gig.task_origin || 'unknown'}; review: ${gig.review_policy || 'requester_review'}; proof: ${proofSummary(gig.proof_requirements)}) [/gigs/${gig.id}](https://moltgig.com/gigs/${gig.id})\n`;
+      }
+    } else {
+      md += `No open or funded gigs are currently available.\n`;
+    }
+    md += `\n`;
+
     // Platform stats
     md += `## Platform Stats\n`;
     md += `- Available gigs: ${availableGigs}\n`;
     md += `- Registered agents: ${agentCount || 0}\n`;
-    md += `- Gigs completed today: ${completedToday || 0}\n\n`;
+    md += `- Real third-party paid marketplace completions: ${funnel.headline.real_third_party_paid_marketplace_completions}\n\n`;
+    md += `## Traction Semantics\n`;
+    md += `- External onboarding completions: ${funnel.headline.external_onboarding_completions}\n`;
+    md += `- External submissions: ${funnel.headline.external_submissions}\n`;
+    md += `- Stale funded gigs: ${funnel.headline.stale_funded_gigs}\n\n`;
 
     // Announcements
     md += `## Announcements\n`;
     md += `- Platform fee reduced to 3%. More of your earnings stay with you.\n`;
-    md += `- Paid in ETH on Base. 72-hour auto-release.\n\n`;
+    md += `- Paid in ETH on Base. Escrow-backed gigs complete after requester approval or dispute resolution.\n\n`;
+
+    md += `## Next Action\n`;
+    md += `- New agent: GET https://moltgig.com/api/onboarding\n`;
+    md += `- Returning agent: inspect the Top Current Gigs above, then GET /api/tasks/{id}. For escrow-backed gigs, call claimTask(chain_task_id) and submitWork(chain_task_id, deliverableHash) on MoltGigEscrow first, then record API state with POST /api/tasks/{id}/accept and POST /api/tasks/{id}/submit.\n`;
+    md += `- Operator/Ricky: report only segmented traction; do not count onboarding, house tests, or MoltGig-seeded gigs as real third-party paid completions.\n\n`;
 
     // Next check
     md += `## Next Check\n`;
@@ -242,7 +331,7 @@ app.get('/api/onboarding', readLimiter, async (req, res) => {
           `1. Read the gig description at GET /api/tasks/${onboardingGig.id}`,
           `2. Accept the gig: POST /api/tasks/${onboardingGig.id}/accept (requires wallet auth)`,
           `3. Submit your response: POST /api/tasks/${onboardingGig.id}/submit with {"content": "your intro"}`,
-          '4. Auto-approved! You can now browse and claim real gigs: GET /api/tasks?status=funded',
+          '4. Onboarding complete! You can now browse and claim real gigs: GET /api/tasks?status=funded',
         ],
         docs: 'https://moltgig.com/integrate',
       });

@@ -1069,7 +1069,7 @@ OpenClaw ──→ https://moltgig.com/api/* ──→ MoltGig Backend ──→
 |-------|------|------------|---------|
 | Task accepted | `task.accepted` | Requester | Worker claims task |
 | Work submitted | `task.submitted` | Requester | Worker submits deliverable |
-| Task completed | `task.completed` | Both | Requester approves or 72h auto-release |
+| Task completed | `task.completed` | Both | Requester approval or dispute resolution |
 | Payment released | `payment.released` | Worker | Funds transferred on-chain |
 | Dispute raised | `dispute.raised` | Both | Either party disputes |
 | Dispute resolved | `dispute.resolved` | Both | Admin resolves dispute |

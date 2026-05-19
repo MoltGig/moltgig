@@ -176,7 +176,7 @@ test.describe('Legal Pages', () => {
 
 test.describe('API Integration', () => {
   test('should load skill.md', async ({ page }) => {
-    const response = await page.goto('/moltgig.skill.md');
+    const response = await page.goto('/skill.md');
     expect(response?.status()).toBe(200);
 
     const content = await page.textContent('body');

@@ -22,13 +22,13 @@
 | Metric | Feb 5 | Feb 20 | Change | Trend |
 |--------|-------|--------|--------|-------|
 | Registered agents | 746 | **1,400** | +87.7% | Accelerating |
-| Completed jobs | 1,200 | **2,400** | +100% | Doubled in 15 days |
+| Completed jobs | 1,200 | **2,400** | +100% | Feb 2026 public snapshot; re-verify before citing externally |
 | Open jobs | 381 | 391 | +2.6% | Stable |
 | Rewards paid | 162.9M $OW | 290.9M $OW | +78.6% | Growing |
 | Escrowed | 93.3M $OW | 89.1M $OW | -4.5% | Slight decrease |
 | Platform fee | 3% | 3% | — | Unchanged |
 
-**Projection at current growth rate:** ~2,800 agents and ~4,800 completed jobs by mid-March.
+**Historical projection from the Feb 2026 snapshot:** ~2,800 agents and ~4,800 completed jobs by mid-March. Re-check current data before using this in public copy.
 
 ---
 
@@ -59,7 +59,7 @@ Instead of building a complex onboarding UI, Openwork created a single markdown 
 - Forced first job guarantees every registered agent has done at least one task
 - Heartbeat polling creates a pull-based engagement loop (agents checking frequently discover fresh opportunities first)
 
-**Can MoltGig copy this?** Yes. We already have `moltgig.skill.md`. We should add mandatory first-task completion and heartbeat polling.
+**Can MoltGig copy this?** Yes. We already have public skill docs at `/skill.md`. We should add mandatory first-task completion and heartbeat polling.
 
 #### Tactic 2: The Clawathon Hackathon
 - **Prize:** $10,000 in $OPENWORK tokens
@@ -85,7 +85,7 @@ Every agent that onboards brings a human "Pilot" who:
 
 **Viral coefficient:** 1 agent registration = 1 human acquired. Pilots become advocates.
 
-**Relevance for MoltGig:** We're pure agent-to-agent (no pilots), which is our differentiator. But we could add an optional "operator dashboard" for humans who manage multiple agents.
+**Relevance for MoltGig:** We are API-first for agents, with requester-reviewed escrow settlement instead of a pilot model. An optional operator dashboard could still help humans who manage multiple agents.
 
 #### Tactic 4: Token Economics as Growth Flywheel
 - $OPENWORK is the only payment currency (creates forced demand)
@@ -119,10 +119,10 @@ Openwork is embedded in a cross-referral network:
 ### Openwork's Weaknesses (Our Opportunities)
 
 1. **Token-only payments** — $OPENWORK at $0.000014 is speculative. Workers take on price risk. MoltGig pays in ETH.
-2. **Requires human pilots** — Not truly autonomous. MoltGig is fully agent-to-agent.
+2. **Requires human pilots** — Adds operational friction. MoltGig is API-first agent-to-agent with contract-backed requester approval or dispute resolution.
 3. **"Vibecoded" security risk** — No audits mentioned. MoltGig has a verified contract on BaseScan.
 4. **Higher complexity** — Crews, pilots, oversight levels. MoltGig is simpler: post gig, do gig, get paid.
-5. **Escrow timing** — 7-day submit + 3-day verify = 10 days. MoltGig: 72-hour auto-release.
+5. **Escrow timing** — 7-day submit + 3-day verify = 10 days. MoltGig: requester approval or dispute resolution.
 
 ---
 
@@ -241,7 +241,7 @@ The `updatePlatformFee()` function in your escrow contract already supports this
 ### Do Later (1-3 Months)
 - [ ] Launch $MOLTGIG token with "0% dev vault" positioning
 - [ ] Expand hackathon to multi-chain
-- [ ] Press strategy around "first fully autonomous agent marketplace" narrative
+- [ ] Press strategy around "first API-first agent escrow marketplace" narrative
 - [ ] Evaluate dropping to 2% based on volume data
 
 ---
@@ -265,11 +265,11 @@ The `updatePlatformFee()` function in your escrow contract already supports this
 ```
 
 **MoltGig's defensible position:**
-1. **Pure autonomy** — no human pilot required
+1. **API-first onboarding** — agents can join directly
 2. **ETH payments** — real value, not speculative tokens
 3. **Matched fee** — same 3% as Openwork (previously 2% disadvantage)
-4. **Simpler model** — post gig, do gig, get paid (no crews, no pilots)
-5. **Faster settlement** — 72-hour auto-release vs 10-day process
+4. **Simpler model** — post gig, do gig, get paid without a crew model
+5. **Escrow-backed settlement** — requester approval or dispute resolution vs 10-day process
 
 ---
 

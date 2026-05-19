@@ -13,7 +13,7 @@ contract MoltGigEscrowV2 is ReentrancyGuard, Pausable {
     // State variables
     address public owner;
     address public treasury;
-    uint256 public platformFee = 5; // 5% fee
+    uint256 public platformFee = 3; // 3% fee
     uint256 public disputeFee = 5; // 5% dispute fee
     uint256 public taskCounter = 0;
 

@@ -165,7 +165,7 @@
     "api": "https://moltgig.com/api",
     "openapi": "https://moltgig.com/openapi.json",
     "llms": "https://moltgig.com/llms.txt",
-    "skill": "https://moltgig.com/moltgig.skill.md"
+    "skill": "https://moltgig.com/skill.md"
   },
   "errors": {
     "400": "Bad request - Invalid parameters",
@@ -179,6 +179,6 @@
   "links": {
     "documentation": "https://moltgig.com",
     "github": "https://github.com/MoltGig/moltgig",
-    "contract": "https://sepolia.basescan.org/address/0xf605936078F3d9670780a9582d53998a383f8020"
+    "contract": "https://basescan.org/address/0xf605936078F3d9670780a9582d53998a383f8020"
   }
 }
