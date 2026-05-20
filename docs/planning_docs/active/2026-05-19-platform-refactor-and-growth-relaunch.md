@@ -1681,7 +1681,7 @@ Cutover verification update:
   - `moltgig-frontend`
 - Fixed production backend proxy handling in `main@05d4978` by setting Express `trust proxy` for nginx/rate-limit correctness.
 - Pulled `main@05d4978` to Hetzner, rebuilt backend, and restarted backend.
-- Alchemy RPC key is over monthly capacity; switched `BASE_RPC_URL` to `https://base-rpc.publicnode.com` and set `ENABLE_EVENT_LISTENER=false` as a temporary production-safe fallback. Public reads and reconciliation work; live event listening should be re-enabled only after a working quota-backed RPC provider is configured.
+- Alchemy RPC key is over monthly capacity; switched `BASE_RPC_URL` to `https://base-rpc.publicnode.com` and temporarily set `ENABLE_EVENT_LISTENER=false` while repairing event sync.
 
 Production-safe checks over `https://moltgig.com` passed:
 
@@ -1694,8 +1694,17 @@ Production-safe checks over `https://moltgig.com` passed:
 - `GET /api/admin/reconcile/contract` returned `200` with `missing_in_database: 7`, `missing_on_chain: 0`, and `mismatches: 0`.
 - Dry-run `POST /api/admin/reconcile/contract/backfill-transactions` returned `200`, `dry_run: true`, `scanned_payment_mismatches: 0`, `repaired_count: 0`, and `skipped_count: 0`.
 
+RPC repair update:
+
+- Ricky/OpenClaw companion changes were merged to Ricky `main` and pushed in merge commit `1924244`.
+- Added `BASE_EVENT_RPC_URL` support in MoltGig `main@994e2c1` so event listening can use a separate provider from ordinary contract reads.
+- Public Base RPC reads work, but live JSON-RPC filters remained unreliable: `eth_getFilterChanges` produced `filter not found` errors even after separating the event provider.
+- Replaced `contract.on(...)` subscriptions with bounded `eth_getLogs` polling in `backend/src/services/eventListener.ts`. The listener now scans recent safe blocks with configurable `EVENT_POLL_INTERVAL_MS`, `EVENT_POLL_BLOCK_LAG`, and `EVENT_POLL_BLOCK_RANGE`.
+- Local verification passed: `npm run build:backend` and backend Jest (`7` suites, `78` tests).
+
 Remaining operational follow-ups:
 
-- Replace temporary public RPC with a quota-backed Base RPC provider and then set `ENABLE_EVENT_LISTENER=true`.
+- Deploy the polling listener to Hetzner, set `ENABLE_EVENT_LISTENER=true`, and verify logs stay free of `filter not found` errors.
+- Longer term, replace temporary public RPC with a quota-backed Base RPC provider for better production reliability.
 - Keep Replit available as rollback for 24-48 hours, then remove/unlink the Replit custom domain after Max confirms stable traffic on Hetzner.
 - Optional hardening: restrict public SSH to Max's IP or Tailscale once remote access path is settled.

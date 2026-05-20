@@ -1,4 +1,4 @@
-import { ethers, Contract, Provider } from 'ethers';
+import { ethers, Contract, EventLog, Log, Provider } from 'ethers';
 import supabase from '../config/supabase.js';
 
 // Contract ABI for events
@@ -10,10 +10,25 @@ const ESCROW_ABI = [
   'event DisputeResolved(uint256 indexed taskId, address indexed winner, uint256 fee)',
 ];
 
+type EscrowEventName =
+  | 'TaskPosted'
+  | 'TaskClaimed'
+  | 'TaskCompleted'
+  | 'DisputeRaised'
+  | 'DisputeResolved';
+
+type EscrowLog = EventLog | Log;
+
 export class EventListener {
   private provider: Provider;
   private contract: Contract;
   private isListening = false;
+  private pollTimer: NodeJS.Timeout | null = null;
+  private lastScannedBlock: number | null = null;
+  private readonly processedEvents = new Set<string>();
+  private readonly pollIntervalMs = Number(process.env.EVENT_POLL_INTERVAL_MS || 15_000);
+  private readonly pollBlockLag = Number(process.env.EVENT_POLL_BLOCK_LAG || 2);
+  private readonly pollBlockRange = Number(process.env.EVENT_POLL_BLOCK_RANGE || 50);
 
   constructor() {
     const rpcUrl = process.env.BASE_EVENT_RPC_URL ||
@@ -37,71 +52,187 @@ export class EventListener {
     }
 
     this.isListening = true;
-    console.log('Starting contract event listener...');
+    console.log('Starting contract event polling listener...');
 
-    // TaskPosted event
-    this.contract.on('TaskPosted', async (taskId, poster, value, event) => {
-      console.log(`TaskPosted: taskId=${taskId}, poster=${poster}, value=${value}`);
-      await this.handleTaskPosted(
-        Number(taskId),
-        poster.toLowerCase(),
-        value.toString(),
-        event.log.transactionHash
+    try {
+      const latestBlock = await this.provider.getBlockNumber();
+      this.lastScannedBlock = Math.max(0, latestBlock - this.pollBlockLag - 1);
+
+      await this.pollOnce();
+      this.pollTimer = setInterval(() => {
+        void this.pollOnce().catch((err) => {
+          console.error('Error polling contract events:', err);
+        });
+      }, this.pollIntervalMs);
+
+      console.log(
+        `Event polling listener started successfully from block ${this.lastScannedBlock} ` +
+        `(interval=${this.pollIntervalMs}ms, lag=${this.pollBlockLag}, range=${this.pollBlockRange})`
       );
-    });
-
-    // TaskClaimed event
-    this.contract.on('TaskClaimed', async (taskId, worker, event) => {
-      console.log(`TaskClaimed: taskId=${taskId}, worker=${worker}`);
-      await this.handleTaskClaimed(
-        Number(taskId),
-        worker.toLowerCase(),
-        event.log.transactionHash
-      );
-    });
-
-    // TaskCompleted event
-    this.contract.on('TaskCompleted', async (taskId, fee, payment, event) => {
-      console.log(`TaskCompleted: taskId=${taskId}, fee=${fee}, payment=${payment}`);
-      await this.handleTaskCompleted(
-        Number(taskId),
-        fee.toString(),
-        payment.toString(),
-        event.log.transactionHash
-      );
-    });
-
-    // DisputeRaised event
-    this.contract.on('DisputeRaised', async (taskId, initiator, event) => {
-      console.log(`DisputeRaised: taskId=${taskId}, initiator=${initiator}`);
-      await this.handleDisputeRaised(
-        Number(taskId),
-        initiator.toLowerCase(),
-        event.log.transactionHash
-      );
-    });
-
-    // DisputeResolved event
-    this.contract.on('DisputeResolved', async (taskId, winner, fee, event) => {
-      console.log(`DisputeResolved: taskId=${taskId}, winner=${winner}, fee=${fee}`);
-      await this.handleDisputeResolved(
-        Number(taskId),
-        winner.toLowerCase(),
-        fee.toString(),
-        event.log.transactionHash
-      );
-    });
-
-    console.log('Event listener started successfully');
+    } catch (err) {
+      this.isListening = false;
+      console.error('Failed to start event polling listener:', err);
+      throw err;
+    }
   }
 
   /**
    * Stop listening to events
    */
   stop() {
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
+      this.pollTimer = null;
+    }
     this.contract.removeAllListeners();
     this.isListening = false;
     console.log('Event listener stopped');
+  }
+
+  /**
+   * Poll contract logs instead of using JSON-RPC filter subscriptions. Public
+   * Base RPCs usually support eth_getLogs, while eth_getFilterChanges can expire
+   * or be disabled and made the old live listener noisy in production.
+   */
+  private async pollOnce() {
+    if (!this.isListening) return;
+
+    const latestBlock = await this.provider.getBlockNumber();
+    const safeLatestBlock = latestBlock - this.pollBlockLag;
+
+    if (safeLatestBlock < 0) return;
+
+    if (this.lastScannedBlock === null) {
+      this.lastScannedBlock = Math.max(0, safeLatestBlock - 1);
+    }
+
+    let fromBlock = this.lastScannedBlock + 1;
+    while (fromBlock <= safeLatestBlock) {
+      const toBlock = Math.min(fromBlock + this.pollBlockRange - 1, safeLatestBlock);
+      await this.queryAndHandleRange(fromBlock, toBlock);
+      this.lastScannedBlock = toBlock;
+      fromBlock = toBlock + 1;
+    }
+  }
+
+  private async queryAndHandleRange(fromBlock: number, toBlock: number) {
+    const eventQueries: Array<{
+      name: EscrowEventName;
+      filter: ReturnType<Contract['filters'][EscrowEventName]>;
+    }> = [
+      { name: 'TaskPosted', filter: this.contract.filters.TaskPosted() },
+      { name: 'TaskClaimed', filter: this.contract.filters.TaskClaimed() },
+      { name: 'TaskCompleted', filter: this.contract.filters.TaskCompleted() },
+      { name: 'DisputeRaised', filter: this.contract.filters.DisputeRaised() },
+      { name: 'DisputeResolved', filter: this.contract.filters.DisputeResolved() },
+    ];
+
+    const eventBatches = await Promise.all(
+      eventQueries.map(async ({ name, filter }) => ({
+        name,
+        events: await this.contract.queryFilter(filter, fromBlock, toBlock),
+      }))
+    );
+
+    const orderedEvents = eventBatches
+      .flatMap(({ name, events }) => events.map((event) => ({ name, event })))
+      .sort((a, b) => {
+        const blockDiff = a.event.blockNumber - b.event.blockNumber;
+        if (blockDiff !== 0) return blockDiff;
+        return this.eventIndex(a.event) - this.eventIndex(b.event);
+      });
+
+    for (const { name, event } of orderedEvents) {
+      const eventId = this.eventId(event);
+      if (this.processedEvents.has(eventId)) continue;
+      this.rememberProcessedEvent(eventId);
+      await this.handleContractEvent(name, event);
+    }
+  }
+
+  private async handleContractEvent(name: EscrowEventName, event: EscrowLog) {
+    if (!('args' in event)) {
+      console.warn(`Skipping ${name} log without decoded args: ${this.eventId(event)}`);
+      return;
+    }
+
+    const args = event.args;
+    const txHash = event.transactionHash;
+
+    switch (name) {
+      case 'TaskPosted': {
+        const [taskId, poster, value] = args;
+        console.log(`TaskPosted: taskId=${taskId}, poster=${poster}, value=${value}`);
+        await this.handleTaskPosted(
+          Number(taskId),
+          String(poster).toLowerCase(),
+          value.toString(),
+          txHash
+        );
+        break;
+      }
+      case 'TaskClaimed': {
+        const [taskId, worker] = args;
+        console.log(`TaskClaimed: taskId=${taskId}, worker=${worker}`);
+        await this.handleTaskClaimed(
+          Number(taskId),
+          String(worker).toLowerCase(),
+          txHash
+        );
+        break;
+      }
+      case 'TaskCompleted': {
+        const [taskId, fee, payment] = args;
+        console.log(`TaskCompleted: taskId=${taskId}, fee=${fee}, payment=${payment}`);
+        await this.handleTaskCompleted(
+          Number(taskId),
+          fee.toString(),
+          payment.toString(),
+          txHash
+        );
+        break;
+      }
+      case 'DisputeRaised': {
+        const [taskId, initiator] = args;
+        console.log(`DisputeRaised: taskId=${taskId}, initiator=${initiator}`);
+        await this.handleDisputeRaised(
+          Number(taskId),
+          String(initiator).toLowerCase(),
+          txHash
+        );
+        break;
+      }
+      case 'DisputeResolved': {
+        const [taskId, winner, fee] = args;
+        console.log(`DisputeResolved: taskId=${taskId}, winner=${winner}, fee=${fee}`);
+        await this.handleDisputeResolved(
+          Number(taskId),
+          String(winner).toLowerCase(),
+          fee.toString(),
+          txHash
+        );
+        break;
+      }
+    }
+  }
+
+  private eventId(event: EscrowLog): string {
+    return `${event.transactionHash}:${this.eventIndex(event)}`;
+  }
+
+  private eventIndex(event: EscrowLog): number {
+    const indexedEvent = event as EscrowLog & { index?: number; logIndex?: number };
+    return indexedEvent.index ?? indexedEvent.logIndex ?? 0;
+  }
+
+  private rememberProcessedEvent(eventId: string) {
+    this.processedEvents.add(eventId);
+    if (this.processedEvents.size <= 5_000) return;
+
+    const oldestEventId = this.processedEvents.values().next().value as string | undefined;
+    if (oldestEventId) {
+      this.processedEvents.delete(oldestEventId);
+    }
   }
 
   /**
