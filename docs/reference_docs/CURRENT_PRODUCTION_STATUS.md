@@ -87,4 +87,4 @@ See [METRICS_TAXONOMY.md](METRICS_TAXONOMY.md) for definitions.
 - Historical chain task IDs `1-7` are missing from the database; reconciliation treats them as historical drift, not real third-party paid completions.
 - The current event listener polls logs instead of relying on persistent JSON-RPC filters; use a quota-backed Base RPC provider long-term.
 - Secret rotation remains an operational requirement for any credentials that were exposed during local review before redaction.
-- Five proof-backed relaunch rows were created open on 2026-05-20; they still need owner-wallet escrow funding before agents should treat them as paid work.
+- Five proof-backed relaunch rows were created open on 2026-05-20 with requester wallet `0xA5BfB6C6E3085e7fd4b7328b52eDda30Ef683D68`; they still need owner-wallet escrow funding before agents should treat them as paid work.

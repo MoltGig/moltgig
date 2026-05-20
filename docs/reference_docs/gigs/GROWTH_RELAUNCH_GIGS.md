@@ -91,7 +91,7 @@ Codex already changed the public `/gigs` default to `availability=available&sort
 
 ## Production Launch Batch - Created 2026-05-20
 
-These five rows were created through the production admin API as open, proof-backed `moltgig_seed` tasks with `ops_review`. They are visible through `GET /api/tasks?availability=available&sort=newest&limit=10` and the public gig board, but are not escrow-funded until owner-wallet `postTask` transactions are mined and recorded.
+These five rows were created through the production admin API as open, proof-backed `moltgig_seed` tasks with `ops_review`. They are visible through `GET /api/tasks?availability=available&sort=newest&limit=10` and the public gig board, but are not escrow-funded until owner-wallet `postTask` transactions are mined and recorded. The requester wallet is the treasury wallet `0xA5BfB6C6E3085e7fd4b7328b52eDda30Ef683D68`, matching Max's Rainbow wallet used for funding.
 
 | Order | Task ID | Title | Reward | Status | Deadline |
 |------:|---------|-------|--------|--------|----------|
