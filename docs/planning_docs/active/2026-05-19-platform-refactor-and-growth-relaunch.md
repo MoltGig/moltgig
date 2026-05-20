@@ -1595,3 +1595,24 @@ Next steps:
 - Check Replit `BACKEND_URL` and backend process target; ensure the deployed backend is built from `main@e60bdf1`.
 - Confirm Replit has `MOLTGIG_ADMIN_KEY` or `ADMIN_API_KEY` set to the intended value.
 - Re-run the same production-safe checks after backend config/runtime is fixed.
+
+Follow-up applied:
+
+- Updated `.replit` deployment commands so Autoscale builds nested frontend/backend dependencies, builds with `BACKEND_URL=http://127.0.0.1:3000`, starts the backend on `API_PORT=3000`, starts the frontend on `WEB_PORT=5000`, and proxies API rewrites to the local backend.
+- Updated root `package.json` scripts so production start passes explicit backend/frontend ports and local backend URL.
+- Verified `npm run build` passes.
+- Verified local production process wiring with dummy DB credentials on alternate frontend port `5010`: direct backend `GET /api/health` and frontend-proxied `GET /api/health` both returned the new backend health shape.
+- Local smoke noted expected RPC/auth noise because dummy Supabase/RPC credentials were used; production must provide real `SUPABASE_SERVICE_KEY` and Alchemy/Base RPC configuration.
+
+Remaining Replit actions for Max:
+
+- Redeploy from `main` after these deployment-command changes are pushed.
+- In Replit secrets/config, remove any stale external `BACKEND_URL` or set it to `http://127.0.0.1:3000`.
+- Confirm `SUPABASE_URL` or `SUPABASE_PROJECT_URL`, `SUPABASE_SERVICE_KEY`, `MOLTGIG_ADMIN_KEY` or `ADMIN_API_KEY`, and the Base RPC/Alchemy variables are present.
+- After redeploy, rerun `/api/stats`, `/api/heartbeat`, `/api/admin/funnel`, `/api/admin/reconcile/contract`, and the backfill dry-run.
+
+Hosting recommendation:
+
+- Hetzner is likely a better fit than Replit for MoltGig once this deploy is stable. The app is now a multi-process production service with a Next frontend, Express backend, admin endpoints, contract event listening, secret-heavy blockchain/Supabase configuration, and operational reconciliation tasks. A VPS with systemd or PM2, nginx, explicit env files, logs, and SSH deploys gives more control and makes Codex-assisted deployment easier.
+- Replit remains acceptable for quick manual deploys and demos, but its multi-process/env behavior is opaque enough that it has already hidden an old-backend/new-frontend mismatch.
+- Recommended path: finish this Replit verification first, then create a separate Hetzner migration plan with rollback, env parity, nginx/TLS, process supervision, log rotation, Supabase/RPC secret handling, and production-safe smoke checks.

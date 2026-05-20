@@ -7,12 +7,12 @@
     "dev": "concurrently --names \"API,WEB\" -c \"yellow,cyan\" \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
-    "build": "npm run build:backend && npm run build:frontend",
+    "build": "BACKEND_URL=${BACKEND_URL:-http://127.0.0.1:3000} npm run build:backend && BACKEND_URL=${BACKEND_URL:-http://127.0.0.1:3000} npm run build:frontend",
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
-    "start": "concurrently --names \"API,WEB\" -c \"yellow,cyan\" \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:backend": "cd backend && npm start",
-    "start:frontend": "cd frontend && npm start"
+    "start": "concurrently -k --names \"API,WEB\" -c \"yellow,cyan\" \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && API_PORT=${API_PORT:-3000} npm start",
+    "start:frontend": "cd frontend && BACKEND_URL=${BACKEND_URL:-http://127.0.0.1:3000} npm start -- -p ${WEB_PORT:-5000}"
   },
   "dependencies": {
     "concurrently": "^8.2.0"
