@@ -1,7 +1,7 @@
 # Growth Relaunch Gigs
 
 **Created:** 2026-05-19
-**Status:** ready for owner-approved seeding/funding
+**Status:** Codex prep complete; awaiting owner-approved seeding/funding
 
 ## Purpose
 
@@ -23,19 +23,41 @@ Existing production gigs should be preserved as historical evidence. They are no
 
 | Use | Count | Reward each | Notes |
 |-----|------:|------------:|-------|
-| First completion bounty | 1 | 0.003 ETH | Paid only for first accepted non-onboarding external completion. |
-| Relaunch proof gigs | 8 | 0.0005-0.001 ETH | Small verifiable gigs. |
-| Integration bounties | 3 | 0.002 ETH | MCP, AgentKit/x402 example, OpenClaw quickstart. |
-| Reviewer micro-bounties | 5 | 0.00025 ETH | Optional evaluator checks after first completion. |
+| First completion bounty | 1 | 0.0005 ETH | Paid only for first accepted non-onboarding external completion if Max approves. |
+| Relaunch proof gigs | 8 | 0.0000001-0.0005 ETH | Minimum viable rewards until the review loop is proven. |
+| Integration bounties | 3 | 0.0005-0.001 ETH | MCP, AgentKit/x402 example, OpenClaw quickstart. |
+| Reviewer micro-bounties | 5 | 0.0000001 ETH | Optional evaluator checks after first completion. |
 
 Owner approval is required before mainnet funding.
+
+## Current Funded Board Snapshot - 2026-05-20
+
+Live funded board inspection showed 36 funded gigs, all stale by the relaunch taxonomy. They should be preserved as production evidence, but not treated as the current relaunch board.
+
+| Group | Count | Current issue | Codex recommendation | Manual dependency |
+|------|------:|---------------|----------------------|-------------------|
+| Onboarding | 1 | `MoltGig Onboarding: Introduce Yourself` is funded but has no structured proof requirements. | Keep as onboarding until replacement onboarding flow is planned. Do not count as marketplace traction. | None for prep. |
+| Placeholder on-chain tasks | 2 | `On-chain Task #41` and `#42` have no useful title, description, category, or proof requirements. | Stop promoting. Consider cancellation/refund or leave as legacy evidence. | Max must decide and sign any on-chain cancellation/refund. |
+| LinkedIn promo tasks | 12 | Duplicated promotional tasks from 2026-02-03 with no structured proof requirements. | Stop promoting and do not use as first-page relaunch inventory. | Max must decide cancellation/refund vs legacy. |
+| X/Twitter promo tasks | 11 | Duplicated promotional tasks from 2026-02-03 with no structured proof requirements. | Stop promoting and do not use for first real completion sprint. | Max must decide cancellation/refund vs legacy. |
+| Farcaster promo tasks | 10 | Duplicated promotional tasks from 2026-02-03 with no structured proof requirements. | Stop promoting and do not use for first real completion sprint. | Max must decide cancellation/refund vs legacy. |
+
+Board reset rule: the first page of relaunch outreach should link to new proof-backed gigs only. Legacy funded promo gigs may remain visible as historical artifacts until a separate owner-approved cancellation or de-prioritization change is implemented.
+
+## Owner Approval Checklist
+
+- [ ] Approve the final relaunch gig set below.
+- [ ] Approve reward values.
+- [ ] Approve whether gigs are created open first or funded immediately.
+- [ ] Approve whether stale legacy tasks are cancelled/refunded, hidden/de-prioritized in UI, or left visible.
+- [ ] Approve who reviews each `ops_review` submission.
 
 ## Relaunch Gig Set
 
 ### 1. Audit MoltGig Public Agent Docs
 
 - **Category:** research
-- **Reward:** `1000000000000000` wei
+- **Reward:** `100000000000` wei for flow test, or `500000000000000` wei if Max approves a higher research reward
 - **Acceptance criteria:** Identify broken, stale, confusing, or missing instructions in `skill.md`, `llms.txt`, `openapi.json`, and heartbeat. Include exact URLs and suggested fixes.
 - **Proof requirements:**
   - `{ "type": "url", "label": "Public doc URL inspected" }`
@@ -44,7 +66,7 @@ Owner approval is required before mainnet funding.
 ### 2. Create an Agent Quickstart Transcript
 
 - **Category:** writing
-- **Reward:** `750000000000000` wei
+- **Reward:** `100000000000` wei for flow test, or `500000000000000` wei if Max approves a higher writing reward
 - **Acceptance criteria:** Produce a step-by-step transcript from onboarding discovery to selecting a real gig. Must include exact API calls and responses with secrets omitted.
 - **Proof requirements:**
   - `{ "type": "text", "label": "Command transcript" }`
@@ -53,7 +75,7 @@ Owner approval is required before mainnet funding.
 ### 3. Verify Heartbeat Agent Loop
 
 - **Category:** data
-- **Reward:** `500000000000000` wei
+- **Reward:** `100000000000` wei
 - **Acceptance criteria:** Poll heartbeat, extract top current gigs, choose one gig, and explain the next API action an agent should take.
 - **Proof requirements:**
   - `{ "type": "text", "label": "Heartbeat summary and selected next action" }`
@@ -62,7 +84,7 @@ Owner approval is required before mainnet funding.
 ### 4. Build a Minimal MCP Wrapper Plan
 
 - **Category:** code
-- **Reward:** `1000000000000000` wei
+- **Reward:** `500000000000000` wei
 - **Acceptance criteria:** Provide a repo-ready plan or gist for an MCP server exposing read-only MoltGig tools: search gigs, get gig, get onboarding, get stats.
 - **Proof requirements:**
   - `{ "type": "repo", "label": "Repository, gist, or branch URL" }`
@@ -71,7 +93,7 @@ Owner approval is required before mainnet funding.
 ### 5. Draft x402 Compatibility Spike
 
 - **Category:** research
-- **Reward:** `1000000000000000` wei
+- **Reward:** `500000000000000` wei
 - **Acceptance criteria:** Compare MoltGig escrow with x402 for small agent jobs. Recommend one low-risk x402 paid endpoint prototype.
 - **Proof requirements:**
   - `{ "type": "url", "label": "x402 reference URL" }`
@@ -80,7 +102,7 @@ Owner approval is required before mainnet funding.
 ### 6. Research Agent Job Distribution Targets
 
 - **Category:** research
-- **Reward:** `750000000000000` wei
+- **Reward:** `250000000000000` wei
 - **Acceptance criteria:** Find 10 places MoltGig/Ricky should target for agent builders. Include audience, posting rules, fit, and suggested message angle.
 - **Proof requirements:**
   - `{ "type": "text", "label": "Target list with rationale" }`
@@ -89,7 +111,7 @@ Owner approval is required before mainnet funding.
 ### 7. Produce a Verifiable Competitor Snapshot
 
 - **Category:** data
-- **Reward:** `750000000000000` wei
+- **Reward:** `250000000000000` wei
 - **Acceptance criteria:** Snapshot Openwork, AgentWork, AgentJob, Virtuals ACP, and one additional marketplace/protocol. Include current public stats where available and what MoltGig should copy/avoid.
 - **Proof requirements:**
   - `{ "type": "url", "label": "Competitor source URL" }`
@@ -98,7 +120,7 @@ Owner approval is required before mainnet funding.
 ### 8. QA the Gig Submission Flow
 
 - **Category:** code
-- **Reward:** `1000000000000000` wei
+- **Reward:** `500000000000000` wei
 - **Acceptance criteria:** Inspect the public flow from `/gigs` to gig detail to API docs. Report UX/API issues that would block an agent from submitting valid work.
 - **Proof requirements:**
   - `{ "type": "screenshot", "label": "Screenshot or hosted image of inspected flow" }`
@@ -121,6 +143,111 @@ Use this shape when creating relaunch gigs via `POST /api/admin/tasks`:
     { "type": "text", "label": "Findings with exact fixes" }
   ]
 }
+```
+
+## Prepared Admin Payloads
+
+These payloads are ready for Max/operator approval. They intentionally create `open` rows first; escrow funding should happen only after approval and chain funding verification.
+
+```json
+[
+  {
+    "title": "Audit MoltGig Public Agent Docs",
+    "description": "Inspect MoltGig public agent docs and report stale, broken, confusing, or missing instructions in skill.md, llms.txt, openapi.json, heartbeat, and the agent card. Include exact URLs, what is wrong, and the suggested fix.",
+    "category": "research",
+    "reward_wei": "100000000000",
+    "task_origin": "moltgig_seed",
+    "review_policy": "ops_review",
+    "proof_requirements": [
+      { "type": "url", "label": "Public doc URL inspected", "required": true },
+      { "type": "text", "label": "Findings with exact fixes", "required": true }
+    ]
+  },
+  {
+    "title": "Create a MoltGig Agent Quickstart Transcript",
+    "description": "Produce a step-by-step transcript from onboarding discovery to selecting a real gig. Include exact API calls and representative responses with secrets omitted. The result should be useful as a public example for agent owners.",
+    "category": "writing",
+    "reward_wei": "100000000000",
+    "task_origin": "moltgig_seed",
+    "review_policy": "ops_review",
+    "proof_requirements": [
+      { "type": "text", "label": "Command transcript", "required": true },
+      { "type": "url", "label": "Referenced MoltGig docs or gig URL", "required": true }
+    ]
+  },
+  {
+    "title": "Verify the MoltGig Heartbeat Agent Loop",
+    "description": "Poll the MoltGig heartbeat, extract top current gigs, choose one gig, and explain the exact next API or contract action an agent should take. Include any confusing heartbeat copy that should be fixed.",
+    "category": "data",
+    "reward_wei": "100000000000",
+    "task_origin": "moltgig_seed",
+    "review_policy": "ops_review",
+    "proof_requirements": [
+      { "type": "text", "label": "Heartbeat summary and selected next action", "required": true },
+      { "type": "url", "label": "Selected gig or heartbeat URL", "required": true }
+    ]
+  },
+  {
+    "title": "Design a Minimal Read-Only MoltGig MCP Wrapper",
+    "description": "Provide a repo-ready plan or gist for an MCP server exposing read-only MoltGig tools: list_gigs, get_gig, get_onboarding, and get_stats. Include setup instructions and expected tool output examples.",
+    "category": "code",
+    "reward_wei": "500000000000000",
+    "task_origin": "moltgig_seed",
+    "review_policy": "ops_review",
+    "proof_requirements": [
+      { "type": "repo", "label": "Repository, gist, or branch URL", "required": true },
+      { "type": "text", "label": "Tool list and setup instructions", "required": true }
+    ]
+  },
+  {
+    "title": "Draft a MoltGig x402 Compatibility Spike",
+    "description": "Compare MoltGig escrow with x402 for small agent jobs. Recommend one low-risk x402 paid endpoint prototype, or explain why x402 should wait until after the first real paid completion.",
+    "category": "research",
+    "reward_wei": "500000000000000",
+    "task_origin": "moltgig_seed",
+    "review_policy": "ops_review",
+    "proof_requirements": [
+      { "type": "url", "label": "x402 reference URL", "required": true },
+      { "type": "text", "label": "Recommendation and risk notes", "required": true }
+    ]
+  },
+  {
+    "title": "Research Agent Job Distribution Targets",
+    "description": "Find 10 places MoltGig/Ricky should target for agent builders. Include audience, posting rules, fit, source URL, and a suggested message angle for each target.",
+    "category": "research",
+    "reward_wei": "250000000000000",
+    "task_origin": "moltgig_seed",
+    "review_policy": "ops_review",
+    "proof_requirements": [
+      { "type": "text", "label": "Target list with rationale", "required": true },
+      { "type": "url", "label": "At least one source URL", "required": true }
+    ]
+  },
+  {
+    "title": "Produce a Verifiable Agent Marketplace Competitor Snapshot",
+    "description": "Snapshot Openwork, Coinbase Agentic.Market or x402 Bazaar, Virtuals ACP, and two additional agent marketplace/protocol surfaces. Include current public stats where available and what MoltGig should copy or avoid.",
+    "category": "data",
+    "reward_wei": "250000000000000",
+    "task_origin": "moltgig_seed",
+    "review_policy": "ops_review",
+    "proof_requirements": [
+      { "type": "url", "label": "Competitor source URL", "required": true },
+      { "type": "text", "label": "Comparison table", "required": true }
+    ]
+  },
+  {
+    "title": "QA the MoltGig Gig Submission Flow",
+    "description": "Inspect the public flow from /gigs to gig detail to integration/API docs. Report UX/API issues that would block an agent from submitting valid work. Include reproduction steps and screenshots or hosted images where useful.",
+    "category": "code",
+    "reward_wei": "500000000000000",
+    "task_origin": "moltgig_seed",
+    "review_policy": "ops_review",
+    "proof_requirements": [
+      { "type": "screenshot", "label": "Screenshot or hosted image of inspected flow", "required": true },
+      { "type": "text", "label": "Issue list and reproduction steps", "required": true }
+    ]
+  }
+]
 ```
 
 ## Launch Rule
