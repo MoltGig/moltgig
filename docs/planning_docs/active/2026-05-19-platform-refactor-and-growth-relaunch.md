@@ -1616,3 +1616,57 @@ Hosting recommendation:
 - Hetzner is likely a better fit than Replit for MoltGig once this deploy is stable. The app is now a multi-process production service with a Next frontend, Express backend, admin endpoints, contract event listening, secret-heavy blockchain/Supabase configuration, and operational reconciliation tasks. A VPS with systemd or PM2, nginx, explicit env files, logs, and SSH deploys gives more control and makes Codex-assisted deployment easier.
 - Replit remains acceptable for quick manual deploys and demos, but its multi-process/env behavior is opaque enough that it has already hidden an old-backend/new-frontend mismatch.
 - Recommended path: finish this Replit verification first, then create a separate Hetzner migration plan with rollback, env parity, nginx/TLS, process supervision, log rotation, Supabase/RPC secret handling, and production-safe smoke checks.
+
+## Hetzner Migration - 2026-05-19
+
+Max created Hetzner server `moltgig-prod-01`:
+
+- IPv4: `77.42.47.157`
+- IPv6 allocation: `2a01:4f9:c014:8ede::/64`
+- Plan: CX23, Helsinki
+- OS observed over SSH: Ubuntu 26.04 LTS
+
+Provisioning completed:
+
+- SSH verified using Max's Mac key.
+- Installed base packages: git, nginx, certbot, ufw, jq, rsync, build tooling.
+- Installed Node.js `v22.22.1` and npm `9.2.0`.
+- Created runtime user/group `moltgig`.
+- Cloned `https://github.com/MoltGig/moltgig.git` to `/opt/moltgig/app` at `main@f9dcf56`.
+- Installed root, backend, and frontend npm dependencies.
+- Built backend and frontend successfully on server.
+- Created `/etc/moltgig/production.env` with protected permissions and current non-missing production values.
+- Created systemd units:
+  - `/etc/systemd/system/moltgig-backend.service`
+  - `/etc/systemd/system/moltgig-frontend.service`
+- Configured nginx reverse proxy:
+  - `/` -> `127.0.0.1:5000`
+  - `/api/` -> `127.0.0.1:3000`
+- Enabled UFW with inbound `22`, `80`, and `443`.
+- Started frontend service for IP-level smoke only.
+- Verified `http://77.42.47.157/` returns the built MoltGig frontend via nginx.
+
+Current blocker:
+
+- Backend is intentionally stopped because the local env files do not contain `SUPABASE_SERVICE_KEY`. The backend now requires the Supabase service-role key for production write/admin routes and should not be started with the anon/publishable key as a substitute.
+
+Remaining cutover steps:
+
+- Add the real `SUPABASE_SERVICE_KEY` to `/etc/moltgig/production.env` on Hetzner.
+- Confirm Base RPC/Alchemy env is valid.
+- Start and enable `moltgig-backend` and `moltgig-frontend`.
+- Verify by IP:
+  - `http://77.42.47.157/api/health`
+  - `http://77.42.47.157/api/stats`
+  - `http://77.42.47.157/api/heartbeat`
+  - `http://77.42.47.157/api/admin/funnel`
+  - `http://77.42.47.157/api/admin/reconcile/contract`
+  - dry-run `POST /api/admin/reconcile/contract/backfill-transactions`
+- Point GoDaddy DNS at Hetzner:
+  - `A @ 77.42.47.157`
+  - `A www 77.42.47.157`
+  - optional `AAAA @ 2a01:4f9:c014:8ede::1` if the server has that IPv6 address assigned
+  - optional `AAAA www 2a01:4f9:c014:8ede::1`
+- Once DNS resolves to Hetzner, issue TLS with certbot for `moltgig.com` and `www.moltgig.com`.
+- Re-run production-safe checks over `https://moltgig.com`.
+- Keep Replit live as rollback for 24-48 hours, then unlink/remove the Replit custom domain.
