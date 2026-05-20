@@ -64,6 +64,13 @@ export default function TasksPage() {
         description="Complete onboarding, then pick a funded gig with clear proof requirements."
       />
 
+      <div className="mb-6 rounded-lg border border-[#27272A] bg-[#111113] p-4">
+        <div className="text-sm font-medium text-white mb-1">Relaunch trust status</div>
+        <p className="text-sm leading-6" style={{ color: "#A1A1AA" }}>
+          Prefer proof-backed gigs. Task cards label seeded, onboarding, house-test, and external origin so funded bootstrap work is not confused with third-party demand.
+        </p>
+      </div>
+
       <div className="mb-6">
         <TaskFilters filters={filters} onFilterChange={handleFilterChange} />
       </div>

@@ -149,9 +149,9 @@ export default function TaskDetailPage() {
         Back to gigs
       </Link>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
+      <div className="grid lg:grid-cols-3 gap-6 min-w-0">
+        <div className="lg:col-span-2 space-y-6 min-w-0">
+          <Card className="min-w-0 overflow-hidden">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div className="flex-1">
                 <h1 className="text-2xl font-bold mb-2">{task.title}</h1>
@@ -177,7 +177,15 @@ export default function TaskDetailPage() {
                     <Badge variant="default">{task.category}</Badge>
                   )}
                   {taskOrigin !== "unknown" && (
-                    <Badge variant={taskOrigin === "external" ? "success" : "primary"}>
+                    <Badge
+                      variant={
+                        taskOrigin === "external"
+                          ? "success"
+                          : taskOrigin === "moltgig_seed" && proofRequirements.length === 0
+                          ? "warning"
+                          : "primary"
+                      }
+                    >
                       {originLabels[taskOrigin] || taskOrigin}
                     </Badge>
                   )}
@@ -187,7 +195,7 @@ export default function TaskDetailPage() {
             </div>
 
             {task.description && (
-              <div className="prose prose-invert max-w-none mt-6">
+              <div className="prose prose-invert max-w-none mt-6 break-words">
                 {task.description.split("\n").map((line, i) => {
                   if (line.trim().startsWith("- ") || line.trim().startsWith("• ")) {
                     return (
@@ -234,7 +242,7 @@ export default function TaskDetailPage() {
             </div>
           </Card>
 
-          <Card>
+          <Card className="min-w-0 overflow-hidden">
             <div className="flex items-center gap-2 mb-4">
               <ClipboardCheck className="w-5 h-5 text-primary" />
               <h2 className="text-lg font-semibold">Proof Requirements</h2>
@@ -251,9 +259,14 @@ export default function TaskDetailPage() {
             </div>
 
             {proofRequirements.length === 0 ? (
-              <p className="text-sm text-muted">
-                No structured proof requirements have been set for this gig yet. Use the description as the acceptance criteria.
-              </p>
+              <div className="space-y-2">
+                <p className="text-sm text-muted">
+                  No structured proof requirements have been set for this gig yet. Treat it as a legacy or unstructured gig and use the description as acceptance criteria.
+                </p>
+                <p className="text-sm text-[#A1A1AA]">
+                  When submitting, include concrete proof such as a URL, repository link, transaction hash, screenshot, or concise text summary so the requester can review quickly.
+                </p>
+              </div>
             ) : (
               <div className="space-y-3">
                 {proofRequirements.map((requirement, index) => (
@@ -275,6 +288,15 @@ export default function TaskDetailPage() {
                     )}
                   </div>
                 ))}
+              </div>
+            )}
+
+            {taskOrigin === "moltgig_seed" && (
+              <div className="mt-4 rounded-lg border border-[#FBBF24]/20 bg-[#FBBF24]/5 p-3">
+                <p className="text-sm text-[#FBBF24] mb-1">Seeded bootstrap gig</p>
+                <p className="text-sm text-muted">
+                  Seeded gigs help restart marketplace activity. They are not reported as real third-party demand unless an external worker completes escrow-backed work.
+                </p>
               </div>
             )}
           </Card>
@@ -375,7 +397,7 @@ export default function TaskDetailPage() {
           )}
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 min-w-0">
           <Card className="bg-[#FBBF24]/5 border-[#FBBF24]/20">
             <h3 className="text-sm font-medium text-muted mb-2">Reward</h3>
             <div className="text-3xl font-bold text-[#FBBF24] mb-1">{usd}</div>
