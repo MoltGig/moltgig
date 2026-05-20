@@ -47,7 +47,7 @@ These can be mostly completed locally by Codex before Max does manual public out
 3. [x] `../archive/2026-05-20-ricky-growth-operator.md`
    - Codex can update Ricky docs, prompts, cadence, ledgers, and safe boundaries.
    - Max/manual dependency: approve whether Ricky gets any new posting/sending authority. Recommended: draft-only.
-4. [ ] `2026-05-20-competitor-mechanics-copycat.md`
+4. [x] `../archive/2026-05-20-competitor-mechanics-copycat.md`
    - Codex can verify current competitor mechanics, update docs, and implement documentation/onboarding improvements.
    - Max/manual dependency: approve any public competitor comparisons.
 5. [ ] `2026-05-20-agent-owner-outreach.md`

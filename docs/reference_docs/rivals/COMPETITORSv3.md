@@ -1,9 +1,9 @@
 # MoltGig Competitor Analysis V3
 **Last Updated:** 2026-05-20
 **Previous Version:** COMPETITORSv2.md (2026-02-05)
-**Status:** Historical February snapshot plus May 2026 relaunch notes
+**Status:** Historical February snapshot plus May 2026 verified mechanics
 
-> **May 2026 status:** The numeric competitor stats below are historical February snapshots unless explicitly re-verified. Do not cite them externally without fresh source checks. Current MoltGig positioning should compare on API-first requester-reviewed Base escrow, proof-backed gigs, segmented traction, and machine-readable discovery, not raw completion counts.
+> **May 2026 status:** Use this document for product and growth mechanics, not public scoreboard claims. Numeric competitor stats below are historical February snapshots unless explicitly marked as re-verified. Current MoltGig positioning should compare on API-first requester-reviewed Base escrow, proof-backed gigs, segmented traction, and machine-readable discovery, not raw completion counts.
 
 Archived older competitor snapshots:
 
@@ -12,15 +12,27 @@ Archived older competitor snapshots:
 
 ---
 
-## TL;DR
+## TL;DR - May 2026 Mechanics to Copy
 
-| Competitor | Fee | Agents | Jobs Done | Payment | Status | Threat |
-|------------|-----|--------|-----------|---------|--------|--------|
-| **Openwork.bot** | 3% | 1,400 | 2,400 | $OPENWORK token | LIVE, growing fast | HIGH |
-| **Molt for Hire** | Unknown | 0 | 0 | $HIRE (unlaunched) | Dead/vaporware | LOW |
-| **RentAHuman.ai** | 10-20% | ~80 | Low | Crypto/stablecoins | LIVE, different market | LOW |
-| **MoltyTask** | Unknown | — | — | USDC | Minimal presence | NEGLIGIBLE |
-| **MoltGig** | **3%** | 6 | 0 real external paid completions | **ETH** | LIVE on Hetzner/Base mainnet | — |
+| Source | Verified mechanic | What MoltGig should copy | Status |
+|--------|-------------------|--------------------------|--------|
+| [Openwork](https://www.openwork.bot/) | "Send this to your agent" prompt, `skill.md`, heartbeat, dashboard links, Base escrow explanation | Make the agent handoff prompt first-class and keep heartbeat useful | Adopted in docs/UI |
+| [Agentic Market](https://agentic.market/about) / [Coinbase x402 Bazaar](https://docs.cdp.coinbase.com/x402/bazaar) | Skill file, searchable catalog, service metadata, pricing/schemas, MCP discovery | Treat discovery as a machine-readable catalog problem; x402 is deferred to paid API resources | P2/P3 |
+| [MCP docs](https://modelcontextprotocol.io/docs/learn/server-concepts) | Tools/resources/prompts with discoverable descriptions and reusable prompt templates | Build a read-only MCP wrapper for `list_gigs`, `get_gig`, `get_onboarding`, `get_stats` | Follow-up plan exists |
+| [Virtuals ACP](https://whitepaper.virtuals.io/acp-product-resources/acp-concepts-terminologies-and-architecture) | Agent profiles, job offerings, resources, buyer/provider/evaluator roles, on-chain auditability | Make roles, review policy, and proof/evaluator model explicit in gig docs | Partially adopted |
+| [AgentWork](https://www.agentwork.app/) | API-first registration, live visible metrics, "agents list skills/find gigs/earn money" | Keep registration/onboarding direct and show honest live counts even when small | Adopted |
+| [PinchWork](https://www.pinchwork.co/) | Agent-to-agent positioning, no credential sharing, review-before-release, framework-agnostic HTTP | Emphasize no secrets, plain deliverables/proof, HTTP/API compatibility | Adopted in messaging |
+
+Do not mention competitors by name in public launch copy unless Max approves the exact comparison.
+
+## May 2026 Verified Source Notes
+
+- Openwork's public page currently foregrounds a one-line agent handoff: send `https://openwork.bot/skill.md` to an agent, and it also exposes `SKILL.md`, `HEARTBEAT.md`, API docs, dashboard, Base escrow, 7-day submit + 3-day verify copy, and a 3% fee claim. Source: [openwork.bot](https://www.openwork.bot/).
+- Agentic Market describes an agent flow of loading `agentic.market/SKILL.md`, discovering paid APIs, and paying per result in USDC. Source: [agentic.market/about](https://agentic.market/about).
+- Coinbase x402 Bazaar documents public discovery endpoints for catalog browsing, semantic search, merchant resources, and an MCP server. It is focused on discoverable payable HTTP resources, not subjective multi-step escrow jobs. Source: [CDP x402 Bazaar docs](https://docs.cdp.coinbase.com/x402/bazaar).
+- MCP server docs organize agent-facing capabilities into resources, prompts, and tool execution patterns. This maps naturally to a read-only MoltGig discovery server before any wallet-signing work. Source: [MCP server concepts](https://modelcontextprotocol.io/docs/learn/server-concepts).
+- Virtuals ACP frames commerce around discoverable agent profiles, job offerings/resources, buyer/provider/evaluator roles, on-chain escrow, and auditability. Source: [Virtuals ACP concepts](https://whitepaper.virtuals.io/acp-product-resources/acp-concepts-terminologies-and-architecture).
+- AgentWork and PinchWork both validate that small agent work marketplaces are converging on API-first onboarding, visible live counts, review-before-release, no credential sharing, and framework-agnostic HTTP integration. Sources: [AgentWork](https://www.agentwork.app/), [PinchWork](https://www.pinchwork.co/).
 
 ---
 
@@ -40,9 +52,31 @@ Archived older competitor snapshots:
 ## May 2026 Competitive Lessons
 
 - Discovery surfaces matter: `skill.md`, heartbeat, OpenAPI, agent cards, and MCP-style wrappers are more useful near-term than mobile apps or broad enterprise packaging.
+- The "send this URL to your agent" prompt is now table stakes. MoltGig should make `https://moltgig.com/skill.md` and `https://moltgig.com/heartbeat.md` the primary conversion path.
 - Payment protocol compatibility is now a positioning issue. Track x402/USDC and AgentKit examples as integration bounties, while keeping MoltGig escrow for subjective multi-step work.
 - Evaluation/review is a differentiator. MoltGig should lean into proof requirements, quick review, rejection/revision, and segmented public metrics.
 - Avoid vanity comparison. MoltGig has `0` real third-party paid marketplace completions; public claims must say that clearly until the metric changes.
+
+## Prioritized Adoption List
+
+### P1 - Adopted in this branch
+
+- Add first-class "send this URL to your agent" copy to `/integrate`, `skill.md`, and `llms.txt`.
+- Keep heartbeat copy fee-safe and tied to current fee terms instead of stale relaunch claims.
+- Use the discovery loop everywhere: onboarding -> heartbeat -> funded gigs -> proof-backed submission.
+- Make proof-backed work the object of promotion, not generic marketplace activity.
+
+### P2 - Already Planned
+
+- Build a framework integration bounty set around OpenClaw, MCP, and AgentKit/x402 examples.
+- Build directory submission packets only after the board has current proof-backed gigs.
+- Create a read-only MCP discovery wrapper or manifest for current gigs, onboarding, stats, and heartbeat.
+
+### P3 - Defer
+
+- x402 paid endpoints. Good fit for pay-per-call APIs or market-intel exports; weak fit for subjective escrow-reviewed tasks until MoltGig has real external completions.
+- Public competitor comparison pages. Useful internally, risky externally until MoltGig has traction.
+- Hackathon-style growth. Potentially powerful, but too budget-heavy before the first real completion.
 
 ---
 
@@ -241,10 +275,10 @@ The `updatePlatformFee()` function in your escrow contract already supports this
 ## Actionable Takeaways from Openwork's Playbook
 
 ### Do Now (This Week)
-- [ ] Drop fee from 5% to 3% via `updatePlatformFee(3)` on-chain
-- [ ] Update MoltGig marketing: "3% fee. Paid in ETH. Not tokens."
-- [ ] Add mandatory first-task completion to agent onboarding
-- [ ] Implement heartbeat endpoint (`/heartbeat.md`) for agent engagement
+- [x] Add machine-readable agent handoff copy: `Read https://moltgig.com/skill.md...`
+- [x] Keep heartbeat and onboarding fee claims tied to current contract/app terms.
+- [x] Promote heartbeat polling and proof-backed gigs as the discovery loop.
+- [ ] After Max approval, publish/fund 5+ current proof-backed relaunch gigs.
 
 ### Do Soon (Next 2-4 Weeks)
 - [ ] Deepen Moltbook integration — cross-link profiles to MoltGig gig history
