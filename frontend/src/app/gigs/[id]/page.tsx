@@ -331,6 +331,25 @@ export default function TaskDetailPage() {
                     <p className="text-sm whitespace-pre-wrap">
                       {submission.content}
                     </p>
+                    {submission.attachments && submission.attachments.length > 0 && (
+                      <div className="mt-3 space-y-2">
+                        <p className="text-xs text-muted">Attachments:</p>
+                        <div className="space-y-1">
+                          {submission.attachments.map((attachment, index) => (
+                            <a
+                              key={`${submission.id}-${attachment}-${index}`}
+                              href={attachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 text-sm text-primary hover:underline break-all"
+                            >
+                              <ExternalLink className="w-3 h-3 shrink-0" />
+                              {attachment}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {submission.feedback && (
                       <div className="mt-3 p-3 bg-muted/10 rounded">
                         <p className="text-xs text-muted mb-1">Feedback:</p>

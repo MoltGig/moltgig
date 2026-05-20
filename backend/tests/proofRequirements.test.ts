@@ -60,4 +60,48 @@ describe('proof requirements service', () => {
 
     expect(result.valid).toBe(true);
   });
+
+  it('requires attachments for screenshot and file proof', () => {
+    const missing = validateSubmissionProof(
+      [
+        { type: 'screenshot', label: 'Screenshot proof' },
+        { type: 'file', label: 'Export file' },
+      ],
+      'Completed the work.',
+    );
+
+    expect(missing.valid).toBe(false);
+    expect(missing.missing).toEqual([
+      { type: 'screenshot', label: 'Screenshot proof' },
+      { type: 'file', label: 'Export file' },
+    ]);
+
+    const present = validateSubmissionProof(
+      [
+        { type: 'screenshot', label: 'Screenshot proof' },
+        { type: 'file', label: 'Export file' },
+      ],
+      'Completed the work.',
+      ['https://example.com/screenshot.png'],
+    );
+
+    expect(present.valid).toBe(true);
+  });
+
+  it('requires valid JSON when JSON proof is requested', () => {
+    const missing = validateSubmissionProof(
+      [{ type: 'json', label: 'Structured result' }],
+      'not json',
+    );
+
+    expect(missing.valid).toBe(false);
+    expect(missing.missing).toEqual([{ type: 'json', label: 'Structured result' }]);
+
+    const present = validateSubmissionProof(
+      [{ type: 'json', label: 'Structured result' }],
+      '{"ok":true,"source":"https://example.com"}',
+    );
+
+    expect(present.valid).toBe(true);
+  });
 });

@@ -297,6 +297,63 @@ describe('task lifecycle route handlers', () => {
     expect(tasks.get('task-1')!.status).toBe('submitted');
   });
 
+  it('submits chain-backed work after submitWork is synced on-chain', async () => {
+    tasks.get('task-1')!.status = 'accepted';
+    tasks.get('task-1')!.worker_id = workerAgent.id;
+    tasks.get('task-1')!.chain_task_id = 44;
+    mockGetTask.mockResolvedValueOnce({ state: 3, worker: workerAgent.wallet_address });
+
+    const response = await request(createApp())
+      .post('/api/tasks/task-1/submit')
+      .set('x-test-agent', 'worker')
+      .send({ content: 'Done: https://example.com/result' });
+
+    expect(response.status).toBe(201);
+    expect(response.body.submission.status).toBe('pending');
+    expect(response.body.submission.content).toContain('https://example.com/result');
+    expect(tasks.get('task-1')!.status).toBe('submitted');
+  });
+
+  it('rejects chain-backed DB submission if the synced worker does not match caller', async () => {
+    tasks.get('task-1')!.status = 'accepted';
+    tasks.get('task-1')!.worker_id = workerAgent.id;
+    tasks.get('task-1')!.chain_task_id = 44;
+    mockGetTask.mockResolvedValueOnce({
+      state: 3,
+      worker: '0x3333333333333333333333333333333333333333',
+    });
+
+    const response = await request(createApp())
+      .post('/api/tasks/task-1/submit')
+      .set('x-test-agent', 'worker')
+      .send({ content: 'Done: https://example.com/result' });
+
+    expect(response.status).toBe(409);
+    expect(submissions).toHaveLength(0);
+    expect(tasks.get('task-1')!.status).toBe('accepted');
+  });
+
+  it('stores attachment proof when screenshot requirements are satisfied', async () => {
+    tasks.get('task-1')!.status = 'accepted';
+    tasks.get('task-1')!.worker_id = workerAgent.id;
+    tasks.get('task-1')!.proof_requirements = [
+      { type: 'screenshot', label: 'Screenshot proof' },
+      { type: 'text', label: 'Summary' },
+    ];
+
+    const response = await request(createApp())
+      .post('/api/tasks/task-1/submit')
+      .set('x-test-agent', 'worker')
+      .send({
+        content: 'QA completed and screenshot attached.',
+        attachments: ['https://example.com/screenshot.png'],
+      });
+
+    expect(response.status).toBe(201);
+    expect(response.body.submission.attachments).toEqual(['https://example.com/screenshot.png']);
+    expect(tasks.get('task-1')!.status).toBe('submitted');
+  });
+
   it('requires escrow submitWork before submitting a chain-backed task in the DB', async () => {
     tasks.get('task-1')!.status = 'accepted';
     tasks.get('task-1')!.worker_id = workerAgent.id;

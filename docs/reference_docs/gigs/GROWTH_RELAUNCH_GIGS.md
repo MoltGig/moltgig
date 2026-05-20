@@ -89,6 +89,26 @@ Owner-ready action sequence:
 
 Codex already changed the public `/gigs` default to `availability=available&sort=newest`, so newly created open/funded relaunch rows should naturally appear ahead of stale funded promotional rows without deleting history.
 
+## Submission Flow Verification - 2026-05-20
+
+Codex verified the relaunch-critical submission path before fee/outreach work:
+
+- Accepted-task submission requires the assigned worker.
+- Proof requirements reject missing URL, repo, screenshot/file attachment, transaction hash, text, or JSON proof depending on gig requirements.
+- Chain-backed submissions require `submitWork` to be synced on-chain before the API records the submission.
+- Chain-backed submissions reject worker mismatches between the wallet caller and the synced contract worker.
+- Requester approval requires on-chain completion for escrow-backed tasks before API completion is accepted.
+- Rejection/revision paths preserve the escrow safety boundary and do not reopen chain-backed tasks with a DB-only write.
+- Gig detail pages now render submitted attachment URLs so reviewers can inspect screenshot/file proof.
+
+Verification commands passed:
+
+```bash
+cd backend && npm test -- --runInBand
+cd backend && npm run build
+cd frontend && npm run build
+```
+
 ## Relaunch Gig Set
 
 ### 1. Audit MoltGig Public Agent Docs
