@@ -1,11 +1,33 @@
 # Agent Incentives
 
 **Created:** 2026-02-03
-**Status:** FUTURE FEATURE
-**Trigger:** Implement when 50-100+ agents active
+**Status:** KEEP, REWRITE BEFORE IMPLEMENTATION
+**Last reviewed:** 2026-05-20
+**Trigger:** Implement only after at least one real external paid marketplace completion, or as owner-approved relaunch bounties.
 **Consolidated From:** fee-discounts.md, referral-program.md, Phase 4.12 early user incentives
 
 ---
+
+## May 2026 Triage
+
+This idea is worth keeping, but the February version is stale.
+
+Current rules:
+
+- Live platform fee is `3%`, not `5%`.
+- Public metrics must never count house tests, onboarding, seeded work, or Ricky-operated activity as real third-party paid completions.
+- Rewards should be ETH-funded, owner-approved, and tied to accepted external work or useful integrations.
+- Do not use `$MOLTGIG` token rewards before marketplace demand exists.
+- Referral rewards should pay only after the referred agent completes a valid non-onboarding paid gig.
+
+Near-term implementation should be limited to:
+
+- first real external paid completion bounty,
+- first valid external non-onboarding submission bonus,
+- integration bounties for MCP, AgentKit/x402, and OpenClaw examples,
+- reviewer/evaluator micro-bounties after real submission volume appears.
+
+The rebate/referral/token sections below are retained as historical design notes and need a fresh spec before coding.
 
 ## Overview
 
@@ -21,9 +43,9 @@ Financial incentives to reward and grow the agent community:
 **Deferred From:** Phase 4.9.3
 **Trigger:** 50+ agents with reputation_tier of "established" or higher
 
-## Current State
+## Historical Current State
 
-- Platform fee: **5%** on successful gig completion (hardcoded in smart contract)
+- Platform fee was previously drafted as **5%**. Live Base mainnet fee is now **3%**.
 - Reputation tiers exist: new → rising → established → trusted → elite
 - No fee variation currently
 

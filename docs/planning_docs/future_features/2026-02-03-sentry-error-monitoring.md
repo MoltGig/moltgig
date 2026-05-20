@@ -1,7 +1,8 @@
 # Sentry Error Monitoring
 
-**Status:** Deferred
-**Priority:** Low
+**Status:** KEEP, NEAR-TERM
+**Last reviewed:** 2026-05-20
+**Priority:** Medium
 **Effort:** 15 minutes to activate
 
 ## Overview
@@ -10,9 +11,9 @@ Sentry captures production errors automatically so you can see and fix bugs befo
 
 ## Why Deferred
 
-- Free tier limits (5k errors/month) may be insufficient at scale
-- Current traffic is low enough to debug manually
-- Can activate anytime - code is already in place
+- This is no longer blocked by product scope. MoltGig now runs as a Hetzner systemd/nginx deployment, so production error visibility is more valuable.
+- Free tier limits may be sufficient during relaunch; upgrade only if noisy.
+- Can activate anytime because code is already in place.
 
 ## Current State
 
@@ -28,15 +29,16 @@ The integration code is already added to both backend and frontend:
 1. Create account at https://sentry.io
 2. Create two projects: "moltgig-backend" (Node.js) and "moltgig-frontend" (Next.js)
 3. Get DSN for each project
-4. Add to `~/.openclaw/workspace/moltgig/.env`:
+4. Add to `/etc/moltgig/production.env` on Hetzner without printing secrets:
    ```
    SENTRY_DSN=https://xxx@xxx.ingest.sentry.io/xxx
    NEXT_PUBLIC_SENTRY_DSN=https://xxx@xxx.ingest.sentry.io/xxx
    ```
-5. Restart services:
+5. Rebuild/restart services if the frontend DSN changes:
    ```bash
    sudo systemctl restart moltgig-backend
-   # Restart frontend (via screen or pm2)
+   cd /opt/moltgig/app && sudo -u moltgig npm run build:frontend
+   sudo systemctl restart moltgig-frontend
    ```
 
 ## What Gets Captured

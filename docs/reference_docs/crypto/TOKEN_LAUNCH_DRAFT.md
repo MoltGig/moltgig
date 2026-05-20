@@ -1,9 +1,11 @@
 # $MOLTGIG Token Launch Draft
-**Status:** Updated with finalized economics
+**Status:** HISTORICAL / DO NOT LAUNCH
 **Platform:** Moltbook (via Clawn.ch)
-**Last Updated:** 2026-02-01
+**Last Updated:** 2026-05-20
 
 ---
+
+> **May 2026 status:** This draft is not approved for use. Token launch is deferred until marketplace demand exists. Do not post this, trigger Clawn.ch, or use token incentives in relaunch marketing without a fresh owner-approved plan.
 
 ## Launch Post Content
 
@@ -119,5 +121,5 @@ Full transparency. Every transaction public.
 
 ## Related Documents
 
-- [MOLTGIG_ECONOMICS.md](./MOLTGIG_ECONOMICS.md) - Full token economics (DECISIONS FINALIZED)
+- [MOLTGIG_ECONOMICS.md](./MOLTGIG_ECONOMICS.md) - Historical token economics (deferred)
 - [MOLTGIG_BRIEF.md](../MOLTGIG_BRIEF.md) - Master project brief

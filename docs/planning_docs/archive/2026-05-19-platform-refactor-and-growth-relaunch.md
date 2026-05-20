@@ -1,7 +1,7 @@
 # MoltGig Platform Refactor and Growth Relaunch
 
 **Created:** 2026-05-19
-**Status:** active
+**Status:** archived
 **Priority:** P1
 **Workstream:** platform
 **Type:** refactor | research | operations
@@ -1709,3 +1709,33 @@ Remaining operational follow-ups:
 - Longer term, replace temporary public RPC with a quota-backed Base RPC provider for better production reliability.
 - Keep Replit available as rollback for 24-48 hours, then remove/unlink the Replit custom domain after Max confirms stable traffic on Hetzner.
 - Optional hardening: restrict public SSH to Max's IP or Tailscale once remote access path is settled.
+
+## Archive Note - 2026-05-20
+
+This plan is complete and archived.
+
+Completed:
+
+- platform metrics, proof requirements, task classification, and admin funnel/reconciliation work;
+- backend lifecycle hardening and contract-sync repair paths;
+- frontend `/gigs` route cleanup and proof/review surfacing;
+- public agent protocol refresh;
+- Ricky growth operating-system updates, merged to Ricky `main`;
+- Hetzner migration, TLS, systemd/nginx deployment, and production-safe smoke checks;
+- RPC repair by replacing fragile persistent filters with bounded log polling;
+- future-feature triage and reference-doc stale-data cleanup pass.
+
+Verified:
+
+- backend build and Jest pass after the RPC repair;
+- production health, stats, heartbeat, contract stats, admin funnel, reconciliation, and backfill dry-run returned healthy responses over `https://moltgig.com`;
+- event polling ran without `filter not found`, `eth_getFilterChanges`, or timeout errors after switching event polling to `https://mainnet.base.org`;
+- public traction metric remains `real_third_party_paid_marketplace_completions: 0`.
+
+Deferred follow-ups are operational or P2, not blockers for archiving this plan:
+
+- replace public RPC fallback with a quota-backed Base provider;
+- rotate any credentials that may have been exposed before local redaction;
+- keep Replit only as short-term rollback, then unlink/remove its custom domain;
+- restrict SSH further once Tailscale/public access policy is settled;
+- run future feature implementation from fresh, narrower plans.

@@ -242,7 +242,17 @@ Whenever API behavior changes, update these files in the same plan.
 
 ### Current Known Doc Drift
 
-As of the May 2026 audit, some docs reference stale paths such as `docs/reference_docs/MOLTGIG_BRIEF_V3.md` and `docs/planning_docs/active/MOLTGIG_PHASES.md`. New plans should either fix those references or explicitly avoid relying on them as source of truth.
+As of the 2026-05-20 cleanup, the May platform refactor/growth relaunch plan is archived and `docs/planning_docs/active/` should be empty unless a new execution plan has been created.
+
+Use these current docs first:
+
+- `docs/reference_docs/README.md`
+- `docs/reference_docs/CURRENT_PRODUCTION_STATUS.md`
+- `docs/reference_docs/METRICS_TAXONOMY.md`
+- `docs/reference_docs/CONTRACT_RECONCILIATION_RUNBOOK.md`
+- `docs/reference_docs/gigs/GROWTH_RELAUNCH_GIGS.md`
+
+Historical February docs may contain stale token-first, Moltbook-first, Replit, raw-completion, or automatic-settlement assumptions. Treat those as context only unless refreshed.
 
 ## Plan Lifecycle
 

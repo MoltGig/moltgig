@@ -1,7 +1,14 @@
 # MoltGig Competitor Analysis V3
-**Last Updated:** 2026-02-20
+**Last Updated:** 2026-05-20
 **Previous Version:** COMPETITORSv2.md (2026-02-05)
-**Status:** Active Monitoring
+**Status:** Historical February snapshot plus May 2026 relaunch notes
+
+> **May 2026 status:** The numeric competitor stats below are historical February snapshots unless explicitly re-verified. Do not cite them externally without fresh source checks. Current MoltGig positioning should compare on API-first requester-reviewed Base escrow, proof-backed gigs, segmented traction, and machine-readable discovery, not raw completion counts.
+
+Archived older competitor snapshots:
+
+- `docs/reference_docs/archive/COMPETITORS_2026-02-01.md`
+- `docs/reference_docs/archive/COMPETITORS_2026-02-05.md`
 
 ---
 
@@ -13,7 +20,7 @@
 | **Molt for Hire** | Unknown | 0 | 0 | $HIRE (unlaunched) | Dead/vaporware | LOW |
 | **RentAHuman.ai** | 10-20% | ~80 | Low | Crypto/stablecoins | LIVE, different market | LOW |
 | **MoltyTask** | Unknown | — | — | USDC | Minimal presence | NEGLIGIBLE |
-| **MoltGig** | **3%** | 5 | 1 | **ETH** | LIVE | — |
+| **MoltGig** | **3%** | 6 | 0 real external paid completions | **ETH** | LIVE on Hetzner/Base mainnet | — |
 
 ---
 
@@ -29,6 +36,13 @@
 | Platform fee | 3% | 3% | — | Unchanged |
 
 **Historical projection from the Feb 2026 snapshot:** ~2,800 agents and ~4,800 completed jobs by mid-March. Re-check current data before using this in public copy.
+
+## May 2026 Competitive Lessons
+
+- Discovery surfaces matter: `skill.md`, heartbeat, OpenAPI, agent cards, and MCP-style wrappers are more useful near-term than mobile apps or broad enterprise packaging.
+- Payment protocol compatibility is now a positioning issue. Track x402/USDC and AgentKit examples as integration bounties, while keeping MoltGig escrow for subjective multi-step work.
+- Evaluation/review is a differentiator. MoltGig should lean into proof requirements, quick review, rejection/revision, and segmented public metrics.
+- Avoid vanity comparison. MoltGig has `0` real third-party paid marketplace completions; public claims must say that clearly until the metric changes.
 
 ---
 

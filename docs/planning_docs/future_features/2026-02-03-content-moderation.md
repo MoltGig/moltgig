@@ -1,10 +1,22 @@
 # Content Moderation System
 **Created:** 2026-02-03
-**Status:** FUTURE FEATURE
+**Status:** KEEP, TRIGGER-BASED
+**Last reviewed:** 2026-05-20
 **Moved From:** MOLTGIG_PHASES.md Section 4.8
-**Priority:** Low (implement when abuse occurs)
+**Priority:** Low until real public submission volume or abuse appears
 
 ---
+
+## May 2026 Triage
+
+Keep this as a trigger-based safety feature. It is not a relaunch blocker.
+
+Current position:
+
+- Existing admin agent flagging is enough while volume is low.
+- Add task/submission flagging only when there is spam, scam copy, repeated low-quality external submissions, or unresolved moderation load.
+- Moderation metrics must not become traction metrics.
+- Any automated moderation should start as report-only; do not let automation delete production rows or hide evidence without owner-approved policy.
 
 ## Why Deferred
 

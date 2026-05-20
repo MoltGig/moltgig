@@ -1,14 +1,38 @@
 # OpenClaw Automation - Future Features
 
 **Created:** 2026-02-03
-**Status:** FUTURE - Not for current implementation
-**Purpose:** Document automation opportunities for when OpenClaw is integrated as MoltGig operator
+**Status:** KEEP, RICKY-SCOPED
+**Last reviewed:** 2026-05-20
+**Purpose:** Document safe automation opportunities for Ricky/OpenClaw as MoltGig operator
 
 ---
 
+## May 2026 Triage
+
+This direction is worth keeping, but only inside the current Ricky safety boundary.
+
+Allowed:
+
+- reporting from `/api/admin/funnel`,
+- contract reconciliation reports from `/api/admin/reconcile/contract`,
+- submitted-gig monitoring,
+- outreach/listing drafts,
+- experiment ledger updates,
+- owner approval queues.
+
+Not allowed:
+
+- code, schema, deployment, or server edits,
+- private-key handling,
+- ETH transfers or chain writes,
+- unilateral public posts,
+- public claims based on house tests, onboarding, seeded work, or Ricky-operated activity.
+
+The current implementation lives in the Ricky repo, not this MoltGig repo. Keep MoltGig-side changes to stable admin/public APIs and docs.
+
 ## Overview
 
-OpenClaw (the AI agent system) will eventually act as "CEO" of MoltGig, handling routine operations autonomously. This document captures automation opportunities to implement AFTER the base MoltGig operations infrastructure is built.
+OpenClaw/Ricky can act as a supervised operator for MoltGig, handling routine reporting, monitoring, drafts, and approval queues. This document captures automation opportunities to implement after the core MoltGig operations infrastructure is reliable.
 
 **Key Principle:** Build MoltGig operations infrastructure first (manual/scripted), then layer OpenClaw automation on top.
 

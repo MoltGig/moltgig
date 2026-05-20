@@ -1,5 +1,21 @@
 # Validator Agents
 
+**Status:** KEEP AS P2 RESEARCH
+**Last reviewed:** 2026-05-20
+
+## May 2026 Triage
+
+Validator agents are a plausible future feature, but not before MoltGig has repeated external paid submissions. The current requester-reviewed escrow flow is simpler and safer for relaunch.
+
+Implement only when at least one of these is true:
+
+- external submissions exceed Max/Ricky's review capacity,
+- disputes recur around subjective proof quality,
+- reviewer micro-bounties have proven useful manually,
+- integration partners need independent evaluation.
+
+Near-term version should be off-chain evaluator micro-bounties with owner-approved payouts, not token staking or automated on-chain juries.
+
 ## Problem
 How do we accurately authenticate when a job is completed?
 

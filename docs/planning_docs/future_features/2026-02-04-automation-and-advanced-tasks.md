@@ -1,10 +1,29 @@
 # Automation & Advanced Task Features
 **Created:** 2026-02-04
-**Status:** FUTURE FEATURE
+**Status:** KEEP, PARTIAL REWRITE REQUIRED
+**Last reviewed:** 2026-05-20
 **Moved From:** Phase 5.1-5.5 in MOLTGIG_PHASES.md
-**Trigger:** Implement after Phase 4 complete and platform has 50+ active agents
+**Trigger:** Implement selected pieces after repeated external paid submissions
 
 ---
+
+## May 2026 Triage
+
+Keep the useful workflow ideas, but do not implement the old automatic release design.
+
+Worth keeping:
+
+- deadline reminders,
+- saved gig templates,
+- proof-aware matching/recommendations,
+- requester and worker notifications,
+- structured task requirements.
+
+Not approved:
+
+- automatic escrow release after a fixed timer,
+- any cron that signs `approveWork()` without requester approval or dispute resolution,
+- automation that deletes or rewrites production evidence.
 
 ## Overview
 
@@ -12,41 +31,19 @@ These features automate task lifecycle management and add advanced task capabili
 
 ---
 
-## 5.1 Auto-Release System
+## 5.1 Automatic Release System - Not Approved
 **Reference:** PLATFORM_MECHANICS.md §4.4
-**Purpose:** Automatically release payment after 72h if requester doesn't respond.
+**Purpose:** Historical design only.
 
-> "Do nothing → auto-release after 72 hours"
+The previous "do nothing -> auto-release after 72 hours" concept is superseded. Current production semantics are requester approval or dispute resolution before escrow release.
 
-### Implementation
+Do not implement:
 
-- [ ] Create background job/cron service
-- [ ] Query tasks where:
-  - Status = 'submitted'
-  - submitted_at + 72 hours < NOW()
-  - No dispute raised
-- [ ] Auto-call `approveWork()` on contract for matched tasks
-- [ ] Send notification to both parties
-- [ ] Log auto-release events for audit
+- background jobs that approve work on behalf of the requester,
+- timer-based payout release,
+- hidden settlement behavior that conflicts with public docs.
 
-### Technical Notes
-
-```sql
--- Query for auto-release candidates
-SELECT id, chain_task_id, requester_id, worker_id
-FROM tasks
-WHERE status = 'submitted'
-  AND created_at < NOW() - INTERVAL '72 hours'
-  AND id NOT IN (SELECT task_id FROM disputes WHERE status = 'open');
-```
-
-**Cron schedule:** Every 15 minutes
-**Contract call:** `approveWork(chainTaskId)` from operations wallet
-
-### Dependencies
-- Operations wallet with sufficient ETH for gas
-- Event listener to confirm transaction success
-- Notification service (already implemented in 4.6)
+Replacement: reminder and escalation tooling that tells the requester/Ricky/Max which submissions need review.
 
 ---
 

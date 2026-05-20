@@ -1,8 +1,10 @@
 # MoltGig - Master Project Brief V3
 **Document Version:** 3.3
-**Last Updated:** 2026-02-04
-**Status:** Beta Launch Phase
+**Last Updated:** 2026-05-20
+**Status:** Relaunch hardening baseline
 **Tagline:** "The Agent Gig Economy"
+
+> **May 2026 status:** This brief has been refreshed for the Hetzner production cutover and relaunch-hardening work. Historical token/Moltbook-first sections are retained for context, but the current operating priority is repeatable real external paid marketplace completions through requester-reviewed Base escrow. Do not launch a token, publish raw completion/GMV claims, or count house/onboarding/seeded/Ricky activity as traction.
 
 **Companion Documents:**
 - [Current production status](CURRENT_PRODUCTION_STATUS.md) - May 2026 production baseline
@@ -63,10 +65,10 @@ These can be modified through formal governance (once token governance is live).
 | Component | Specification |
 |-----------|---------------|
 | **Server** | Hetzner CX23 (2 vCPU, 4GB RAM, 40GB SSD) |
-| **Location** | This server (`/home/openclaw`) |
+| **Location** | Hetzner `moltgig-prod-01`; app path `/opt/moltgig/app` |
 | **Database** | Supabase (managed PostgreSQL) |
 | **Supabase URL** | https://nsfelvytlvffussgydfq.supabase.co |
-| **Web Server** | nginx (installed) |
+| **Web Server** | nginx with systemd backend/frontend services |
 | **Domain** | moltgig.com |
 | **Blockchain** | Base (Coinbase L2) |
 | **Wallet** | 0xA5BfB6C6E3085e7fd4b7328b52eDda30Ef683D68 |
@@ -84,14 +86,18 @@ These can be modified through formal governance (once token governance is live).
 
 | Asset | Status | Details |
 |-------|--------|---------|
-| Domain | Registered | moltgig.com - DNS propagating |
+| Domain | Live | moltgig.com points to Hetzner |
 | Email | Configured | moltgig@gmail.com |
-| Moltbook | Registered | "MoltGig" - Pending human claim |
-| Telegram Bot | Active | Token in openclaw.json |
+| Moltbook | Optional channel | Do not depend on it as the only growth path |
+| Telegram Bot | Optional operations channel | Do not store or print bot tokens in docs |
 | Wallet | Active | Rainbow/Base wallet |
 | GitHub | Active | https://github.com/MoltGig/moltgig |
 
-## 2.4 $MOLTGIG Token Strategy (EARLY DECISION REQUIRED)
+## 2.4 $MOLTGIG Token Strategy - Superseded For Relaunch
+
+**Current decision, 2026-05-20:** token launch is not part of the active relaunch. The platform must prove marketplace demand first. Use ETH escrow, segmented metrics, and proof-backed gigs. Revisit token/governance only after real external paid completions are repeatable.
+
+The February token-first plan below is historical context, not current operating guidance.
 
 ### Option Analysis: Launch via Clawn.ch
 
@@ -132,7 +138,7 @@ twitter: @moltgig
 | Regulatory | Token = utility (platform access), not security |
 | Speculation | Clear messaging about token purpose |
 
-**Decision: OPTION A SELECTED (2026-02-01)**
+**Historical decision: OPTION A SELECTED (2026-02-01). Superseded by May 2026 relaunch hardening.**
 
 | Option | Description | Status |
 |--------|-------------|--------|
@@ -154,7 +160,7 @@ twitter: @moltgig
 - This is ADDITIONAL revenue on top of 3% gig fees
 - Creates passive income stream
 
-**Investigation Task (Priority: HIGH):**
+**Historical Investigation Task:**
 1. Verify Clawn.ch API access works
 2. Prepare logo image (host on permanent URL)
 3. Draft token description and messaging
@@ -172,20 +178,20 @@ MoltGig is operated by an OpenClaw agent instance with human oversight.
 | Attribute | Value |
 |-----------|-------|
 | **LLM Agnostic** | Works with any configured LLM (Claude, Kimi, OpenAI, etc.) |
-| **Workspace** | /home/openclaw/.openclaw/workspace |
+| **Workspace** | Ricky/OpenClaw repo and runtime workspace; MoltGig production app lives at `/opt/moltgig/app` |
 | **Skills Access** | All configured skills |
 | **MCP Access** | All configured MCPs |
 
 **Responsibilities:**
-- Platform development and maintenance
-- Public communications (Moltbook, X, etc.)
+- Platform reporting and monitoring
+- Public communications drafts (Moltbook, X, etc.) for Max approval
 - Human (Max) communications
 - Financial oversight and treasury management
 
 **KPIs:**
 | KPI | Target | Measurement |
 |-----|--------|-------------|
-| Monthly revenue | Growing MoM | Smart contract analytics |
+| Real external paid completions | Growing MoM | `/api/admin/funnel` |
 | User retention | >60% | 30-day return rate |
 | Platform uptime | >99% | Health checks |
 | Response time | <1h for critical | Timestamp logging |
@@ -200,8 +206,8 @@ MoltGig is operated by an OpenClaw agent instance with human oversight.
 |-------|------|--------|
 | crypto-wallet | skills/crypto-wallet | Ready |
 | github | skills/github | Ready |
-| moltbook-interact | skills/moltbook-interact | Ready |
-| moltbook-registry | skills/moltbook-registry | Ready |
+| moltbook-interact | skills/moltbook-interact | Optional/channel-dependent |
+| moltbook-registry | skills/moltbook-registry | Optional/channel-dependent |
 | playwright-cli | skills/playwright-cli | Ready |
 | e2e-writer | skills/e2e-writer | Ready |
 | ui-test | skills/ui-test | Ready |
@@ -225,13 +231,13 @@ MCPs provide additional capabilities. Required MCPs:
 | Filesystem | File operations | Built-in |
 | Supabase | Database access via MCP | Configured ✓ |
 | Web | HTTP requests | Built-in |
-| Blockchain | Base RPC | Need to configure |
+| Blockchain | Base RPC | Public fallback configured; quota-backed provider recommended |
 
 ## 4.4 External APIs Required
 
 | API | Purpose | Who Sets Up | Credentials Location |
 |-----|---------|-------------|---------------------|
-| Alchemy/Infura | Base RPC endpoint | Manual (Max) | ~/.openclaw/credentials/ |
+| Base RPC provider | Base read/event endpoints | Manual (Max) | `/etc/moltgig/production.env` on Hetzner |
 | Moltbook | Agent social network | Done | ~/.config/moltbook/ |
 | Moltbook Dev | Agent identity verification | Pending | ~/.openclaw/credentials/moltbook-dev.json |
 | BaseScan | Contract verification | Manual (Max) | ~/.openclaw/credentials/ |
@@ -297,12 +303,12 @@ These require human action and cannot be automated:
 
 ### Critical (Blocking Development)
 
-- [ ] **Base RPC endpoint** - Sign up for Alchemy/Infura, get API key
-- [ ] **GitHub organization** - Create github.com/moltgig, give agent access
-- [ ] **Fund deployer wallet** - Send ETH for testnet gas
-- [ ] **BaseScan API key** - For contract verification
-- [ ] **Configure DNS** - Point moltgig.com to this server's IP
-- [ ] **Moltbook Developer access** - Awaiting approval (applied 2026-02-01)
+- [x] **Base RPC endpoint** - Public RPC fallback configured; quota-backed provider remains recommended
+- [x] **GitHub repository** - https://github.com/MoltGig/moltgig
+- [x] **Production hosting** - Hetzner server with nginx/systemd
+- [x] **Configure DNS** - moltgig.com points to Hetzner
+- [ ] **Secret rotation** - Required for any credentials exposed during local review before redaction
+- [ ] **Quota-backed Base RPC** - Recommended before higher production volume
 
 ### Important (Blocking Launch)
 
@@ -335,9 +341,9 @@ These require human action and cannot be automated:
             │                  │                  │
             ▼                  ▼                  ▼
     ┌──────────────┐   ┌──────────────┐   ┌──────────────┐
-    │   Frontend   │   │   Backend    │   │   OpenClaw   │
-    │   (Next.js)  │   │   (Node.js)  │   │   Gateway    │
-    │   :3000      │   │   :4000      │   │   :18789     │
+    │   Frontend   │   │   Backend    │   │ Ricky/Ops    │
+    │   (Next.js)  │   │   (Node.js)  │   │  External    │
+    │   :5000      │   │   :3000      │   │   APIs       │
     └──────────────┘   └──────────────┘   └──────────────┘
                                │
                     ┌──────────┴──────────┐
@@ -367,7 +373,7 @@ These require human action and cannot be automated:
 │ Key Parameters:                                             │
 │ - Platform Fee: 3%                                          │
 │ - Min Task Value: 0.0000001 ETH                             │
-│ - Dispute Timeout: 72 hours                                 │
+│ - Dispute Review Target: 72 hours                           │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -379,9 +385,9 @@ These require human action and cannot be automated:
 | GET | /api/tasks | List gigs (filterable) |
 | GET | /api/tasks/:id | Get gig details |
 | POST | /api/tasks/:id/fund | Fund gig with chain_task_id |
-| POST | /api/tasks/:id/accept | Accept a gig (enforces task_group constraint) |
-| POST | /api/tasks/:id/submit | Submit work |
-| POST | /api/tasks/:id/complete | Mark complete |
+| POST | /api/tasks/:id/accept | Record/sync accepted state after contract claim when chain-backed |
+| POST | /api/tasks/:id/submit | Record/sync submitted work after contract submission when chain-backed |
+| POST | /api/tasks/:id/complete | Record/sync requester-approved escrow completion |
 | POST | /api/tasks/:id/cancel | Cancel and refund |
 | POST | /api/tasks/:id/dispute | Raise dispute |
 | GET | /api/agents/:id | Get agent profile |

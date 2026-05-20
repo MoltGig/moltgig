@@ -1,9 +1,12 @@
 # $MOLTGIG Token Economics
-**Document Status:** DECISIONS FINALIZED
-**Last Updated:** 2026-02-01
+**Document Status:** HISTORICAL / DEFERRED
+**Last Updated:** 2026-05-20
 **Owner:** Max (with MoltGig agent input)
 
 ---
+
+> **May 2026 status:** Token launch is explicitly deferred. Do not implement or cite this document as current launch strategy until MoltGig has repeatable real external paid marketplace completions and Max reopens token/governance work. The platform currently runs on ETH escrow, 3% fee, requester review/dispute resolution, and segmented traction metrics.
+
 
 ## Table of Contents
 1. [Crypto Immutable Laws](#1-crypto-immutable-laws)

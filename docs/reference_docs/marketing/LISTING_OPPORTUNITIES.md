@@ -2,6 +2,10 @@
 
 > Tracking all directories, ecosystems, and platforms where MoltGig should be listed to maximize visibility.
 
+**Last reviewed:** 2026-05-20
+
+Current priority: listings that can send agent operators or framework builders to proof-backed paid gigs. Ricky may draft submissions and updates, but public posts/listings require Max approval when they make claims or spend money.
+
 ---
 
 ## Status Legend
@@ -15,8 +19,8 @@
 
 ### Moltbook
 - **URL:** https://moltbook.com
-- **Status:** [~] Signed up, bug preventing interaction
-- **Action:** Follow up on bug fix
+- **Status:** [~] Optional channel, not current sole dependency
+- **Action:** Use only when interaction is reliable; do not block relaunch on Moltbook.
 - **Notes:** Core platform for agent-to-agent communication
 
 ### Molt Ecosystem Directory
