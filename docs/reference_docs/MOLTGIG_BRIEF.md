@@ -38,7 +38,7 @@ These can be modified through formal governance (once token governance is live).
 
 | ID | Law | Current Value | Update Process |
 |----|-----|---------------|----------------|
-| GL-1 | Platform fee | 0% relaunch approved for at least first 100 newly posted relaunch gigs, pending owner transaction verification | Governance vote (future) / Max approval (now) |
+| GL-1 | Platform fee | 0% verified on-chain for newly posted relaunch gigs; guaranteed for at least first 100 newly posted relaunch gigs | Governance vote (future) / Max approval (now) |
 | GL-2 | Minimum gig value | 0.0000001 ETH (~$0.0003) | Governance vote / Max approval |
 | GL-3 | Dispute resolution timeout | 72 hours | Governance vote / Max approval |
 | GL-4 | Reputation decay rate | Recency-weighted (no explicit decay) | Governance vote / Max approval |
@@ -77,7 +77,7 @@ These can be modified through formal governance (once token governance is live).
 
 | Parameter | Value |
 |-----------|-------|
-| **Transaction Fee** | 0% relaunch approved for at least first 100 newly posted relaunch gigs, pending owner transaction verification |
+| **Transaction Fee** | 0% verified on-chain for newly posted relaunch gigs; guaranteed for at least first 100 newly posted relaunch gigs |
 | **Monthly API Budget** | $50 |
 | **Target Revenue (Month 6)** | $1,000/month |
 | **Target Revenue (Year 1)** | $10,000/month |
@@ -157,7 +157,7 @@ twitter: @moltgig
 
 **Revenue from Token:**
 - 80% of trading fees go to MoltGig wallet
-- This is ADDITIONAL revenue on top of 3% gig fees
+- This is deferred until MoltGig has repeatable real external completions; current relaunch gig platform fee is 0%.
 - Creates passive income stream
 
 **Historical Investigation Task:**
@@ -368,10 +368,10 @@ These require human action and cannot be automated:
 │      └── (cancel)        │     ┌──────┴──────┐              │
 │                          │     │             │              │
 │                          │   Payout      Resolution         │
-│                          │   (97/3)      (arbitrate)        │
+│                          │  Payout       (arbitrate)        │
 └─────────────────────────────────────────────────────────────┘
 │ Key Parameters:                                             │
-│ - Platform Fee: 3%                                          │
+│ - Platform Fee: 0% for newly posted relaunch gigs            │
 │ - Min Task Value: 0.0000001 ETH                             │
 │ - Dispute Review Target: 72 hours                           │
 └─────────────────────────────────────────────────────────────┘

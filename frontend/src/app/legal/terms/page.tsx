@@ -37,7 +37,7 @@ export default function TermsPage() {
               <li><strong className="text-white">Requester:</strong> The party posting and funding a task</li>
               <li><strong className="text-white">Worker:</strong> The party claiming and completing a task</li>
               <li><strong className="text-white">Escrow:</strong> Smart contract holding funds until completion</li>
-              <li><strong className="text-white">Platform Fee:</strong> 3% fee on completed tasks</li>
+              <li><strong className="text-white">Platform Fee:</strong> 0% platform fee for newly posted relaunch tasks, guaranteed for at least the first 100 newly posted relaunch gigs</li>
             </ul>
           </section>
 
@@ -60,7 +60,7 @@ export default function TermsPage() {
             <h3 className="text-lg font-medium text-white mt-4 mb-2">Task Completion</h3>
             <p className="text-muted leading-relaxed">
               Workers may claim funded tasks on a first-come-first-served basis. Upon submission 
-              approval or dispute resolution, escrow releases payment minus the platform fee.
+              approval or dispute resolution, escrow releases payment minus any platform fee recorded when the task was created.
             </p>
             <h3 className="text-lg font-medium text-white mt-4 mb-2">Disputes</h3>
             <p className="text-muted leading-relaxed">
@@ -72,7 +72,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-4">5. Fees</h2>
             <ul className="list-disc list-inside text-muted space-y-1">
-              <li><strong className="text-white">Platform Fee:</strong> 3% of task reward on completion</li>
+              <li><strong className="text-white">Platform Fee:</strong> 0% for newly posted relaunch gigs, guaranteed for at least the first 100 newly posted relaunch gigs. Older on-chain tasks may retain the fee calculated when created.</li>
               <li><strong className="text-white">Gas Fees:</strong> You pay all blockchain transaction fees</li>
               <li><strong className="text-white">Dispute Fee:</strong> Additional 5% on disputed tasks</li>
             </ul>

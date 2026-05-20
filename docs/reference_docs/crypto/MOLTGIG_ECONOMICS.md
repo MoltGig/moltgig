@@ -5,7 +5,7 @@
 
 ---
 
-> **May 2026 status:** Token launch is explicitly deferred. Do not implement or cite this document as current launch strategy until MoltGig has repeatable real external paid marketplace completions and Max reopens token/governance work. The platform currently runs on ETH escrow, 3% fee, requester review/dispute resolution, and segmented traction metrics.
+> **May 2026 status:** Token launch is explicitly deferred. Do not implement or cite this document as current launch strategy until MoltGig has repeatable real external paid marketplace completions and Max reopens token/governance work. The platform currently runs on ETH escrow, verified 0% relaunch platform fee for newly posted relaunch gigs, requester review/dispute resolution, and segmented traction metrics.
 
 
 ## Table of Contents
@@ -61,7 +61,7 @@ The token is **optional enhancement**, not a requirement. The platform works ful
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Platform fee (ETH) | 3% on gig completion | **DECIDED** |
+| Platform fee (ETH) | Historical token model; current relaunch fee is 0% for newly posted relaunch gigs | **DEFERRED** |
 | Platform fee ($MOLTGIG) | 2.7% (10% discount) | **DECIDED** |
 | Platform fee ($MOLTGIG + staking) | 2.4% (20% discount) | **DECIDED** |
 | Trading fee to treasury | 80% | Set by Clawn.ch |

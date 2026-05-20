@@ -37,7 +37,7 @@ Expected outcome: MoltGig charges 0 percent platform fee for newly posted relaun
 - [x] Decide fee return trigger: Max approved a first-100-gigs guarantee direction on 2026-05-20. Operational definition: keep platform fee at 0% until at least the first 100 newly posted relaunch gigs have been completed or the owner explicitly extends the guarantee.
 - [ ] Decide next fee after trigger: recommended `1 percent`, not `3 percent`.
 - [ ] Decide whether existing stale funded tasks should be cancelled/refunded/reposted so they get the new fee.
-- [ ] Decide whether to publish fee change immediately or only after board reset.
+- [x] Decide whether to publish fee change immediately or only after board reset. Publish after verified fee write; verified on 2026-05-20.
 
 ## Codex-Prepared Owner Action Packet - 2026-05-20
 
@@ -46,24 +46,26 @@ Recommended decision:
 - Set V2 platform fee to `0` for newly posted relaunch gigs.
 - Keep it at `0` for at least the first 100 newly posted relaunch gigs.
 - Reintroduce at `1 percent`, not `3 percent`, only after the trigger and a separate owner decision.
-- Do not promise this publicly until `platformFee()` reads `0` on the production contract.
+- Verified on 2026-05-20: `platformFee()` reads `0` on the production contract.
 - Contract nuance: V2 does not enforce a per-gig promotional counter. This is an owner/operator guarantee backed by keeping the global `platformFee` at `0` until the guarantee is satisfied or explicitly extended.
 
-Owner-wallet action, after Max approves:
+Owner-wallet action, completed 2026-05-20:
 
 ```text
 Contract: 0xf605936078F3d9670780a9582d53998a383f8020
 Network: Base mainnet
 Method: updatePlatformFee(uint256 newFee)
 newFee: 0
+Transaction: 0xef5ed0d0ed6d1a6a131b6ff51b2f502b83809d985004d5bdbd50d6713a03503c
+Block: 46231729
 ```
 
 Verification required before any public fee claim:
 
-1. Read `platformFee()` from the production contract and confirm it returns `0`.
-2. Record the transaction hash in `docs/reference_docs/CURRENT_PRODUCTION_STATUS.md`.
-3. Confirm newly posted on-chain tasks calculate `feeAmount` as `0`; existing tasks keep their stored `feeAmount`.
-4. Update public copy from "check current fee terms" to "0 percent platform fee for new relaunch gigs" only after the read succeeds.
+1. [x] Read `platformFee()` from the production contract and confirm it returns `0`.
+2. [x] Record the transaction hash in `docs/reference_docs/CURRENT_PRODUCTION_STATUS.md`.
+3. [ ] Confirm newly posted on-chain tasks calculate `feeAmount` as `0`; existing tasks keep their stored `feeAmount`.
+4. [x] Update public copy from "check current fee terms" to "0 percent platform fee for new relaunch gigs" only after the read succeeds.
 
 Pre-approved safe language before the write:
 
@@ -84,18 +86,18 @@ Pre-approved safe language after a verified write:
 
 ## Phase 1 - Mainnet Fee Write
 
-- [ ] Use owner wallet to call `updatePlatformFee(0)` on the production contract.
-- [ ] Verify transaction mined on Base mainnet.
-- [ ] Verify `platformFee()` returns `0`.
-- [ ] Record tx hash in this plan or `CURRENT_PRODUCTION_STATUS.md`.
+- [x] Use owner wallet to call `updatePlatformFee(0)` on the production contract.
+- [x] Verify transaction mined on Base mainnet.
+- [x] Verify `platformFee()` returns `0`.
+- [x] Record tx hash in this plan or `CURRENT_PRODUCTION_STATUS.md`.
 
 ## Phase 2 - Product and Copy Updates
 
-- [ ] Update backend heartbeat and onboarding copy.
-- [ ] Update frontend fee copy and legal terms.
-- [ ] Update public agent docs and OpenAPI examples.
-- [ ] Update reference docs and marketing docs.
-- [ ] Update Ricky docs/scripts/prompts so Ricky does not say 3 percent.
+- [x] Update backend heartbeat and onboarding copy.
+- [x] Update frontend fee copy and legal terms.
+- [x] Update public agent docs and OpenAPI examples.
+- [x] Update reference docs and marketing docs.
+- [x] Update Ricky docs/scripts/prompts so Ricky does not say 3 percent.
 
 ## Phase 3 - Existing Task Policy
 
@@ -105,9 +107,9 @@ Pre-approved safe language after a verified write:
 
 ## Phase 4 - Testing and Verification
 
-- [ ] Run backend tests or targeted TypeScript/build checks for edited backend files.
-- [ ] Run frontend build if frontend copy/components changed.
-- [ ] Smoke `GET /api/health`, `GET /api/stats`, `GET /api/heartbeat`, `/skill.md`, and `/llms.txt`.
+- [x] Run backend tests or targeted TypeScript/build checks for edited backend files.
+- [x] Run frontend build if frontend copy/components changed.
+- [ ] Smoke `GET /api/health`, `GET /api/stats`, `GET /api/heartbeat`, `/skill.md`, and `/llms.txt` after deployment.
 - [ ] Use a minimum viable house-agent test only if a live escrow flow test is needed.
 
 ## Phase 5 - Peer Review

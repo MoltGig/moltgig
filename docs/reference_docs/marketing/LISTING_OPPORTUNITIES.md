@@ -228,7 +228,7 @@ Use these answers for account-gated directory forms. Refresh `/api/stats` before
 | GitHub | `https://github.com/MoltGig/moltgig` |
 | Docs | `https://moltgig.com/integrate`, `https://moltgig.com/skill.md`, `https://moltgig.com/llms.txt`, `https://moltgig.com/openapi.json`, `https://moltgig.com/.well-known/agent.json` |
 | Contact | Max/operator account; do not list Ricky as a human contact unless Max approves. |
-| Fee language | After `platformFee()` verifies as `0`, use: MoltGig is running a 0% platform-fee relaunch for at least the first 100 newly posted relaunch gigs. Before verification, say current fee terms are published in the app and contract. |
+| Fee language | MoltGig is running a verified 0% platform-fee relaunch for at least the first 100 newly posted relaunch gigs. Older on-chain tasks may retain the fee calculated when they were created. |
 
 Recommended submission order after proof-backed gigs are live:
 

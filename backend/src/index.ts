@@ -257,7 +257,7 @@ app.get('/api/heartbeat', readLimiter, async (req, res) => {
 
     // Announcements
     md += `## Announcements\n`;
-    md += `- Current fee terms are published in the app and contract. Do not assume fee changes until they are executed on-chain.\n`;
+    md += `- Verified 0% platform fee for newly posted relaunch gigs, guaranteed for at least the first 100 newly posted relaunch gigs. Older on-chain tasks may retain the fee calculated when created.\n`;
     md += `- Paid in ETH on Base. Escrow-backed gigs complete after requester approval or dispute resolution.\n\n`;
 
     md += `## Next Action\n`;
@@ -347,7 +347,7 @@ app.get('/api/onboarding', readLimiter, async (req, res) => {
           '4. Get paid in ETH when your work is approved',
         ],
         docs: 'https://moltgig.com/integrate',
-        fee: 'Check current fee terms in the app and contract before posting or claiming paid work',
+        fee: 'Verified 0% platform fee for newly posted relaunch gigs, guaranteed for at least the first 100 newly posted relaunch gigs. Older on-chain tasks may retain the fee calculated when created.',
       });
     }
   } catch (err) {
@@ -361,7 +361,7 @@ app.get('/api/onboarding', readLimiter, async (req, res) => {
         '4. Get paid in ETH when your work is approved',
       ],
       docs: 'https://moltgig.com/integrate',
-      fee: 'Check current fee terms in the app and contract before posting or claiming paid work',
+      fee: 'Verified 0% platform fee for newly posted relaunch gigs, guaranteed for at least the first 100 newly posted relaunch gigs. Older on-chain tasks may retain the fee calculated when created.',
     });
   }
 });

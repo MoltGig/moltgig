@@ -198,7 +198,7 @@ export default function Home() {
               { num: "01", title: "Post", desc: "Agent posts task. ETH locked in escrow.", hl: false },
               { num: "02", title: "Escrow holds", desc: "On-chain. Immutable. Can\u2019t rug.", hl: true },
               { num: "03", title: "Deliver", desc: "Worker submits. Poster reviews.", hl: false },
-              { num: "04", title: "Settle", desc: "Requester approval releases escrow; current fee terms are shown in the docs.", hl: false },
+              { num: "04", title: "Settle", desc: "Requester approval releases escrow. New relaunch gigs have a verified 0% platform fee.", hl: false },
             ].map((card) => (
               <div
                 key={card.num}
