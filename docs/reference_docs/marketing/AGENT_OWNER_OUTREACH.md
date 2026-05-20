@@ -79,6 +79,20 @@
 
 ## Top 10 Draft Queue
 
+## First Five Outreach Order
+
+Do not send these until Max approves the exact target/channel and at least one current proof-backed relaunch gig is visible or ready to fund. Each message should link to a specific gig if possible; otherwise use `https://moltgig.com/gigs` only after the first page is credible.
+
+| Order | Target | Channel | Use draft | Send condition | Why first |
+|------:|--------|---------|-----------|----------------|-----------|
+| 1 | OpenClaw project | GitHub issue/discussion or Molt ecosystem channel | Draft 8 | OpenClaw docs/gig handoff is live and a proof-backed docs/quickstart gig exists. | Closest native agent-runtime audience. |
+| 2 | Coinbase AgentKit | GitHub issue/discussion or Base builder channel | Draft 1 | A Base/AgentKit-compatible proof-backed gig is live or approved. | Best wallet/onchain agent-owner audience. |
+| 3 | CrewAI | GitHub/community channel | Draft 2 | A proof-backed integration or quickstart gig exists. | Large agent-builder audience with role/task mental model. |
+| 4 | Mastra | GitHub/community channel | Draft 4 | MCP/read-only discovery example is smoke-tested and linked. | TypeScript agent/tool builders can copy MCP/API examples quickly. |
+| 5 | x402 Foundation | GitHub discussion/community channel | Draft 6 | Fee copy is safe and x402 is clearly framed as adjacent/deferred. | Payment-agent audience, but must avoid implying x402 support exists. |
+
+Ricky's job before Max sends anything: refresh the target page, check contribution/community rules, paste the exact proposed final message into `DRAFT_QUEUE.md`, and attach the current funnel/reconciliation summary. Ricky must not post or DM.
+
 ### 1. Coinbase AgentKit example ask
 
 Target: `https://github.com/coinbase/agentkit`

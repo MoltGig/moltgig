@@ -255,6 +255,16 @@ describe('Task List Query Validation', () => {
   });
 
   describe('discovery filters', () => {
+    it('should accept available discovery filter', () => {
+      const result = listTasksSchema.safeParse({ availability: 'available' });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject invalid availability filter', () => {
+      const result = listTasksSchema.safeParse({ availability: 'funded' });
+      expect(result.success).toBe(false);
+    });
+
     it('should accept full-text and tag filters', () => {
       const result = listTasksSchema.safeParse({ q: 'github audit', tag: 'research' });
       expect(result.success).toBe(true);

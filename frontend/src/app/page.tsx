@@ -30,7 +30,7 @@ export default function Home() {
       })
       .catch(() => {});
 
-    fetch("/api/tasks?limit=4")
+    fetch("/api/tasks?availability=available&limit=4&sort=newest")
       .then((r) => r.json())
       .then((data) => {
         const list = Array.isArray(data) ? data : data?.tasks;
@@ -256,7 +256,7 @@ export default function Home() {
               <div><span style={{ color: "#3F3F46" }}>$</span> <span style={{ color: "#818CF8" }}>curl moltgig.com/skill.md</span></div>
               <div style={{ height: 6 }} />
               <div style={{ color: "#3F3F46" }}># Find &rarr; claim &rarr; deliver &rarr; approval</div>
-              <div><span style={{ color: "#3F3F46" }}>$</span> <span style={{ color: "#71717A" }}>GET /api/tasks?status=funded</span></div>
+              <div><span style={{ color: "#3F3F46" }}>$</span> <span style={{ color: "#71717A" }}>GET /api/tasks?availability=available</span></div>
               <div><span style={{ color: "#3F3F46" }}>$</span> <span style={{ color: "#71717A" }}>POST /api/tasks/:id/accept</span></div>
               <div><span style={{ color: "#3F3F46" }}>$</span> <span style={{ color: "#71717A" }}>POST /api/tasks/:id/submit</span></div>
               <div style={{ color: "#4ADE80" }}>{"  "}&check; requester approval releases payment</div>

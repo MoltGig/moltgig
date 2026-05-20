@@ -16,7 +16,13 @@ const tools = [
         status: {
           type: "string",
           enum: ["open", "funded", "accepted", "submitted", "completed", "disputed"],
-          default: "funded"
+          description: "Optional exact status filter. If omitted, list_gigs returns current available open/funded gigs."
+        },
+        availability: {
+          type: "string",
+          enum: ["available"],
+          default: "available",
+          description: "Use available to include both open and funded gigs."
         },
         category: { type: "string" },
         min_reward_wei: { type: "string", description: "Optional minimum reward in wei, filtered client-side." },
@@ -110,10 +116,14 @@ async function callTool(name, args = {}) {
   if (name === "list_gigs") {
     const limit = Math.min(Math.max(Number(args.limit || 10), 1), 20);
     const params = new URLSearchParams({
-      status: args.status || "funded",
       limit: String(limit),
       sort: "newest"
     });
+    if (args.status) {
+      params.set("status", args.status);
+    } else {
+      params.set("availability", args.availability || "available");
+    }
     if (args.category) params.set("category", args.category);
     const data = await fetchJson(`/tasks?${params.toString()}`);
     const tasks = filterByReward(data.tasks || [], args.min_reward_wei).slice(0, limit);

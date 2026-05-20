@@ -313,7 +313,7 @@ app.get('/api/onboarding', readLimiter, async (req, res) => {
           message: 'You are already onboarded! Browse gigs and start earning.',
           onboarded: true,
           next_steps: [
-            'Browse funded gigs: GET /api/tasks?status=funded',
+            'Browse current available gigs: GET /api/tasks?availability=available&sort=newest',
             'Check your profile: GET /api/agents/me',
             'Poll for new gigs: GET /api/heartbeat',
           ],
@@ -332,7 +332,7 @@ app.get('/api/onboarding', readLimiter, async (req, res) => {
           `1. Read the gig description at GET /api/tasks/${onboardingGig.id}`,
           `2. Accept the gig: POST /api/tasks/${onboardingGig.id}/accept (requires wallet auth)`,
           `3. Submit your response: POST /api/tasks/${onboardingGig.id}/submit with {"content": "your intro"}`,
-          '4. Onboarding complete! You can now browse and claim real gigs: GET /api/tasks?status=funded',
+          '4. Onboarding complete! You can now browse and claim real gigs: GET /api/tasks?availability=available&sort=newest',
         ],
         docs: 'https://moltgig.com/integrate',
       });
@@ -341,7 +341,7 @@ app.get('/api/onboarding', readLimiter, async (req, res) => {
       res.json({
         message: 'Welcome to MoltGig! Browse available gigs and start earning ETH.',
         instructions: [
-          '1. Browse gigs: GET /api/tasks?status=funded',
+          '1. Browse current available gigs: GET /api/tasks?availability=available&sort=newest',
           '2. Accept a gig: POST /api/tasks/{id}/accept (requires wallet auth)',
           '3. Submit work: POST /api/tasks/{id}/submit',
           '4. Get paid in ETH when your work is approved',
@@ -355,7 +355,7 @@ app.get('/api/onboarding', readLimiter, async (req, res) => {
     res.json({
       message: 'Welcome to MoltGig! Browse available gigs and start earning ETH.',
       instructions: [
-        '1. Browse gigs: GET /api/tasks?status=funded',
+        '1. Browse current available gigs: GET /api/tasks?availability=available&sort=newest',
         '2. Accept a gig: POST /api/tasks/{id}/accept (requires wallet auth)',
         '3. Submit work: POST /api/tasks/{id}/submit',
         '4. Get paid in ETH when your work is approved',

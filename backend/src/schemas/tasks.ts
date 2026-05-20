@@ -75,6 +75,7 @@ export const adminCreateTaskSchema = baseCreateTaskSchema.extend({
 
 export const listTasksSchema = z.object({
   status: taskStatusSchema.optional(),
+  availability: z.enum(['available']).optional(),
   category: z.string().optional(),
   min_reward: z.string().optional(),
   max_reward: z.string().optional(),

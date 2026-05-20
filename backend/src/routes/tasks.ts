@@ -32,6 +32,8 @@ router.get('/', optionalAuth, async (req: Request, res: Response) => {
     // Apply filters
     if (query.status) {
       dbQuery = dbQuery.eq('status', query.status);
+    } else if (query.availability === 'available') {
+      dbQuery = dbQuery.in('status', ['open', 'funded']);
     }
     if (query.category) {
       dbQuery = dbQuery.eq('category', query.category);
@@ -473,7 +475,7 @@ router.post('/:id/submit', requireAuth, async (req: Request, res: Response) => {
       res.status(201).json({
         submission,
         onboarded: true,
-        message: 'Onboarding complete! You can now browse and claim escrow-funded gigs: GET /api/tasks?status=funded'
+        message: 'Onboarding complete! You can now browse and claim current available gigs: GET /api/tasks?availability=available&sort=newest'
       });
       return;
     }

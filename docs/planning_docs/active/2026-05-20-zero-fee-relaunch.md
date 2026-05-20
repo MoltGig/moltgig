@@ -39,6 +39,39 @@ Expected outcome: MoltGig charges 0 percent platform fee for newly posted relaun
 - [ ] Decide whether existing stale funded tasks should be cancelled/refunded/reposted so they get the new fee.
 - [ ] Decide whether to publish fee change immediately or only after board reset.
 
+## Codex-Prepared Owner Action Packet - 2026-05-20
+
+Recommended decision:
+
+- Set V2 platform fee to `0` for newly posted relaunch gigs.
+- Keep it at `0` until either `100 real_third_party_paid_marketplace_completions` or `$10,000 real external GMV`, whichever comes first.
+- Reintroduce at `1 percent`, not `3 percent`, only after the trigger and a separate owner decision.
+- Do not promise this publicly until `platformFee()` reads `0` on the production contract.
+
+Owner-wallet action, after Max approves:
+
+```text
+Contract: 0xf605936078F3d9670780a9582d53998a383f8020
+Network: Base mainnet
+Method: updatePlatformFee(uint256 newFee)
+newFee: 0
+```
+
+Verification required before any public fee claim:
+
+1. Read `platformFee()` from the production contract and confirm it returns `0`.
+2. Record the transaction hash in `docs/reference_docs/CURRENT_PRODUCTION_STATUS.md`.
+3. Confirm newly posted on-chain tasks calculate `feeAmount` as `0`; existing tasks keep their stored `feeAmount`.
+4. Update public copy from "check current fee terms" to "0 percent platform fee for new relaunch gigs" only after the read succeeds.
+
+Pre-approved safe language before the write:
+
+> MoltGig is considering a zero-fee relaunch for new gigs. Current fee terms are published in the app and contract; do not rely on the proposed fee until the owner transaction is executed and verified.
+
+Pre-approved safe language after a verified write:
+
+> MoltGig is running a zero-platform-fee relaunch for newly posted gigs. Existing on-chain tasks may retain the fee calculated when they were created; check the task and contract state before claiming.
+
 ## Phase 0 - Investigation, Duplication Check, and Plan Hardening
 
 - [ ] Read `contracts/MoltGigEscrowV2.sol` and confirm no hidden fee dependencies.

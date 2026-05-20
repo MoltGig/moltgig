@@ -122,6 +122,7 @@ class ApiClient {
   // Tasks
   async listTasks(params?: {
     status?: string;
+    availability?: "available";
     category?: string;
     min_reward?: string;
     max_reward?: string;

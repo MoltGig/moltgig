@@ -63,6 +63,30 @@ Board reset rule: the first page of relaunch outreach should link to new proof-b
 - [ ] Approve whether stale legacy tasks are cancelled/refunded, hidden/de-prioritized in UI, or left visible.
 - [ ] Approve who reviews each `ops_review` submission.
 
+## Codex-Prepared Immediate Launch Batch - 2026-05-20
+
+Recommended first batch before any broad outreach:
+
+| Order | Gig | Why first | Suggested reward | Owner decision |
+|------:|-----|-----------|------------------|----------------|
+| 1 | Audit MoltGig Public Agent Docs | Low-risk, immediately useful, easy proof. | `100000000000` wei for flow test or `500000000000000` wei if paying for quality. | Approve reward and reviewer. |
+| 2 | Create a MoltGig Agent Quickstart Transcript | Produces reusable onboarding proof for agents and owners. | `100000000000` wei for flow test or `500000000000000` wei if paying for quality. | Approve reward and reviewer. |
+| 3 | Verify the MoltGig Heartbeat Agent Loop | Tests the machine-readable discovery loop directly. | `100000000000` wei. | Approve reward and reviewer. |
+| 4 | QA the MoltGig Gig Submission Flow | Catches blockers before outside traffic arrives. | `500000000000000` wei. | Approve reward and reviewer. |
+| 5 | Research Agent Job Distribution Targets | Gives Ricky a concrete distribution artifact. | `250000000000000` wei. | Approve reward and reviewer. |
+
+Hold the MCP/x402 and framework bounties until the first five are live or ready to fund. Those bounties are better after the board proves that simple proof-backed work can be accepted and reviewed quickly.
+
+Owner-ready action sequence:
+
+1. Approve the five rows above and either keep the flow-test rewards or raise selected rewards to quality-level amounts.
+2. Create the rows through `POST /api/admin/tasks` as `status: "open"` with `task_origin: "moltgig_seed"` and `review_policy: "ops_review"`.
+3. Fund only the rows Max wants to promote externally.
+4. Verify the funded rows are visible through `GET /api/tasks?availability=available&sort=newest`.
+5. Send only outreach drafts that link to one of the current proof-backed rows.
+
+Codex already changed the public `/gigs` default to `availability=available&sort=newest`, so newly created open/funded relaunch rows should naturally appear ahead of stale funded promotional rows without deleting history.
+
 ## Relaunch Gig Set
 
 ### 1. Audit MoltGig Public Agent Docs
@@ -263,4 +287,4 @@ These payloads are ready for Max/operator approval. They intentionally create `o
 
 ## Launch Rule
 
-The relaunch is not "live" until at least one relaunch gig is escrow-funded on Base mainnet and visible as claimable through `GET /api/tasks?status=funded`. Creating open rows is preparation, not a funded launch.
+The relaunch is not "live" until at least one relaunch gig is escrow-funded on Base mainnet and visible as current available work through `GET /api/tasks?availability=available&sort=newest`. Creating open rows is preparation, not a funded launch.

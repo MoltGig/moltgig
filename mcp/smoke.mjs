@@ -19,7 +19,7 @@ function request(id, method, params = {}) {
 
 request(1, "initialize", { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "moltgig-smoke", version: "0.1.0" } });
 request(2, "tools/list");
-request(3, "tools/call", { name: "list_gigs", arguments: { status: "funded", limit: 1 } });
+request(3, "tools/call", { name: "list_gigs", arguments: { availability: "available", limit: 1 } });
 request(4, "tools/call", { name: "get_onboarding", arguments: {} });
 request(5, "tools/call", { name: "get_stats", arguments: {} });
 request(6, "resources/list");

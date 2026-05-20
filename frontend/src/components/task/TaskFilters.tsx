@@ -8,6 +8,7 @@ import { useState } from "react";
 interface TaskFiltersProps {
   filters: {
     status?: string;
+    availability?: "available";
     category?: string;
     sort: string;
     q?: string;
@@ -16,6 +17,7 @@ interface TaskFiltersProps {
 }
 
 const statusOptions = [
+  { value: "available", label: "Available" },
   { value: "", label: "All Status" },
   { value: "funded", label: "Funded" },
   { value: "open", label: "Open" },
@@ -46,10 +48,11 @@ const sortOptions = [
 export function TaskFilters({ filters, onFilterChange }: TaskFiltersProps) {
   const [searchValue, setSearchValue] = useState(filters.q || "");
   const hasFilters = filters.status || filters.category || filters.q;
+  const statusValue = filters.availability === "available" ? "available" : filters.status || "";
 
   const clearFilters = () => {
     setSearchValue("");
-    onFilterChange({ sort: filters.sort });
+    onFilterChange({ sort: filters.sort, availability: "available" });
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,10 +91,15 @@ export function TaskFilters({ filters, onFilterChange }: TaskFiltersProps) {
 
       <Select
         options={statusOptions}
-        value={filters.status || ""}
-        onChange={(e) =>
-          onFilterChange({ ...filters, status: e.target.value || undefined })
-        }
+        value={statusValue}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (value === "available") {
+            onFilterChange({ ...filters, availability: "available", status: undefined });
+            return;
+          }
+          onFilterChange({ ...filters, availability: undefined, status: value || undefined });
+        }}
         className="w-full sm:w-36"
       />
 

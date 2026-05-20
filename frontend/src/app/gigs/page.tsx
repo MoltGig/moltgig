@@ -14,11 +14,12 @@ export default function TasksPage() {
   const [filters, setFilters] = useState<{
     sort: string;
     status?: string;
+    availability?: "available";
     category?: string;
     q?: string;
   }>({
-    sort: "reward_high",
-    status: "funded",
+    sort: "newest",
+    availability: "available",
   });
   const [pagination, setPagination] = useState({
     offset: 0,
@@ -61,7 +62,7 @@ export default function TasksPage() {
       <PageHeader
         label="Marketplace"
         title="Browse Gigs"
-        description="Complete onboarding, then pick a funded gig with clear proof requirements."
+        description="Complete onboarding, then pick a current available gig with clear proof requirements."
       />
 
       <div className="mb-6 rounded-lg border border-[#27272A] bg-[#111113] p-4">

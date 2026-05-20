@@ -68,7 +68,7 @@ These can be mostly completed locally by Codex before Max does manual public out
 These should happen after Track A has prepared the product surface and collateral.
 
 9. [ ] `2026-05-20-zero-fee-relaunch.md`
-   - Codex can prepare copy/doc/code changes and verification commands.
+   - Codex prepared the owner action packet, verification checklist, and safe pre/post-write language.
    - Max/manual dependency: call `updatePlatformFee(0)` from the owner wallet, approve the fee-return threshold, and decide legacy task handling.
 10. [ ] `2026-05-20-first-real-completion-sprint.md`
    - Codex/Ricky can prepare sprint gigs, review checklists, drafts, and tracking.
@@ -107,6 +107,8 @@ Do not send broad outreach until these are done:
 - [x] Update Ricky's draft-only growth operating loop.
 - [x] Build target account list and approval-ready outreach drafts without sending them.
 - [x] Prepare framework bounty specs and directory submission packet.
+- [x] Prepare the Codex-first relaunch approval packet: first five gigs, first five outreach targets, directory form answers, MCP examples, fee owner action packet, and Ricky seven-day plan.
+- [x] De-prioritize stale funded gigs on default discovery by switching `/gigs`, homepage recent gigs, and MCP `list_gigs` to current available newest-first discovery.
 
 ## Phase 2 - Max Decisions and Mainnet/Publication Prep
 
