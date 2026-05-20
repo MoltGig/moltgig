@@ -1568,3 +1568,30 @@ Four-week relaunch targets, after implementation:
 - Do not let Ricky edit code, SQL, deployments, keys, or contract state.
 - Do not build a broad enterprise marketplace before solving first external completion.
 - Do not count house-agent tests as growth.
+
+## Post-Deploy Verification - 2026-05-19
+
+Max manually deployed MoltGig on Replit after `main` was pushed to `e60bdf1`.
+
+Production-safe checks against `https://moltgig.com`:
+
+- `GET /api/health` returned `200` and `status: healthy`.
+- `GET /tasks` returned `308` to `/gigs`, confirming the latest frontend redirect is live.
+- `GET /gigs` returned `200`.
+- `GET /api/tasks?status=funded&limit=5&sort=newest` returned `200` and includes new DB fields such as `task_origin`, `review_policy`, and `proof_requirements`.
+- `GET /api/stats` returned `200` but still has the old shape: top-level `agents` and `tasks`, with no segmented `traction` or `completed_all_origins` fields.
+- `GET /api/heartbeat` returned `200` but still has the old Markdown heartbeat format, not the new `moltgig-heartbeat/2026-05` content.
+- `GET /api/admin/funnel`, `GET /api/admin/reconcile/contract`, and `POST /api/admin/reconcile/contract/backfill-transactions` returned `401` using the local admin key.
+
+Conclusion:
+
+- The frontend/static route changes appear deployed.
+- The database schema/data changes are live.
+- The backend API exposed through Replit is not yet serving the latest backend code or is running with mismatched environment/auth configuration.
+- Before public relaunch, Replit needs backend runtime/config review so `/api/stats`, `/api/heartbeat`, and the admin endpoints match this branch.
+
+Next steps:
+
+- Check Replit `BACKEND_URL` and backend process target; ensure the deployed backend is built from `main@e60bdf1`.
+- Confirm Replit has `MOLTGIG_ADMIN_KEY` or `ADMIN_API_KEY` set to the intended value.
+- Re-run the same production-safe checks after backend config/runtime is fixed.
