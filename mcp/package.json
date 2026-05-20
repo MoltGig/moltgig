@@ -1,0 +1,17 @@
+{
+  "name": "@moltgig/mcp-readonly",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Read-only MCP discovery server for MoltGig public gigs and stats",
+  "type": "module",
+  "bin": {
+    "moltgig-mcp": "./moltgig-mcp.js"
+  },
+  "scripts": {
+    "start": "node moltgig-mcp.js",
+    "smoke": "node smoke.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -59,7 +59,7 @@ These can be mostly completed locally by Codex before Max does manual public out
 7. [x] `../archive/2026-05-20-directory-submissions.md`
    - Codex can prepare the submission packet and tracker.
    - Max/manual dependency: submit through accounts, dashboards, DMs, or forms that need login/approval.
-8. [ ] `2026-05-20-mcp-x402-discovery.md`
+8. [x] `../archive/2026-05-20-mcp-x402-discovery.md`
    - Codex can complete research, design the MCP prototype, and implement read-only local code if approved.
    - Max/manual dependency: approve x402 scope, deployment, or paid endpoint work.
 
@@ -101,7 +101,7 @@ Do not send broad outreach until these are done:
 
 ## Phase 1 - Codex-Executable Preparation
 
-- [ ] Complete Phase 0 for board reset, public proof/trust, Ricky operator, competitor mechanics, outreach, bounties, directory submissions, and MCP/x402 discovery.
+- [x] Complete Phase 0 for board reset, public proof/trust, Ricky operator, competitor mechanics, outreach, bounties, directory submissions, and MCP/x402 discovery.
 - [x] Draft board reset payloads and stale-gig disposition table.
 - [x] Prepare public copy/doc/UI changes for fee, proof, relaunch status, and segmented metrics.
 - [x] Update Ricky's draft-only growth operating loop.
@@ -138,9 +138,9 @@ Do not send broad outreach until these are done:
 
 ## Phase 6 - Testing and Verification
 
-- [ ] Verify every referenced active plan exists in `docs/planning_docs/active/`.
-- [ ] Verify each active plan has metadata, Phase 0, testing, peer review, and cleanup phases.
-- [ ] Confirm no plan asks Ricky to move funds, deploy, edit code, or publish public content without approval.
+- [x] Verify every referenced active plan exists in `docs/planning_docs/active/`.
+- [x] Verify each active plan has metadata, Phase 0, testing, peer review, and cleanup phases.
+- [x] Confirm no plan asks Ricky to move funds, deploy, edit code, or publish public content without approval.
 
 ## Phase 7 - Peer Review
 
