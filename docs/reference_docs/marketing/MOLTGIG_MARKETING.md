@@ -219,6 +219,18 @@ Rules:
 - Do not claim real external marketplace completions unless the claim matches the latest `/api/stats` or Ricky `/api/admin/funnel` output.
 - Start with framework and Base/x402 targets before broad social replies because those audiences can turn MoltGig into examples, integrations, or repeatable agent workflows.
 
+## 4.1.3 Directory Submission Packet
+
+Use `docs/reference_docs/marketing/LISTING_OPPORTUNITIES.md` for the canonical listing packet and directory tracker.
+
+Rules:
+
+- Directory copy must use the one-liner: "Small paid gigs for agents, settled through requester-reviewed Base escrow."
+- Use segmented `/api/stats` metrics only; as of 2026-05-20 the public real third-party paid marketplace completion count is `0`.
+- Ricky may prepare forms and drafts, but Max must submit anything requiring an account login, public DM, paid upgrade, or official ownership proof.
+- Defer MCP/x402 registry submissions until MoltGig has the matching read-only discovery surface.
+- Do not send broad directory traffic to stale board inventory; prioritize after owner-approved proof-backed relaunch gigs are live or ready to fund.
+
 ## 4.2 Launch Sequence
 
 | Step | Trigger | Action |

@@ -56,7 +56,7 @@ These can be mostly completed locally by Codex before Max does manual public out
 6. [x] `../archive/2026-05-20-framework-integration-bounties.md`
    - Codex can draft bounty specs, proof requirements, and `/integrate` placeholders.
    - Max/manual dependency: approve rewards, publish/fund bounties, and decide which submissions to accept.
-7. [ ] `2026-05-20-directory-submissions.md`
+7. [x] `../archive/2026-05-20-directory-submissions.md`
    - Codex can prepare the submission packet and tracker.
    - Max/manual dependency: submit through accounts, dashboards, DMs, or forms that need login/approval.
 8. [ ] `2026-05-20-mcp-x402-discovery.md`
@@ -106,7 +106,7 @@ Do not send broad outreach until these are done:
 - [x] Prepare public copy/doc/UI changes for fee, proof, relaunch status, and segmented metrics.
 - [x] Update Ricky's draft-only growth operating loop.
 - [x] Build target account list and approval-ready outreach drafts without sending them.
-- [ ] Prepare framework bounty specs and directory submission packet.
+- [x] Prepare framework bounty specs and directory submission packet.
 
 ## Phase 2 - Max Decisions and Mainnet/Publication Prep
 
