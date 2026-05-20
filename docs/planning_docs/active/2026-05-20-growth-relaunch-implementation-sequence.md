@@ -44,7 +44,7 @@ These can be mostly completed locally by Codex before Max does manual public out
 2. [x] `../archive/2026-05-20-public-proof-and-trust.md`
    - Codex can update public copy, UI labels, machine-readable docs, and trust/status language.
    - Max/manual dependency: approve explicit public stance such as showing zero real completions and final fee wording.
-3. [ ] `2026-05-20-ricky-growth-operator.md`
+3. [x] `../archive/2026-05-20-ricky-growth-operator.md`
    - Codex can update Ricky docs, prompts, cadence, ledgers, and safe boundaries.
    - Max/manual dependency: approve whether Ricky gets any new posting/sending authority. Recommended: draft-only.
 4. [ ] `2026-05-20-competitor-mechanics-copycat.md`
@@ -104,7 +104,7 @@ Do not send broad outreach until these are done:
 - [ ] Complete Phase 0 for board reset, public proof/trust, Ricky operator, competitor mechanics, outreach, bounties, directory submissions, and MCP/x402 discovery.
 - [x] Draft board reset payloads and stale-gig disposition table.
 - [x] Prepare public copy/doc/UI changes for fee, proof, relaunch status, and segmented metrics.
-- [ ] Update Ricky's draft-only growth operating loop.
+- [x] Update Ricky's draft-only growth operating loop.
 - [ ] Build target account list and approval-ready outreach drafts without sending them.
 - [ ] Prepare framework bounty specs and directory submission packet.
 
