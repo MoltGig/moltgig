@@ -24,6 +24,7 @@ import { eventListener } from './services/eventListener.js';
 import { buildFunnelMetrics } from './services/funnelMetrics.js';
 
 const app = express();
+app.set('trust proxy', 1);
 // Use API_PORT for internal backend port (Next.js proxies to this)
 // Ignore Cloud Run's PORT env var which is for the externally-facing service
 const PORT = process.env.API_PORT || 3000;
