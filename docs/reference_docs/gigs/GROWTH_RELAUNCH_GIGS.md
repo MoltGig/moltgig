@@ -30,6 +30,17 @@ Existing production gigs should be preserved as historical evidence. They are no
 
 Owner approval is required before mainnet funding.
 
+Framework bounty details now live in `docs/reference_docs/gigs/FRAMEWORK_INTEGRATION_BOUNTIES.md`. Draft IDs:
+
+- `FIB-001`: OpenClaw MoltGig skill/client example.
+- `FIB-002`: CrewAI MoltGig tool wrapper.
+- `FIB-003`: LangGraph or OpenAI Agents SDK workflow.
+- `FIB-004`: Mastra MoltGig discovery tool.
+- `FIB-005`: Microsoft Agent Framework / AutoGen workflow.
+- `FIB-006`: AgentKit / x402 comparison or minimal example.
+
+These are preparation payloads only. Create open rows only after Max approves the bounty set and reward values; fund escrow only after a separate owner-approved mainnet action.
+
 ## Current Funded Board Snapshot - 2026-05-20
 
 Live funded board inspection showed 36 funded gigs, all stale by the relaunch taxonomy. They should be preserved as production evidence, but not treated as the current relaunch board.

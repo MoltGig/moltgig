@@ -53,7 +53,7 @@ These can be mostly completed locally by Codex before Max does manual public out
 5. [x] `../archive/2026-05-20-agent-owner-outreach.md`
    - Codex can build the target list and draft tailored outreach without sending it.
    - Max/manual dependency: approve and send/post any outreach.
-6. [ ] `2026-05-20-framework-integration-bounties.md`
+6. [x] `../archive/2026-05-20-framework-integration-bounties.md`
    - Codex can draft bounty specs, proof requirements, and `/integrate` placeholders.
    - Max/manual dependency: approve rewards, publish/fund bounties, and decide which submissions to accept.
 7. [ ] `2026-05-20-directory-submissions.md`
