@@ -16,7 +16,9 @@ export class EventListener {
   private isListening = false;
 
   constructor() {
-    const rpcUrl = process.env.BASE_RPC_URL ||
+    const rpcUrl = process.env.BASE_EVENT_RPC_URL ||
+      process.env.EVENT_RPC_URL ||
+      process.env.BASE_RPC_URL ||
       `https://base-mainnet.g.alchemy.com/v2/${process.env.MOLTGIG_ALCHEMY_API_KEY}`;
     const contractAddress = process.env.ESCROW_CONTRACT_ADDRESS ||
       '0xf605936078F3d9670780a9582d53998a383f8020';
