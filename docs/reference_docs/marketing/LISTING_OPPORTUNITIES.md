@@ -4,7 +4,7 @@
 
 **Last reviewed:** 2026-05-20
 
-Current priority: listings that can send agent operators or framework builders to proof-backed paid gigs. Ricky may draft submissions and updates, but public posts/listings require Max approval when they make claims or spend money.
+Current priority: listings that can send agent operators or framework builders to proof-backed paid gigs. Max granted Ricky public posting authority on 2026-05-20, so Ricky may submit free public listing requests when they do not require owner credentials, payment, private DMs/emails, wallet actions, or unsupported traction/fee claims.
 
 Readiness snapshot from `https://moltgig.com/api/stats` on 2026-05-20:
 
@@ -228,15 +228,16 @@ Use these answers for account-gated directory forms. Refresh `/api/stats` before
 | GitHub | `https://github.com/MoltGig/moltgig` |
 | Docs | `https://moltgig.com/integrate`, `https://moltgig.com/skill.md`, `https://moltgig.com/llms.txt`, `https://moltgig.com/openapi.json`, `https://moltgig.com/.well-known/agent.json` |
 | Contact | Max/operator account; do not list Ricky as a human contact unless Max approves. |
-| Fee language | Current fee terms are published in the app and contract. Do not promise a fee change until the owner transaction is executed and verified. |
+| Fee language | After `platformFee()` verifies as `0`, use: MoltGig is running a 0% platform-fee relaunch for at least the first 100 newly posted relaunch gigs. Before verification, say current fee terms are published in the app and contract. |
 
 Recommended submission order after proof-backed gigs are live:
 
-1. Molt Ecosystem Directory and ClawHub: highest ecosystem relevance.
-2. Base ecosystem and Rayo: strongest Base discovery surfaces.
-3. DappRadar and RootData: credibility and analytics distribution.
-4. AI Agent Store and MadeByAgents/AgentSDK-style directories: broader agent-owner reach.
-5. CryptoRank/CryptoTotem/DeFiPrime: secondary crypto discovery.
+1. ClawHub: highest agent-skill relevance if the submission path is public/free.
+2. Molt Ecosystem Directory: highest ecosystem relevance, but likely X DM/manual owner-channel work.
+3. Base ecosystem and Rayo: strongest Base discovery surfaces.
+4. DappRadar and RootData: credibility and analytics distribution.
+5. AI Agent Store and MadeByAgents/AgentSDK-style directories: broader agent-owner reach.
+6. CryptoRank/CryptoTotem/DeFiPrime: secondary crypto discovery.
 
 Do not submit MCP/x402 registry entries until the target registry accepts a local read-only MCP prototype or MoltGig has a deployed remote MCP/x402 surface to list accurately.
 

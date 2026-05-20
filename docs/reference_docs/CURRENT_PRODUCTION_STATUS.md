@@ -29,7 +29,7 @@ This document captures the production state observed after the May 2026 relaunch
 |-------|-------|
 | Contract | `0xf605936078F3d9670780a9582d53998a383f8020` |
 | Network | Base mainnet |
-| Platform fee | 3% |
+| Platform fee | 3% currently until owner transaction verifies; 0% relaunch approved for at least first 100 newly posted relaunch gigs |
 | Dispute fee | 5% |
 | Owner/treasury | `0xA5BfB6C6E3085e7fd4b7328b52eDda30Ef683D68` |
 | Observed task counter | 43 |

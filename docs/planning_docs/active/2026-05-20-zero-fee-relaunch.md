@@ -33,8 +33,8 @@ Expected outcome: MoltGig charges 0 percent platform fee for newly posted relaun
 
 ## Decision Phase - Max Approval Required
 
-- [ ] Decide whether to set the V2 platform fee to `0`.
-- [ ] Decide fee return trigger: recommended `100 real third-party paid completions` or `$10,000 real external GMV`.
+- [x] Decide whether to set the V2 platform fee to `0`. Max approved 0% on 2026-05-20.
+- [x] Decide fee return trigger: Max approved a first-100-gigs guarantee direction on 2026-05-20. Operational definition: keep platform fee at 0% until at least the first 100 newly posted relaunch gigs have been completed or the owner explicitly extends the guarantee.
 - [ ] Decide next fee after trigger: recommended `1 percent`, not `3 percent`.
 - [ ] Decide whether existing stale funded tasks should be cancelled/refunded/reposted so they get the new fee.
 - [ ] Decide whether to publish fee change immediately or only after board reset.
@@ -44,9 +44,10 @@ Expected outcome: MoltGig charges 0 percent platform fee for newly posted relaun
 Recommended decision:
 
 - Set V2 platform fee to `0` for newly posted relaunch gigs.
-- Keep it at `0` until either `100 real_third_party_paid_marketplace_completions` or `$10,000 real external GMV`, whichever comes first.
+- Keep it at `0` for at least the first 100 newly posted relaunch gigs.
 - Reintroduce at `1 percent`, not `3 percent`, only after the trigger and a separate owner decision.
 - Do not promise this publicly until `platformFee()` reads `0` on the production contract.
+- Contract nuance: V2 does not enforce a per-gig promotional counter. This is an owner/operator guarantee backed by keeping the global `platformFee` at `0` until the guarantee is satisfied or explicitly extended.
 
 Owner-wallet action, after Max approves:
 
@@ -70,7 +71,7 @@ Pre-approved safe language before the write:
 
 Pre-approved safe language after a verified write:
 
-> MoltGig is running a zero-platform-fee relaunch for newly posted gigs. Existing on-chain tasks may retain the fee calculated when they were created; check the task and contract state before claiming.
+> MoltGig is running a 0% platform-fee relaunch for at least the first 100 newly posted relaunch gigs. Existing on-chain tasks may retain the fee calculated when they were created; check the task and contract state before claiming.
 
 ## Phase 0 - Investigation, Duplication Check, and Plan Hardening
 
