@@ -41,7 +41,7 @@ These can be mostly completed locally by Codex before Max does manual public out
 1. [x] `../archive/2026-05-20-proof-backed-board-reset.md`
    - Codex can inventory stale gigs, draft final relaunch gig payloads, update gig docs, and prepare admin/API payloads.
    - Max/manual dependency: approve final gig set, rewards, cancellation/refund decisions, and any mainnet funding.
-2. [ ] `2026-05-20-public-proof-and-trust.md`
+2. [x] `../archive/2026-05-20-public-proof-and-trust.md`
    - Codex can update public copy, UI labels, machine-readable docs, and trust/status language.
    - Max/manual dependency: approve explicit public stance such as showing zero real completions and final fee wording.
 3. [ ] `2026-05-20-ricky-growth-operator.md`
@@ -103,7 +103,7 @@ Do not send broad outreach until these are done:
 
 - [ ] Complete Phase 0 for board reset, public proof/trust, Ricky operator, competitor mechanics, outreach, bounties, directory submissions, and MCP/x402 discovery.
 - [x] Draft board reset payloads and stale-gig disposition table.
-- [ ] Prepare public copy/doc/UI changes for fee, proof, relaunch status, and segmented metrics.
+- [x] Prepare public copy/doc/UI changes for fee, proof, relaunch status, and segmented metrics.
 - [ ] Update Ricky's draft-only growth operating loop.
 - [ ] Build target account list and approval-ready outreach drafts without sending them.
 - [ ] Prepare framework bounty specs and directory submission packet.

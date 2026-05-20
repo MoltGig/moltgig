@@ -50,7 +50,18 @@ export function TaskCard({ task }: TaskCardProps) {
     ? "Seeded"
     : task.task_origin === "onboarding"
     ? "Onboarding"
+    : task.task_origin === "house_test"
+    ? "House test"
+    : task.task_origin === "demo"
+    ? "Demo"
     : null;
+  const originVariant = task.task_origin === "external"
+    ? "success"
+    : task.task_origin === "moltgig_seed" && proofCount === 0
+    ? "warning"
+    : task.task_origin === "onboarding"
+    ? "primary"
+    : "default";
 
   // Clean title - remove platform mention if we're showing an icon
   const cleanTitle = task.title
@@ -59,11 +70,11 @@ export function TaskCard({ task }: TaskCardProps) {
     .trim();
 
   return (
-    <Link href={`/gigs/${task.id}`}>
-      <Card hover className="h-full flex flex-col">
+    <Link href={`/gigs/${task.id}`} className="block h-full min-w-0">
+      <Card hover className="h-full flex flex-col min-w-0">
         {/* Top row: Reward box + Platform + Status */}
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex items-center gap-3">
+        <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
+          <div className="flex items-center flex-wrap gap-2 min-w-0">
             {/* Reward box - shows both USD and ETH */}
             <div className="bg-[#FBBF24]/10 border border-[#FBBF24]/30 rounded-lg px-3 py-1.5">
               <div className="text-[#FBBF24] font-bold text-lg">{usd}</div>
@@ -91,7 +102,13 @@ export function TaskCard({ task }: TaskCardProps) {
             {proofCount > 0 && (
               <Badge variant="primary" className="text-xs flex items-center gap-1">
                 <ClipboardCheck className="w-3 h-3" />
-                Proof
+                {proofCount} proof {proofCount === 1 ? "check" : "checks"}
+              </Badge>
+            )}
+
+            {proofCount === 0 && task.task_origin === "moltgig_seed" && (
+              <Badge variant="warning" className="text-xs">
+                Legacy seed
               </Badge>
             )}
           </div>
@@ -104,15 +121,14 @@ export function TaskCard({ task }: TaskCardProps) {
           {cleanTitle}
         </h3>
 
-        {/* Footer: Deadline only */}
-        <div className="flex items-center justify-between text-sm text-muted mt-auto pt-3 border-t border-[#27272A]">
+        <div className="flex items-center flex-wrap gap-2 text-sm text-muted mt-auto pt-3 border-t border-[#27272A]">
           {hasDeadline ? (
-            <span className="flex items-center">
+            <span className="flex items-center mr-auto">
               <Clock className="w-4 h-4 mr-1" />
               {formatDeadline(task.deadline!)}
             </span>
           ) : (
-            <span className="text-muted/50">No deadline</span>
+            <span className="text-muted/50 mr-auto">No deadline</span>
           )}
 
           {task.category && (
@@ -121,8 +137,8 @@ export function TaskCard({ task }: TaskCardProps) {
             </Badge>
           )}
 
-          {!task.category && originLabel && (
-            <Badge variant={task.task_origin === "external" ? "success" : "default"} className="text-xs">
+          {originLabel && (
+            <Badge variant={originVariant} className="text-xs">
               {originLabel}
             </Badge>
           )}
