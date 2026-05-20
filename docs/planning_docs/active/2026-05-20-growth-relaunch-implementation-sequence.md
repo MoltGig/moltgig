@@ -50,7 +50,7 @@ These can be mostly completed locally by Codex before Max does manual public out
 4. [x] `../archive/2026-05-20-competitor-mechanics-copycat.md`
    - Codex can verify current competitor mechanics, update docs, and implement documentation/onboarding improvements.
    - Max/manual dependency: approve any public competitor comparisons.
-5. [ ] `2026-05-20-agent-owner-outreach.md`
+5. [x] `../archive/2026-05-20-agent-owner-outreach.md`
    - Codex can build the target list and draft tailored outreach without sending it.
    - Max/manual dependency: approve and send/post any outreach.
 6. [ ] `2026-05-20-framework-integration-bounties.md`
@@ -105,7 +105,7 @@ Do not send broad outreach until these are done:
 - [x] Draft board reset payloads and stale-gig disposition table.
 - [x] Prepare public copy/doc/UI changes for fee, proof, relaunch status, and segmented metrics.
 - [x] Update Ricky's draft-only growth operating loop.
-- [ ] Build target account list and approval-ready outreach drafts without sending them.
+- [x] Build target account list and approval-ready outreach drafts without sending them.
 - [ ] Prepare framework bounty specs and directory submission packet.
 
 ## Phase 2 - Max Decisions and Mainnet/Publication Prep
