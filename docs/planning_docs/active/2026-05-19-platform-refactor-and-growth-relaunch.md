@@ -1701,10 +1701,11 @@ RPC repair update:
 - Public Base RPC reads work, but live JSON-RPC filters remained unreliable: `eth_getFilterChanges` produced `filter not found` errors even after separating the event provider.
 - Replaced `contract.on(...)` subscriptions with bounded `eth_getLogs` polling in `backend/src/services/eventListener.ts`. The listener now scans recent safe blocks with configurable `EVENT_POLL_INTERVAL_MS`, `EVENT_POLL_BLOCK_LAG`, and `EVENT_POLL_BLOCK_RANGE`.
 - Local verification passed: `npm run build:backend` and backend Jest (`7` suites, `78` tests).
+- Deployed MoltGig `main@fec865a` to Hetzner, rebuilt backend, set `ENABLE_EVENT_LISTENER=true`, kept ordinary reads on `https://base-rpc.publicnode.com`, and set event polling to `https://mainnet.base.org` with `EVENT_POLL_INTERVAL_MS=30000`, `EVENT_POLL_BLOCK_LAG=3`, and `EVENT_POLL_BLOCK_RANGE=20`.
+- Post-deploy verification passed: backend service is active, public/admin production-safe checks returned `200`, and two event-poll cycles showed no `filter not found`, `eth_getFilterChanges`, or polling timeout errors.
 
 Remaining operational follow-ups:
 
-- Deploy the polling listener to Hetzner, set `ENABLE_EVENT_LISTENER=true`, and verify logs stay free of `filter not found` errors.
 - Longer term, replace temporary public RPC with a quota-backed Base RPC provider for better production reliability.
 - Keep Replit available as rollback for 24-48 hours, then remove/unlink the Replit custom domain after Max confirms stable traffic on Hetzner.
 - Optional hardening: restrict public SSH to Max's IP or Tailscale once remote access path is settled.
