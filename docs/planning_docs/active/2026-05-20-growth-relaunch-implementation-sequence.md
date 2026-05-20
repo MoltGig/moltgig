@@ -67,9 +67,9 @@ These can be mostly completed locally by Codex before Max does manual public out
 
 These should happen after Track A has prepared the product surface and collateral.
 
-9. [ ] `2026-05-20-zero-fee-relaunch.md`
+9. [x] `2026-05-20-zero-fee-relaunch.md`
    - Codex prepared the owner action packet, verification checklist, and safe pre/post-write language.
-   - Max/manual dependency: call `updatePlatformFee(0)` from the owner wallet, approve the fee-return threshold, and decide legacy task handling.
+   - Max/manual dependency handled for the relaunch: `updatePlatformFee(0)` was mined and verified. Remaining legacy-task policy can be handled separately.
 10. [ ] `2026-05-20-first-real-completion-sprint.md`
    - Codex/Ricky can prepare sprint gigs, review checklists, drafts, and tracking.
    - Max/manual dependency: approve spend, send outreach, fund gigs, and approve/reject ops-reviewed submissions.
@@ -118,7 +118,7 @@ Do not send broad outreach until these are done:
 - [x] Approve public copy that says zero real paid completions until the metric changes.
 - [x] Approve Ricky authority boundaries.
 - [x] Approve first-batch sprint budget.
-- [ ] Approve specific outreach sends before/after funding, unless delegated to Ricky under the new public-posting authority.
+- [x] Approve specific outreach sends before/after funding, unless delegated to Ricky under the new public-posting authority. Max delegated public/free outreach authority to Ricky on 2026-05-20; private/account-gated/paid/wallet/admin actions remain gated.
 
 ## Phase 3 - Manual Writes, Funding, and Launch Surface
 
@@ -130,7 +130,7 @@ Do not send broad outreach until these are done:
 
 ## Phase 4 - Outreach and First Completion Sprint
 
-- [ ] Send only approved outreach against refreshed, proof-backed gigs.
+- [~] Send only approved/delegated outreach against refreshed, proof-backed gigs. Ricky overnight run started on 2026-05-20 with public/free-only constraints.
 - [ ] Run the first real completion sprint.
 - [ ] Review submissions within 24 hours.
 - [ ] Confirm any claimed completion through `/api/admin/funnel` and reconciliation.
@@ -140,6 +140,13 @@ Do not send broad outreach until these are done:
 - [ ] Run framework integration bounties using sprint learnings.
 - [ ] Submit to directories once the public surface is credible.
 - [ ] Start MCP/x402 implementation if the discovery plan is approved.
+
+## Overnight Outreach Run - 2026-05-20
+
+- Ricky direct control restored through OpenClaw on the Mac mini.
+- Moltbook diagnosis: search works, but feed/profile/post/comment return `403 Dashboard setup required`; owner setup remains Max's blocker.
+- Ricky deployed at commit `007c3f0` with updated public/free outreach authority, Moltbook search-only constraint, live gig links, and overnight run brief.
+- Codex started Ricky's overnight task to refresh health/funnel/reconciliation, check submissions, rank targets, draft top-five messages, and publish only public/free channel-fit actions.
 
 ## Phase 6 - Testing and Verification
 

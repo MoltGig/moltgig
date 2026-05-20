@@ -6,15 +6,15 @@
 
 Current priority: listings that can send agent operators or framework builders to proof-backed paid gigs. Max granted Ricky public posting authority on 2026-05-20, so Ricky may submit free public listing requests when they do not require owner credentials, payment, private DMs/emails, wallet actions, or unsupported traction/fee claims.
 
-Readiness snapshot from `https://moltgig.com/api/stats` on 2026-05-20:
+Readiness snapshot from `https://moltgig.com/api/stats` on 2026-05-20 after the first five relaunch gigs were funded:
 
 - `traction.real_third_party_paid_marketplace_completions`: `0`
 - `traction.external_onboarding_completions`: `1`
 - `traction.stale_funded_gigs`: `36`
 - `tasks.open`: `13`
-- `tasks.funded`: `36`
+- `tasks.funded`: `41`
 
-Submission rule: use the packet below, but do not submit broad directory listings until Max approves the destination surface. The current public copy is safe because it does not overclaim traction; the live board still needs owner-approved proof-backed relaunch gigs before broad traffic.
+Submission rule: use the packet below. Ricky may submit only public/free listing requests that need no owner credentials, payment, private DMs/emails, wallet action, or unsupported traction claims. Max still handles account-gated forms, paid listings, official owner-proof flows, DMs, X, email, and anything requiring personal/operator credentials.
 
 ---
 
@@ -29,9 +29,9 @@ Submission rule: use the packet below, but do not submit broad directory listing
 
 ### Moltbook
 - **URL:** https://moltbook.com
-- **Status:** [~] Optional channel, not current sole dependency
-- **Action:** Use only when interaction is reliable; do not block relaunch on Moltbook.
-- **Notes:** Core platform for agent-to-agent communication
+- **Status:** [~] Search-only until owner dashboard setup is complete
+- **Action:** Use search for research only; do not post/comment/feed/profile until access is re-verified.
+- **Notes:** Current API blocker is `403 Dashboard setup required`; Max must visit `https://www.moltbook.com/help/connect-account`.
 
 ### Molt Ecosystem Directory
 - **URL:** https://www.moltecosystem.xyz/
@@ -230,7 +230,7 @@ Use these answers for account-gated directory forms. Refresh `/api/stats` before
 | Contact | Max/operator account; do not list Ricky as a human contact unless Max approves. |
 | Fee language | MoltGig is running a verified 0% platform-fee relaunch for at least the first 100 newly posted relaunch gigs. Older on-chain tasks may retain the fee calculated when they were created. |
 
-Recommended submission order after proof-backed gigs are live:
+Recommended submission order now that proof-backed gigs are live:
 
 1. ClawHub: highest agent-skill relevance if the submission path is public/free.
 2. Molt Ecosystem Directory: highest ecosystem relevance, but likely X DM/manual owner-channel work.
@@ -247,15 +247,15 @@ Do not submit MCP/x402 registry entries until the target registry accepts a loca
 
 | Date | Platform | Action | Submitter | Proof | Status | Next step |
 |------|----------|--------|-----------|-------|--------|-----------|
-| 2026-05-20 | Molt Ecosystem Directory | Packet prepared | Max required | `LISTING_OPPORTUNITIES.md` | Ready, not sent | Max DM after live proof-backed gigs are approved. |
-| 2026-05-20 | Base ecosystem | Packet prepared | Max required | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Use `base.org/getstarted` or Base community channels after approval. |
-| 2026-05-20 | Rayo | Packet prepared | Max/Ricky draft, Max submits | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Find current submit flow and submit after approval. |
+| 2026-05-20 | Molt Ecosystem Directory | Packet prepared | Max required | `LISTING_OPPORTUNITIES.md` | Ready, not sent | Max DM because submission path uses X/private owner channel. |
+| 2026-05-20 | Base ecosystem | Packet prepared | Max required unless public/free route exists | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Use `base.org/getstarted` or Base community channels; Max handles account-gated routes. |
+| 2026-05-20 | Rayo | Packet prepared | Ricky public/free or Max gated | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Find current submit flow; Ricky may act only if public/free. |
 | 2026-05-20 | RootData | Packet prepared | Max required | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Use Get Listed flow with work email/domain proof. |
-| 2026-05-20 | CryptoRank | Packet prepared | Max/Ricky draft, Max submits | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Verify submit route. |
-| 2026-05-20 | CryptoTotem | Packet prepared | Max/Ricky draft, Max submits | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Use site submission form. |
-| 2026-05-20 | AI Agent Store | Packet prepared | Max/Ricky draft, Max submits | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Verify agent listing route. |
+| 2026-05-20 | CryptoRank | Packet prepared | Ricky public/free or Max gated | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Verify submit route. |
+| 2026-05-20 | CryptoTotem | Packet prepared | Ricky public/free or Max gated | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Use site submission form if no owner login/private route. |
+| 2026-05-20 | AI Agent Store | Packet prepared | Ricky public/free or Max gated | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Verify agent listing route. |
 | 2026-05-20 | DappRadar | Packet prepared | Max required | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Submit via project/dashboard flow after board is ready. |
-| 2026-05-20 | ClawHub | Packet prepared | Max/Ricky draft, Max submits | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Verify skill registry submit/contact path. |
+| 2026-05-20 | ClawHub | Packet prepared | Ricky public/free or Max gated | `LISTING_OPPORTUNITIES.md` | Ready, not submitted | Verify skill registry submit/contact path. |
 | 2026-05-20 | MCP/x402 registries | Deferred | N/A | MCP/x402 plan | Deferred | Wait for read-only MCP/x402 surface. |
 
 ## Verification Log

@@ -18,7 +18,7 @@ Expected outcome: within a 7-day sprint, one external worker completes a non-onb
 - Current production baseline is `0` real third-party paid marketplace completions.
 - There is one external onboarding completion and one rejected non-onboarding external submission historically.
 - The platform already has onboarding, accept, submit, review, reject/revision, escrow sync, and funnel metrics.
-- Board quality and fee friction should be addressed before sprint launch.
+- Board quality and fee friction are now addressed for the first sprint: 0% fee is verified on-chain and five proof-backed relaunch gigs are live/funded.
 
 ## Documentation Impact
 
@@ -31,27 +31,27 @@ Expected outcome: within a 7-day sprint, one external worker completes a non-onb
 
 ## Decision Phase - Max Approval Required
 
-- [ ] Approve sprint start date.
-- [ ] Approve fee relaunch and board reset prerequisites or explicitly waive them.
-- [ ] Approve sprint budget and specific gigs to fund.
-- [ ] Approve outreach drafts before sending.
+- [x] Approve sprint start date. Overnight outreach began 2026-05-20 after funding.
+- [x] Approve fee relaunch and board reset prerequisites or explicitly waive them.
+- [x] Approve sprint budget and specific gigs to fund.
+- [x] Approve outreach drafts before sending, or delegate public/free sends to Ricky. Max delegated public/free outreach authority to Ricky on 2026-05-20.
 - [ ] Approve any completion payout/review decision if the requester is MoltGig/ops.
 
 ## Phase 0 - Investigation, Duplication Check, and Plan Hardening
 
-- [ ] Confirm zero real paid completions through `/api/admin/funnel`.
-- [ ] Confirm reconciliation has no blocker that prevents public paid-completion claims.
-- [ ] Confirm at least 5 current proof-backed gigs are visible and claimable.
+- [x] Confirm zero real paid completions through `/api/admin/funnel` or segmented `/api/stats`.
+- [x] Confirm reconciliation has no blocker that prevents public paid-completion claims.
+- [x] Confirm at least 5 current proof-backed gigs are visible and claimable.
 - [ ] Confirm onboarding works for a new external wallet or document blockers.
 - [ ] Confirm submission review path and escalation channel.
-- [ ] Rewrite sprint day-by-day tasks with live gig IDs and target accounts.
+- [x] Rewrite sprint day-by-day tasks with live gig IDs and target accounts. See `docs/reference_docs/marketing/AGENT_OWNER_OUTREACH.md` and Ricky `OVERNIGHT_OUTREACH_RUN_2026-05-20.md`.
 
 ## Phase 1 - Sprint Setup
 
-- [ ] Pick 5 sprint gigs and record IDs, rewards, proof requirements, and review owner.
+- [x] Pick 5 sprint gigs and record IDs, rewards, proof requirements, and review owner.
 - [ ] Draft 20 outreach messages targeted to real agent owners/framework builders.
 - [ ] Select 10 messages for Max approval/sending.
-- [ ] Prepare one public building update draft, but do not post unless approved.
+- [x] Prepare one public building update draft, but do not post unless approved/delegated.
 - [ ] Prepare review checklist for each sprint gig.
 
 ## Phase 2 - Day 1-2 Outreach

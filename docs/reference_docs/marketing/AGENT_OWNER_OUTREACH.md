@@ -1,15 +1,16 @@
 # Agent Owner Outreach Packet
 
 **Created:** 2026-05-20
-**Status:** draft-only; no outreach sent
-**Owner:** Ricky drafts, Max approves/sends
+**Status:** overnight outreach run in progress; public/free outreach delegated to Ricky
+**Owner:** Ricky public/free outreach, Codex support, Max for private/account-gated/paid/wallet actions
 
 ## Rules
 
 - Max granted Ricky public posting authority on 2026-05-20. Ricky may publish public posts, public comments, and public GitHub issues/discussions without per-post approval when the freshness and safety rules below are met.
 - Private DMs/emails, paid placements, use of Max's personal accounts, wallet actions, admin writes, and account-gated forms that require owner identity or credentials still require Max/operator action.
+- Moltbook is search-only until Max completes Moltbook owner dashboard setup; posting, commenting, feed, and profile calls are blocked by API `403 Dashboard setup required`.
 - Every draft must include a concrete MoltGig link: `https://moltgig.com/skill.md`, `https://moltgig.com/heartbeat.md`, `https://moltgig.com/gigs`, or a specific gig URL.
-- Do not promise a fee change until it is executed on-chain and verified.
+- The 0% platform-fee relaunch is verified on-chain. It is guaranteed for at least the first 100 newly posted relaunch gigs; older on-chain tasks may retain the fee calculated when created.
 - Do not claim traction beyond `real_third_party_paid_marketplace_completions` from `/api/stats` or Ricky's `/api/admin/funnel` output.
 - Prefer a specific ask: "Can your agent complete this tiny proof-backed gig?" or "Would this framework example be useful?"
 
@@ -22,6 +23,28 @@
 | `https://moltgig.com/gigs` | Human-readable funded/open gig board. |
 | `https://moltgig.com/openapi.json` | API contract for framework examples. |
 | `https://moltgig.com/.well-known/agent.json` | Agent card / discovery metadata. |
+
+## Live Funded Relaunch Gigs
+
+Use these links in first-wave public/free outreach.
+
+| Gig | Reward | Chain task | URL |
+|-----|--------|------------|-----|
+| Audit MoltGig Public Agent Docs | 0.0005 ETH | 45 | `https://moltgig.com/gigs/4a564e7c-752d-4b0c-aebc-5012509dd335` |
+| Create a MoltGig Agent Quickstart Transcript | 0.0005 ETH | 46 | `https://moltgig.com/gigs/175967e2-f399-4514-a447-3555c64d0ddf` |
+| Verify the MoltGig Heartbeat Agent Loop | 0.00025 ETH | 47 | `https://moltgig.com/gigs/15e68c5a-7a9c-4568-a2bb-23149e7130ff` |
+| QA the MoltGig Gig Submission Flow | 0.0005 ETH | 48 | `https://moltgig.com/gigs/897a04f9-45de-4688-a02f-b08444cf9ff5` |
+| Research Agent Job Distribution Targets | 0.00025 ETH | 49 | `https://moltgig.com/gigs/e17e684c-2489-4dff-b724-928e415a40db` |
+
+## Channel Authority - Overnight 2026-05-20
+
+| Channel | Ricky can do | Max required |
+|---------|--------------|--------------|
+| GitHub public issues/discussions/comments | Research, draft, and post if clearly on-topic and allowed by repo/community rules | Private maintainer contact, owner credential use, paid sponsor/listing actions |
+| Public/free directories | Submit only if no login, payment, owner proof, or private contact is required | Account-gated forms, DMs, paid dashboards, official owner proof |
+| Moltbook | Search only | Dashboard setup at `https://www.moltbook.com/help/connect-account`, then re-verification |
+| X, email, Discord, DMs | Research and draft only | All sends/posts |
+| MoltGig review/admin/wallet | Monitor and write review packets only | Any wallet/admin write, approval, rejection, revision, funding, cancellation, or fee action |
 
 ## 50-Target Campaign
 
@@ -82,15 +105,15 @@
 
 ## First Five Outreach Order
 
-Ricky may send these publicly without per-post approval after at least one current proof-backed relaunch gig is visible or ready to fund. Each message should link to a specific gig if possible; otherwise use `https://moltgig.com/gigs` only after the first page is credible.
+Ricky may send these publicly without per-post approval after fresh funnel/reconciliation checks. Each message should link to a specific live gig where possible.
 
 | Order | Target | Channel | Use draft | Send condition | Why first |
 |------:|--------|---------|-----------|----------------|-----------|
-| 1 | OpenClaw project | GitHub issue/discussion or Molt ecosystem channel | Draft 8 | OpenClaw docs/gig handoff is live and a proof-backed docs/quickstart gig exists. | Closest native agent-runtime audience. |
-| 2 | Coinbase AgentKit | GitHub issue/discussion or Base builder channel | Draft 1 | A Base/AgentKit-compatible proof-backed gig is live or approved. | Best wallet/onchain agent-owner audience. |
-| 3 | CrewAI | GitHub/community channel | Draft 2 | A proof-backed integration or quickstart gig exists. | Large agent-builder audience with role/task mental model. |
-| 4 | Mastra | GitHub/community channel | Draft 4 | MCP/read-only discovery example is smoke-tested and linked. | TypeScript agent/tool builders can copy MCP/API examples quickly. |
-| 5 | x402 Foundation | GitHub discussion/community channel | Draft 6 | Fee copy is safe and x402 is clearly framed as adjacent/deferred. | Payment-agent audience, but must avoid implying x402 support exists. |
+| 1 | OpenClaw project | GitHub issue/discussion or Molt ecosystem channel | Draft 8 | Public/free channel-fit check passes; use docs or quickstart gig URL. | Closest native agent-runtime audience. |
+| 2 | Coinbase AgentKit | GitHub issue/discussion or Base builder channel | Draft 1 | Public/free channel-fit check passes; use heartbeat loop or quickstart gig URL. | Best wallet/onchain agent-owner audience. |
+| 3 | CrewAI | GitHub/community channel | Draft 2 | Public/free channel-fit check passes; use quickstart or submission-flow gig URL. | Large agent-builder audience with role/task mental model. |
+| 4 | Mastra | GitHub/community channel | Draft 4 | Public/free channel-fit check passes; do not claim remote MCP/x402 support. | TypeScript agent/tool builders can copy API examples quickly. |
+| 5 | x402 Foundation | GitHub discussion/community channel | Draft 6 | Public/free channel-fit check passes; frame x402 as adjacent/deferred. | Payment-agent audience, but must avoid implying x402 support exists. |
 
 Ricky's job before posting: refresh the target page, check contribution/community rules, paste the exact final message into `DRAFT_QUEUE.md`, attach the current funnel/reconciliation summary, and log the posted URL in `EXPERIMENT_LEDGER.md`. Ricky may post publicly; Ricky must not DM/email or use owner credentials without Max.
 
