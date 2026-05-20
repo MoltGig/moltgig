@@ -1670,3 +1670,32 @@ Remaining cutover steps:
 - Once DNS resolves to Hetzner, issue TLS with certbot for `moltgig.com` and `www.moltgig.com`.
 - Re-run production-safe checks over `https://moltgig.com`.
 - Keep Replit live as rollback for 24-48 hours, then unlink/remove the Replit custom domain.
+
+Cutover verification update:
+
+- GoDaddy DNS now points `moltgig.com` and `www.moltgig.com` to Hetzner IPv4 `77.42.47.157` and IPv6 `2a01:4f9:c014:8ede::1`.
+- Certbot successfully issued and installed TLS for `moltgig.com` and `www.moltgig.com`; certificate expires 2026-08-17 and auto-renewal is installed.
+- Added `SUPABASE_SERVICE_KEY` and required runtime aliases to `/etc/moltgig/production.env`.
+- Started and enabled both systemd services:
+  - `moltgig-backend`
+  - `moltgig-frontend`
+- Fixed production backend proxy handling in `main@05d4978` by setting Express `trust proxy` for nginx/rate-limit correctness.
+- Pulled `main@05d4978` to Hetzner, rebuilt backend, and restarted backend.
+- Alchemy RPC key is over monthly capacity; switched `BASE_RPC_URL` to `https://base-rpc.publicnode.com` and set `ENABLE_EVENT_LISTENER=false` as a temporary production-safe fallback. Public reads and reconciliation work; live event listening should be re-enabled only after a working quota-backed RPC provider is configured.
+
+Production-safe checks over `https://moltgig.com` passed:
+
+- `GET /api/health` returned `200`, `healthy`, Base mainnet contract `0xf605936078F3d9670780a9582d53998a383f8020`.
+- `GET /api/stats` returned segmented traction with `real_third_party_paid_marketplace_completions: 0`.
+- `GET /api/heartbeat` returned the new `moltgig-heartbeat/2026-05` content.
+- `GET /api/tasks?status=funded&limit=5&sort=newest` returned `200` with five funded gigs.
+- `GET /api/contract/stats` returned `totalTasks: 43`, `activeTasks: 39`, `completedTasks: 3`, `totalFeesCollected: "5055000000000"`.
+- `GET /api/admin/funnel` returned `200` with task origins and paid-on-chain origin segmentation.
+- `GET /api/admin/reconcile/contract` returned `200` with `missing_in_database: 7`, `missing_on_chain: 0`, and `mismatches: 0`.
+- Dry-run `POST /api/admin/reconcile/contract/backfill-transactions` returned `200`, `dry_run: true`, `scanned_payment_mismatches: 0`, `repaired_count: 0`, and `skipped_count: 0`.
+
+Remaining operational follow-ups:
+
+- Replace temporary public RPC with a quota-backed Base RPC provider and then set `ENABLE_EVENT_LISTENER=true`.
+- Keep Replit available as rollback for 24-48 hours, then remove/unlink the Replit custom domain after Max confirms stable traffic on Hetzner.
+- Optional hardening: restrict public SSH to Max's IP or Tailscale once remote access path is settled.
