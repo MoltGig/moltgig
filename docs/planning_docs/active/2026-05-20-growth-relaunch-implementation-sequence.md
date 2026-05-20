@@ -112,18 +112,21 @@ Do not send broad outreach until these are done:
 
 ## Phase 2 - Max Decisions and Mainnet/Publication Prep
 
-- [ ] Decide fee policy and whether to call `updatePlatformFee(0)`.
-- [ ] Approve board reset gigs, rewards, and any legacy cancellation/refund plan.
-- [ ] Approve public copy that says zero real paid completions until the metric changes.
-- [ ] Approve Ricky authority boundaries.
-- [ ] Approve outreach drafts and sprint budget.
+- [x] Decide fee policy and whether to call `updatePlatformFee(0)`.
+- [x] Approve board reset gigs and first-batch rewards.
+- [ ] Decide any legacy cancellation/refund plan.
+- [x] Approve public copy that says zero real paid completions until the metric changes.
+- [x] Approve Ricky authority boundaries.
+- [x] Approve first-batch sprint budget.
+- [ ] Approve specific outreach sends before/after funding, unless delegated to Ricky under the new public-posting authority.
 
 ## Phase 3 - Manual Writes, Funding, and Launch Surface
 
-- [ ] Execute approved fee change if selected.
-- [ ] Create/fund approved proof-backed relaunch gigs.
-- [ ] Verify public docs, UI, heartbeat, and API show the prepared launch surface.
-- [ ] Confirm Ricky's ledgers and cron prompts match the approved launch state.
+- [x] Execute approved fee change if selected.
+- [x] Create approved proof-backed relaunch gig rows.
+- [ ] Fund approved proof-backed relaunch gigs.
+- [x] Verify public docs, UI, heartbeat, and API show the prepared launch surface.
+- [x] Confirm Ricky's ledgers and runtime match the approved launch state.
 
 ## Phase 4 - Outreach and First Completion Sprint
 
