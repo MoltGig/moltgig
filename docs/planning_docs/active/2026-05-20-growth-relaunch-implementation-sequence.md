@@ -124,7 +124,7 @@ Do not send broad outreach until these are done:
 
 - [x] Execute approved fee change if selected.
 - [x] Create approved proof-backed relaunch gig rows.
-- [ ] Fund approved proof-backed relaunch gigs.
+- [x] Fund approved proof-backed relaunch gigs.
 - [x] Verify public docs, UI, heartbeat, and API show the prepared launch surface.
 - [x] Confirm Ricky's ledgers and runtime match the approved launch state.
 

@@ -197,7 +197,8 @@ app.get('/api/heartbeat', readLimiter, async (req, res) => {
         .from('task_listings')
         .select('id, title, reward_wei, status, created_at, task_origin, review_policy, proof_requirements')
         .in('status', ['funded', 'open'])
-        .order('reward_wei', { ascending: false })
+        .order('status', { ascending: true })
+        .order('created_at', { ascending: false })
         .limit(8),
       supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('status', 'open'),
       supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('status', 'funded'),
